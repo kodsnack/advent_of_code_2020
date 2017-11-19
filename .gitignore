@@ -1,4 +1,16 @@
+<<<<<<< HEAD
 *.exe
 .idea
 cmake-build-*
 .DS_Store
+=======
+*~
+*.fasl
+*.FASL
+*.~lock*
+\#*\#
+*.fas
+*.dx64fsl
+*.lx64fsl
+*.DS_Store
+>>>>>>> Setup boilerplate

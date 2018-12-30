@@ -7,6 +7,7 @@
 (defpackage #:aoc2018.day01 (:use #:cl))
 (defpackage #:aoc2018.day02 (:use #:cl))
 (defpackage #:aoc2018.day03 (:use #:cl))
+(defpackage #:aoc2018.day04 (:use #:cl))
 
 (fiasco:define-test-package #:aoc2018.tests
   (:use #:aoc))

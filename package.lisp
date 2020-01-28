@@ -10,6 +10,7 @@
 (defpackage #:aoc2018.day04 (:use #:cl))
 (defpackage #:aoc2018.day05 (:use #:cl))
 (defpackage #:aoc2018.day06 (:use #:cl))
+(defpackage #:aoc2018.day07 (:use #:cl) (:import-from #:alexandria #:compose #:curry))
 
 (fiasco:define-test-package #:aoc2018.tests
   (:use #:aoc))

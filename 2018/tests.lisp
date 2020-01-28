@@ -25,3 +25,7 @@
 (deftest day06 ()
   (is (= 4011 (aoc2018.day06::part1 (input-for 2018 6))))
   (is (= 46054 (aoc2018.day06::part2 (input-for 2018 6)))))
+
+(deftest day07 ()
+  (is (string= "BKCJMSDVGHQRXFYZOAULPIEWTN" (aoc2018.day07::part1 (input-for 2018 07))))
+  (is (= 1040 (aoc2018.day07::part2 (input-for 2018 07)))))

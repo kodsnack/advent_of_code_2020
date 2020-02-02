@@ -33,3 +33,7 @@
 (deftest day08 ()
   (is (= 42768 (aoc2018.day08::part1 (input-for 2018 08))))
   (is (= 34348 (aoc2018.day08::part2 (input-for 2018 08)))))
+
+(deftest day09 ()
+  (is (= 380705 (aoc2018.day09::part1 (input-for 2018 09))))
+  (is (= 3171801582 (aoc2018.day09::part2 (input-for 2018 09)))))

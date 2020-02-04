@@ -16,3 +16,6 @@
 
 (defun trim-lf (string)
   (string-right-trim '(#\Linefeed) string))
+
+(defun strip-cr (string)
+  (remove #\Return string))

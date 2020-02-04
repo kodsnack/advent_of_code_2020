@@ -13,4 +13,8 @@ cmake-build-*
 *.dx64fsl
 *.lx64fsl
 *.DS_Store
+<<<<<<< HEAD
 >>>>>>> Setup boilerplate
+=======
+scratch.lisp
+>>>>>>> Day 10

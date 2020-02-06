@@ -53,3 +53,15 @@
 #.......#....#..#...##..#.......#....#..#....#..#.......#.....
 ######..#....#...###.#..#.......#####...#....#..######..######")))
     (is (= seconds 10011))))
+
+(deftest day11 ()
+  (destructuring-bind (x y square level) (aoc2018.day11::part1)
+    (declare (ignore level))
+    (is (= x 19))
+    (is (= y 17))
+    (is (= 3 square)))
+  (destructuring-bind (x y square level) (aoc2018.day11::part2)
+    (declare (ignore level))
+    (is (= x 233))
+    (is (= y 288))
+    (is (= square 12))))

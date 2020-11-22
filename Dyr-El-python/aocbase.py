@@ -7,7 +7,6 @@ def readInput(theTextFile=None):
 		thisFileBase = os.path.splitext(thisFile)[0]
 		thisFileBase = thisFileBase.split("_")[0]
 		theTextFile = thisFileBase+'.txt'
-	f = open(theTextFile)
-	s = f.read()
-	f.close()
+	with open(theTextFile) as f:
+		s = f.read()
 	return s

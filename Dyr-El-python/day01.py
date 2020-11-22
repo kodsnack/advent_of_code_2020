@@ -33,7 +33,7 @@ if __name__ == "__main__":
     # inp = """"""
     
     ## Update for input specifics ##############################################
-    parseInp = fileParse(inp, tokenPattern=wsTokenPattern)
+    parseInp = fileParse(inp, tokenPattern=oneLinePattern)
 
     print("Input is '" + str(parseInp[:10])[:160] + 
           ('...' if len(parseInp)>10 or len(str(parseInp[:10]))>160 else '') + "'")

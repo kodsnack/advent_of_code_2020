@@ -3,8 +3,8 @@
 from aocbase import readInput
 import re
 
-oneLinePattern = re.compile(r".*")
-wsTokens = re.compile(r"\S+")
+oneLinePattern = re.compile(r"^.*$")
+wsTokenPattern = re.compile(r"\S+")
 
 def lineParse(s, f, fp):
     m = re.findall(fp, s)

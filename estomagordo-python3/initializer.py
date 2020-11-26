@@ -24,7 +24,7 @@ if __name__ == '__main__':
 """
 
 if __name__ == '__main__':
-    day = int(argv[1])
+    day = argv[1]
     
     daya = f'{day}a.py'
     dayb = f'{day}b.py'
@@ -34,8 +34,8 @@ if __name__ == '__main__':
         with open(daya, 'w') as g:
             g.write(dayfile(day))
     if not path.isfile(dayb):
-        with open(dayb, 'w') as h:
-            h.write(dayfile(day))
+        with open(dayb, 'w') as g:
+            g.write(dayfile(day))
     if not path.isfile(inp):
-        with open(inp, 'w') as i:
-            i.write('')
+        with open(inp, 'w') as g:
+            g.write('')

@@ -1,3 +1,6 @@
+import re
+
+
 def distance(a, b):
     return sum([(a[x]-b[x])**2 for x in range(len(a))])**0.5
 
@@ -7,7 +10,9 @@ def distance_sq(a, b):
 
 
 def ints(line):
-    pass
+    pattern = re.compile(r'-?\d+')
+
+    return [int(val) for val in re.findall(pattern, line) if val]
 
 
 def manhattan(a, b):

@@ -2,7 +2,21 @@
 
 from helpfunctions import *
 import unittest, sys
+from functools import wraps
+from time import time
 
+def timing(f):
+    @wraps(f)
+    def wrap(*args, **kw):
+        ts = time()
+        result = f(*args, **kw)
+        te = time()
+        print('Execution of:%r took: %2.4f sec' % \
+          (f.__name__, te-ts))
+        return result
+    return wrap
+
+@timing
 def part1(data):
     data = list(data)
     for element_a in data:
@@ -11,6 +25,7 @@ def part1(data):
                 return element_a * element_b
     return 0
 
+@timing
 def part2(data):
     data = list(data)
     for element_a in data:
@@ -33,6 +48,6 @@ class TestDay01(unittest.TestCase):
 
 if __name__ == '__main__':
 
-    print("Advent of code day X")
-    print("Part1 result: {}".format(part1(getIntsFromFile(sys.argv[1]))))
-    print("Part2 result: {}".format(part2(getIntsFromFile(sys.argv[1]))))
+    print("Advent of code day 1")
+    print(f"Part 1 result: {part1(getIntsFromFile(sys.argv[1]))}")
+    print(f"Part 2 result: {part2(getIntsFromFile(sys.argv[1]))}")

@@ -4,23 +4,12 @@
 #include "config.h"
 
 #include <common/common.h>
-
-#include <algorithm>
-#include <cassert>
-#include <deque>
-#include <functional>
 #include <iostream>
-#include <regex>
-#include <stdexcept>
 #include <string>
-#include <tuple>
-#include <unordered_map>
-#include <unordered_set>
 #include <utility>
 
 using namespace westerstrom;
 using namespace std;
-using namespace std::string_literals;
 
 int parseLine(const string& line)
 {
@@ -28,13 +17,6 @@ int parseLine(const string& line)
 	size_t taken = 0;
 	auto n = std::stoi(remaining, &taken);
 	return n;
-
-/*
-	regex re("(\\w+)\\)(\\w+)");
-	smatch m;
-	regex_match(line, m, re);
-	return {m[1].str(), m[2].str()};
-*/
 }
 
 vector<int> parseLines(const vector<string>& lines)
@@ -49,17 +31,37 @@ vector<int> parseLines(const vector<string>& lines)
 
 void solve_part1()
 {
-	auto parsedInput = parseLines(readLines(string(inputFile)));
-	for(auto x : parsedInput)
-	{
-	}
-
-	cout << dayName << " - part 1: " << endl;
+	auto v = parseLines(readLines(string(inputFile)));
+	for(int i = 0; i < v.size(); ++i)
+		for(int j = 0; j < v.size(); ++j)
+		{
+			if(i == j)
+				continue;
+			if(v[i] + v[j] == 2020)
+			{
+				auto r = v[i] * v[j];
+				cout << dayName << " - part 1: " << r << endl;
+				return;
+			}
+		}
 }
 
 void solve_part2()
 {
-	cout << dayName << " - part 2: " << endl;
+	auto v = parseLines(readLines(string(inputFile)));
+	for(int k = 0; k < v.size(); ++k)
+		for(int i = 0; i < v.size(); ++i)
+			for(int j = 0; j < v.size(); ++j)
+			{
+				if(i == j || j == k || i == k)
+					continue;
+				if(v[i] + v[j] + v[k] == 2020)
+				{
+					auto r = v[i] * v[j] * v[k];
+					cout << dayName << " - part 2: " << r << endl;
+					return;
+				}
+			}
 }
 
 int main()

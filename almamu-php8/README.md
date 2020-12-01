@@ -1,0 +1,1 @@
+Place the input files for all the exercises under the input folder.

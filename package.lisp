@@ -4,7 +4,7 @@
   (:use #:cl)
   (:export #:input-for #:lines #:trim-lf #:strip-cr))
 
-(defpackage #:aoc2020.day01 (:use #:cl))
+(defpackage #:aoc2020.day01 (:use #:cl) (:import-from #:alexandria #:curry))
 
 (fiasco:define-test-package #:aoc2020.tests
   (:use #:aoc))

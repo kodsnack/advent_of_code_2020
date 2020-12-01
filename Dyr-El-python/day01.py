@@ -21,11 +21,19 @@ def fileParse(inp, lineparser=lineParse,
 ## End of header boilerplate ###################################################
 
 def part1(pinp):
+    for i in pinp:
+        for j in pinp:
+            if i[0]+j[0]==2020:
+                 return i[0]*j[0]
     return "<solution1>"
 
 def part2(pinp):
-    return "<solution2>"
-
+    for i in pinp:
+        for j in pinp:
+            for k in pinp:
+                if i[0]+j[0]+k[0]==2020:
+                    return i[0]*j[0]*k[0]
+    return "<solution1>"
 ## Start of footer boilerplate #################################################
 
 if __name__ == "__main__":
@@ -33,7 +41,7 @@ if __name__ == "__main__":
     # inp = """"""
     
     ## Update for input specifics ##############################################
-    parseInp = fileParse(inp, tokenPattern=oneLinePattern)
+    parseInp = fileParse(inp, tokenparser=int, tokenPattern=wsTokenPattern)
 
     print("Input is '" + str(parseInp[:10])[:160] + 
           ('...' if len(parseInp)>10 or len(str(parseInp[:10]))>160 else '') + "'")

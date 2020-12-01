@@ -15,24 +15,33 @@ def lineParse(s, f, fp):
 def fileParse(inp, lineparser=lineParse,
                    tokenparser=lambda x:x,
                    tokenPattern=re.compile(r"^(.*)$")):
-    return tuple(map(lambda x:lineparser(x, tokenparser, tokenPattern),
-                    inp.splitlines()))
+    return tuple(map(lambda x:x if len(x)>1 else x[0], 
+                    map(lambda x:lineparser(x, tokenparser, tokenPattern),
+                        inp.splitlines())))
 
 ## End of header boilerplate ###################################################
 
 def part1(pinp):
+    pinp = sorted(pinp)
     for i in pinp:
         for j in pinp:
-            if i[0]+j[0]==2020:
-                 return i[0]*j[0]
+            if i + j == 2020:
+                 return i * j
+            if i + j > 2020:
+                break 
     return "<solution1>"
 
 def part2(pinp):
+    pinp = sorted(pinp)
     for i in pinp:
         for j in pinp:
+            if i + j > 2020:
+                break
             for k in pinp:
-                if i[0]+j[0]+k[0]==2020:
-                    return i[0]*j[0]*k[0]
+                if i + j + k == 2020:
+                    return i * j * k
+                if i + j + k > 2020:
+                    break
     return "<solution1>"
 ## Start of footer boilerplate #################################################
 

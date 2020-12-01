@@ -1,0 +1,3 @@
+[submodule "albert-arvidsson-elixir"]
+	path = albert-arvidsson-elixir
+	url = git@github.com:scmx/advent-of-code-2020-elixir.git

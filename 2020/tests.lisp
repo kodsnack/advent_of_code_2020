@@ -3,6 +3,6 @@
 (in-package #:aoc2020.tests)
 
 (deftest day01 ()
-  (is (aoc2020.day01::part1 (input-for 2020 1)))
-  (is (aoc2020.day01::part1 (input-for 2020 1))))
+  (is (= 633216 (aoc2020.day01::part1 (input-for 2020 01))))
+  (is (= 68348924 (aoc2020.day01::part2 (input-for 2020 01)))))
 

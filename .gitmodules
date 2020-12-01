@@ -10,3 +10,6 @@
 [submodule "tradfursten-kotlin"]
 	path = tradfursten-kotlin
 	url = https://github.com/tradfursten/advent_of_code_2020.git
+[submodule "LinAGKar-rust"]
+	path = LinAGKar-rust
+	url = https://github.com/LinAGKar/advent-of-code-2020-rust.git

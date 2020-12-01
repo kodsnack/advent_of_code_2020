@@ -20,23 +20,29 @@ def timing(f):
         return result
     return wrap
 
+def find_parts(data, num_elements, expected_sum):
+    for item in itertools.combinations(data, num_elements):
+        if sum(item) == expected_sum:
+            return item
+    return ()
+
 @timing
 def part1(data):
-    for item in itertools.combinations(data, 2):
-        if sum(item) == 2020:
-            return numpy.prod(item)
-    return 0
+    return numpy.prod(find_parts(data, 2, 2020))
 
 @timing
 def part2(data):
-    for item in itertools.combinations(data, 3):
-        if sum(item) == 2020:
-            return numpy.prod(item)
-    return 0
+    return numpy.prod(find_parts(data, 3, 2020))
 
 ## Unit tests ########################################################
 
 class TestDay01(unittest.TestCase):
+    def test_find_parts_2_elements(self):
+        self.assertEqual(find_parts([1721, 979, 366, 299, 675, 1456], 4, 2020), (1721, 299))
+
+    def test_find_parts_3_elements(self):
+        self.assertEqual(find_parts([1721, 979, 366, 299, 675, 1456], 3, 2020), (979, 366, 675))
+
     def test_part1(self):
         self.assertEqual(part1([1721, 979, 366, 299, 675, 1456]), 514579)
 

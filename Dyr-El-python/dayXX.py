@@ -15,8 +15,9 @@ def lineParse(s, f, fp):
 def fileParse(inp, lineparser=lineParse,
                    tokenparser=lambda x:x,
                    tokenPattern=re.compile(r"^(.*)$")):
-    return tuple(map(lambda x:lineparser(x, tokenparser, tokenPattern),
-                    inp.splitlines()))
+    return tuple(map(lambda x:x if len(x)>1 else x[0], 
+                    map(lambda x:lineparser(x, tokenparser, tokenPattern),
+                        inp.splitlines())))
 
 ## End of header boilerplate ###################################################
 

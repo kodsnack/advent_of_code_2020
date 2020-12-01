@@ -1,0 +1,7 @@
+pull_request_rules:
+  - name: Approve all merge requests
+    conditions:
+      - -merged
+    actions:
+      merge:
+        method: merge

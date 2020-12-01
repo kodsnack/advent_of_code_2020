@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -510,4 +511,43 @@ namespace AdventOfCode
         };
     }
 
+    public static class ReadInputs
+    {
+        public static List<int> ReadInts(string path)
+        {
+            StreamReader reader = File.OpenText(path);
+            List<int> list = new List<int>();
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                list.AddRange(line.Split(',').Select(int.Parse).ToList());
+            }
+            return list;
+        }
+
+        public static List<long> ReadLongs(string path)
+        {
+            StreamReader reader = File.OpenText(path);
+            List<long> list = new List<long>();
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                list.AddRange(line.Split(',').Select(long.Parse).ToList());
+            }
+            return list;
+        }
+
+        public static List<string> ReadStrings(string path)
+        {
+            StreamReader reader = File.OpenText(path);
+            List<string> list = new List<string>();
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                list.Add(line);
+            }
+            return list;
+        }
+
+    }
 }

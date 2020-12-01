@@ -5,4 +5,8 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Include="..\AdventOfCode.cs" Link="AdventOfCode.cs" />
+  </ItemGroup>
+
 </Project>

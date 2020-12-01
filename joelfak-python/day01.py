@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 
 from helpfunctions import *
+
 import unittest, sys
 from functools import wraps
 from time import time
+
+import itertools
+import numpy
 
 def timing(f):
     @wraps(f)
@@ -18,21 +22,16 @@ def timing(f):
 
 @timing
 def part1(data):
-    data = list(data)
-    for element_a in data:
-        for element_b in data:
-            if element_a + element_b == 2020:
-                return element_a * element_b
+    for item in itertools.combinations(data, 2):
+        if sum(item) == 2020:
+            return numpy.prod(item)
     return 0
 
 @timing
 def part2(data):
-    data = list(data)
-    for element_a in data:
-        for element_b in data:
-            for element_c in data:
-                if element_a + element_b + element_c == 2020:
-                    return element_a * element_b * element_c
+    for item in itertools.combinations(data, 3):
+        if sum(item) == 2020:
+            return numpy.prod(item)
     return 0
 
 ## Unit tests ########################################################

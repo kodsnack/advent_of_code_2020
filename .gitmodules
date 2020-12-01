@@ -4,3 +4,6 @@
 [submodule "johan-oelrich-rust"]
 	path = johan-oelrich-rust
 	url = https://github.com/oelrich/advent-of-code-2020.git
+[submodule "tradfursten-kotlin"]
+	path = "tradfursten-kotlin"
+	url = "https://github.com/tradfursten/advent_of_code_2020"

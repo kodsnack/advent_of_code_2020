@@ -16,3 +16,6 @@
 [submodule "plux-erlang"]
 	path = plux-erlang
 	url = https://github.com/plux/advent2020.git
+[submodule "krig-rust"]
+	path = krig-rust
+	url = https://github.com/krig/aoc-2020.git

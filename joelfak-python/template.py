@@ -15,7 +15,7 @@ def part2(data):
 
 class TestDayXX(unittest.TestCase):
     def test_part1(self):
-        self.assertEqual(part1(1), 2)
+        self.assertEqual(part1(1), 0)
 
 ## Main ########################################################
 

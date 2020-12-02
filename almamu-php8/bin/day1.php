@@ -6,21 +6,24 @@
     $resultTwo = 0;
     $resultThree = 0;
 
-    array_walk ($lines, function (int $value) use ($lines, &$resultTwo, &$resultThree) {
-        array_walk ($lines, function (int $secondValue) use ($value, $lines, &$resultTwo, &$resultThree) {
+    foreach ($lines as $value)
+    {
+        foreach ($lines as $secondValue)
+        {
             $sum = $secondValue + $value;
 
             if ($sum == 2020)
                 $resultTwo = $secondValue * $value;
 
-            array_walk ($lines, function (int $thirdValue) use ($value, $secondValue, &$resultThree) {
+            foreach ($lines as $thirdValue)
+            {
                 $sum = $secondValue + $value + $thirdValue;
 
                 if ($sum == 2020)
                     $resultThree = $secondValue * $value * $thirdValue;
-            });
-        });
-    });
+            }
+        }
+    }
 
     if ($resultTwo == 0)
         die ("Cannot fix your expenses report, are you sure you added the correct file?");
@@ -28,5 +31,5 @@
     if ($resultThree == 0)
         die ("Cannot fix your expenses report, there is no extra number");
 
-    echo "Your expenses report answer is: " . $resultTwo . "\n";
-    echo "Your extra number is: " . $resultThree;
+    echo "Your expenses report answer is: {$resultTwo}\n";
+    echo "Your extra number is: {$resultThree}";

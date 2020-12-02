@@ -3,6 +3,7 @@
 #include <functional>
 #include <chrono>
 #include <iomanip>
+#include <sstream>
 
 #include "aoc.h"
 
@@ -16,10 +17,20 @@ int main() {
     {
         auto num = i + 1;
         std::string filename = std::string("data/p") + (num < 10 ? "0" : "") + std::to_string(num) + ".txt";
-        std::fstream input(filename);
+        std::ifstream input(filename);
         if(input.good()) {
+            std::string str;
+            bool done = false;
+            while(!done) {
+                char buffer[1024];
+                auto cnt = input.readsome(buffer, 1024);
+                str.append(buffer, cnt);
+                done = !(input.good() && cnt > 0);
+            }
+
+            std::istringstream is(str);
             auto start = std::chrono::high_resolution_clock::now();
-            auto ret = problems[i](input);
+            auto ret = problems[i](is);
             auto end = std::chrono::high_resolution_clock::now();
 
             auto timeus = std::chrono::duration_cast<std::chrono::microseconds>(end-start);

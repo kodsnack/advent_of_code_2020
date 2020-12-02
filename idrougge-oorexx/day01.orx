@@ -1,0 +1,22 @@
+/* Advent of code 2020, day 1, part 1+2 in Open Object REXX */
+
+input = .stream~new('day01.txt')~arrayin
+numbers = .set~new
+
+loop i over input
+	numbers~put(i)
+end
+
+loop i over numbers until numbers~hasItem(2020 - i)
+	nop
+end
+say (2020 - i) * i
+
+loop i over numbers
+	loop j over numbers
+		if numbers~hasItem(2020 - i - j) then do
+			say i * j * (2020 - i - j)
+			leave i
+		end
+	end
+end

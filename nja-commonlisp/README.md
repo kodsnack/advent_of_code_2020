@@ -1,3 +1,4 @@
+```
 CL-USER> (push "~/advent_of_code_2020/nja-commonlisp/" ql:*local-project-directories*)
 ("~/advent_of_code_2020/nja-commonlisp/")
 CL-USER> (ql:quickload "advent-of-code")
@@ -19,4 +20,5 @@ ALL-TESTS (Suite)
 
 T
 (#<test-run of ALL-TESTS: 4 tests, 4 assertions, 0 failures in 0.172 sec>)
-CL-USER> 
+CL-USER>
+```

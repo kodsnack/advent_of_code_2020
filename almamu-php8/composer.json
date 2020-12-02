@@ -1,0 +1,17 @@
+{
+    "name": "adventofcode/almamu-php8",
+    "description": "Solutions on PHP 8 for the different advent of code challenges",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Alexis Maiquez",
+            "email": "almamu@almamu.com"
+        }
+    ],
+    "require": {
+        "php": "^8.0"
+    },
+    "autoload": {
+        "classmap": ["src/"]
+    }
+}

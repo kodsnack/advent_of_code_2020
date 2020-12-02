@@ -1,0 +1,7 @@
+#!/bin/sh
+STATUS=0
+for file in $(git diff --diff-filter=d --name-only --cached --relative|grep ".rs\$"); do
+	rustfmt --check $file || STATUS=1
+	rustfmt $file
+done
+exit $STATUS

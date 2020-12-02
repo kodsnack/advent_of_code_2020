@@ -3,22 +3,7 @@
 from helpfunctions import *
 
 import unittest, sys
-from functools import wraps
-from time import time
-
-import itertools
-import numpy
-
-def timing(f):
-    @wraps(f)
-    def wrap(*args, **kw):
-        ts = time()
-        result = f(*args, **kw)
-        te = time()
-        print('Execution of:%r took: %2.4f sec' % \
-          (f.__name__, te-ts))
-        return result
-    return wrap
+import itertools, numpy
 
 def find_parts(data, num_elements, expected_sum):
     for item in itertools.combinations(data, num_elements):
@@ -38,7 +23,7 @@ def part2(data):
 
 class TestDay01(unittest.TestCase):
     def test_find_parts_2_elements(self):
-        self.assertEqual(find_parts([1721, 979, 366, 299, 675, 1456], 4, 2020), (1721, 299))
+        self.assertEqual(find_parts([1721, 979, 366, 299, 675, 1456], 2, 2020), (1721, 299))
 
     def test_find_parts_3_elements(self):
         self.assertEqual(find_parts([1721, 979, 366, 299, 675, 1456], 3, 2020), (979, 366, 675))

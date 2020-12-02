@@ -23,9 +23,27 @@ def readFile(filename):
                 break
             yield data.strip()
 
+def parseInts(data):
+    return map(lambda line: int(line), data)
+
 def getIntsFromFile(filename):
-    return map(lambda line: int(line), readFile(filename))
+    return parseInts(readFile(filename))
+
+def parseTuples(data):
+    return(line.split(': ') for line in data)
 
 def getTuplesFromFile(filename):
-    gen = (line.split(': ') for line in readFile(filename))
-    return gen
+    return parseTuples(readFile(filename))
+
+## Unit tests ########################################################
+
+class TestHelpFunctions(unittest.TestCase):
+    def testParseInts(self):
+        fileData = ["1535", "1908", "1783"]
+        expectedRes = [1535, 1908, 1783]
+        self.assertEqual(list(parseInts(line for line in fileData)), expectedRes)
+
+    def testParseTuples(self):
+        fileData = ["9-12 q: qqqxhnhdmqqqqjz", "12-16 z: zzzzzznwlzzjzdzf", "4-7 s: sssgssw"]
+        expectedRes = [["9-12 q", "qqqxhnhdmqqqqjz"], ["12-16 z", "zzzzzznwlzzjzdzf"], ["4-7 s", "sssgssw"]]
+        self.assertEqual(list(parseTuples(line for line in fileData)), expectedRes)

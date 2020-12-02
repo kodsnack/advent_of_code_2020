@@ -5,15 +5,11 @@ def get_input():
 
 
 def is_password_correct_a(line):
-    policy, passw = line.split(":")
-    limits, letter = policy.split()
+    limits, letter, passw = line.split()
+    letter = letter[0]
     lower, upper = limits.split("-")
-    return check_password_a(passw, letter, int(upper), int(lower))
 
-
-def check_password_a(passw, letter, upper, lower):
-    times = passw.count(letter)
-    return times >= lower and times <= upper
+    return int(lower) <= passw.count(letter) <= int(upper)
 
 
 def how_many_valid_a():
@@ -29,19 +25,10 @@ print(how_many_valid_a())
 
 
 def is_password_correct_b(line):
-    policy, passw = line.split(":")
-    limits, letter = policy.split()
+    limits, letter, passw = line.split()
+    letter = letter[0]
     first, second = limits.split("-")
-    return check_password_b(passw.strip(), letter, int(first), int(second))
-
-
-def check_password_b(passw, letter, first, second):
-    c = 0
-    if passw[first - 1] == letter:
-        c += 1
-    if passw[second - 1] == letter:
-        c += 1
-    return c == 1
+    return (passw[int(first) - 1] == letter) ^ (passw[int(second) - 1] == letter)
 
 
 def how_many_valid_b():

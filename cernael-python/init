@@ -1,0 +1,12 @@
+#!/bin/bash
+
+day=$1
+f=$day"a.py"
+if [ -f $f ]
+then
+  echo 'file already exists'
+else
+  sed "s/£/$day/g" template.py > $f
+  firefox "https://adventofcode.com/2020/day/$day/input"
+  firefox "https://adventofcode.com/2020/day/$day"
+fi

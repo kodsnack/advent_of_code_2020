@@ -37,9 +37,9 @@ int parseLine(const string& line)
 */
 }
 
-vector<int> parseLines(const vector<string>& lines)
+auto parseLines(const vector<string>& lines)
 {
-	vector<int> parsedLines;
+	vector<decltype(parseLine(declval<string>()))> parsedLines;
 	for(auto& line : lines)
 	{
 		parsedLines.push_back(parseLine(line));

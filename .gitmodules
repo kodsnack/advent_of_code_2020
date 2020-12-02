@@ -13,3 +13,6 @@
 [submodule "LinAGKar-rust"]
 	path = LinAGKar-rust
 	url = https://github.com/LinAGKar/advent-of-code-2020-rust.git
+[submodule "plux-erlang"]
+	path = plux-erlang
+	url = https://github.com/plux/advent2020.git

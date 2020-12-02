@@ -24,4 +24,8 @@ def readFile(filename):
             yield data.strip()
 
 def getIntsFromFile(filename):
-    return map(lambda x: int(x), readFile(filename))
+    return map(lambda line: int(line), readFile(filename))
+
+def getTuplesFromFile(filename):
+    gen = (line.split(': ') for line in readFile(filename))
+    return gen

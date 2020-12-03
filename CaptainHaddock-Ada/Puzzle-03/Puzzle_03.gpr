@@ -1,0 +1,17 @@
+project Puzzle_0 is
+
+   for Languages use ("Ada");
+   for Main use ("src/Puzzle_03.adb");
+
+   for Create_Missing_Dirs use "True";
+   for Source_Dirs use ("src/**");  
+   for Object_Dir use ".build/obj";
+   for Exec_Dir use ".build/bin";
+   
+ 
+   package Naming is
+      for Casing use "mixedcase";
+   end Naming;
+
+end Puzzle_03;
+

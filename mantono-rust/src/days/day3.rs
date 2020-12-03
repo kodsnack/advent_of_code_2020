@@ -9,7 +9,7 @@ fn transform(input: String) -> Vec<Row> {
         .map(|line| line.trim())
         .filter(|line| line.len() > 0)
         .map(|row| Row {
-            line: row.trim().to_string(),
+            line: row.to_string(),
         })
         .collect()
 }

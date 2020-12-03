@@ -52,7 +52,6 @@ pub fn second(input: String) -> String {
     offsets
         .iter()
         .map(|(x, y)| found_trees(&map, *x, *y))
-        .inspect(|found| println!("{}", found))
         .product::<usize>()
         .to_string()
 }

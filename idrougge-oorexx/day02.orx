@@ -1,0 +1,23 @@
+/* Advent of code 2020, day 2, part 1+2 in Open Object REXX */
+
+file = .stream~new('day02.txt')
+input = file~arrayin
+
+part_1:
+valid = 0
+loop line over input
+    parse var line min '-' max letter':' password .
+    count = password~countstr(letter)
+    if count >= min & count <= max then valid += 1
+end
+
+say valid
+
+part_2:
+valid = 0
+loop line over input
+    parse var line pos1 '-' pos2 letter':' password .
+    if password[pos1] = letter && password[pos2] = letter then valid += 1
+end
+
+say valid

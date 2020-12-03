@@ -21,6 +21,9 @@ def fileParse(inp, lineparser=lineParse,
 
 ## End of header boilerplate ###################################################
 
+from functools import reduce
+from operator import mul
+
 def parseWood(lines):
    d = dict()
    for lidx, line in enumerate(lines):
@@ -46,10 +49,8 @@ def part1(pinp):
 
 def part2(pinp):
    d = parseWood(pinp)
-   p = 1
-   for deltax, deltay in ((1, 1), (3, 1), (5, 1), (7, 1), (1, 2)):
-      p *= traverse(d, deltax, deltay)
-   return p
+   return reduce(mul, (traverse(d, dx, dy)
+                       for dx, dy in ((1, 1), (3, 1), (5, 1), (7, 1), (1, 2))))
 
 ## Start of footer boilerplate #################################################
 

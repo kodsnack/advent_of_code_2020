@@ -22,3 +22,6 @@
 [submodule "mlonn-go"]
 	path = mlonn-go
 	url = git@github.com:mlonn/adventofcode-2020.git
+[submodule "prositen-python"]
+	path = prositen-python
+	url = https://github.com/prositen/advent-of-code

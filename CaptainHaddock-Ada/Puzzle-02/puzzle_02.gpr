@@ -1,7 +1,7 @@
 project Puzzle_02 is
 
    for Languages use ("Ada");
-   for Main use ("Puzzle_02.adb");
+   for Main use ("src/Puzzle_02_UTF8.adb");
 
    for Create_Missing_Dirs use "True";
    for Source_Dirs use ("src/**");  

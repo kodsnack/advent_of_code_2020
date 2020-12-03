@@ -24,18 +24,20 @@ namespace day02
             StreamReader reader = File.OpenText(path);
             List<DbEntry> list = new List<DbEntry>();
             string line;
-            Regex parts = new Regex(@"^(\d+)-(\d+) ([a-z])\: ([a-z]+)");
+            Regex parts = new Regex(@"^(\d+)-(\d+) (\w)\: (\w+)");
             while ((line = reader.ReadLine()) != null)
             {
                 MatchCollection matches = parts.Matches(line);
                 if (matches.Count > 0)
                 {
                     GroupCollection groups = matches[0].Groups;
-                    DbEntry d = new DbEntry();
-                    d.n1 = int.Parse(groups[1].Value);
-                    d.n2 = int.Parse(groups[2].Value);
-                    d.c = groups[3].Value[0];
-                    d.data = groups[4].Value;
+                    DbEntry d = new DbEntry
+                    {
+                        n1 = int.Parse(groups[1].Value),
+                        n2 = int.Parse(groups[2].Value),
+                        c = groups[3].Value[0],
+                        data = groups[4].Value
+                    };
                     list.Add(d);
                 }
             }
@@ -49,13 +51,15 @@ namespace day02
             string line;
             while ((line = reader.ReadLine()) != null)
             {
-                DbEntry d = new DbEntry();
                 string[] s = line.Split(' ').ToArray();
                 string[] t = s[0].Split('-').ToArray();
-                d.n1 = int.Parse(t[0]);
-                d.n2 = int.Parse(t[1]);
-                d.c = s[1][0];
-                d.data = s[2];
+                DbEntry d = new DbEntry
+                {
+                    n1 = int.Parse(t[0]),
+                    n2 = int.Parse(t[1]),
+                    c = s[1][0],
+                    data = s[2]
+                };
                 list.Add(d);
             }
             return list;

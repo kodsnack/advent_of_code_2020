@@ -15,44 +15,24 @@ fn transform(input: String) -> Vec<Row> {
 }
 
 fn found_trees(map: &Vec<Row>, x_inc: usize, y_inc: usize) -> usize {
-    let mut pos = Pos::new();
+    let mut x = 0;
+    let mut y = 0;
     let mut found_trees = 0;
 
     loop {
-        pos.inc_x(x_inc);
-        pos.inc_y(y_inc);
+        x += x_inc;
+        y += y_inc;
 
-        let row: &Row = match map.get(pos.y) {
+        let row: &Row = match map.get(y) {
             None => break,
             Some(row) => row,
         };
-        if row.has_tree(pos.x) {
+        if row.has_tree(x) {
             found_trees += 1
         }
     }
 
     found_trees
-}
-
-struct Pos {
-    pub x: usize,
-    pub y: usize,
-}
-
-impl Pos {
-    fn new() -> Self {
-        Pos { x: 0, y: 0 }
-    }
-
-    fn inc_x(&mut self, steps: usize) -> &mut Self {
-        self.x += steps;
-        self
-    }
-
-    fn inc_y(&mut self, steps: usize) -> &mut Self {
-        self.y += steps;
-        self
-    }
 }
 
 struct Row {

@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
 
 from helpfunctions import *
-import unittest, sys
+import unittest, sys, numpy, functools
 from collections import namedtuple
 
 MapPosition = namedtuple('MapPosition', ['x', 'y', 'tree'])
 
 def getNextMapPosition(worldmap, currentPositition, deltaX, deltaY):
     # Raises IndexError when the end of the map is reached
-    newX = currentPositition.x + deltaX
-    if newX >= len(worldmap[0]):
-        newX -= len(worldmap[0])
+    newX = (currentPositition.x + deltaX) % len(worldmap[0])
     newY = currentPositition.y + deltaY
     return MapPosition(newX, newY, worldmap[newY][newX] == '#')
 
@@ -31,7 +29,15 @@ def part1(data):
 
 @timing
 def part2(data):
-    return 0
+    worldmap = list(data)
+    slopesToTest = [(1, 1),
+                    (3, 1),
+                    (5, 1),
+                    (7, 1),
+                    (1, 2)]
+    m = map(lambda x: traverseMap(worldmap, x[0], x[1]), slopesToTest)
+    # return numpy.prod(list(m))
+    return functools.reduce(lambda a,b : a*b, m)
 
 ## Unit tests ########################################################
 
@@ -78,11 +84,26 @@ class TestDayXX(unittest.TestCase):
         self.assertEqual(getNextMapPosition(self.worldmap, currentPosition, 3, 1),
                          expectedPosition)
 
-    def testTraverseMap(self):
+    def testTraverseMap_1_1(self):
+        self.assertEqual(traverseMap(self.worldmap, 1, 1), 2)
+
+    def testTraverseMap_3_1(self):
         self.assertEqual(traverseMap(self.worldmap, 3, 1), 7)
+
+    def testTraverseMap_5_1(self):
+        self.assertEqual(traverseMap(self.worldmap, 5, 1), 3)
+
+    def testTraverseMap_7_1(self):
+        self.assertEqual(traverseMap(self.worldmap, 7, 1), 4)
+
+    def testTraverseMap_1_2(self):
+        self.assertEqual(traverseMap(self.worldmap, 1, 2), 2)
 
     def test_part1(self):
         self.assertEqual(part1(self.worldmap), 7)
+
+    def test_part2(self):
+        self.assertEqual(part2(self.worldmap), 336)
 
 ## Main ########################################################
 

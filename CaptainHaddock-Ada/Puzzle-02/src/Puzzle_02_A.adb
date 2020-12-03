@@ -1,8 +1,12 @@
 with Password_Database; use Password_Database;
 
 with Ada.Command_Line; use Ada.Command_Line;
-with Ada.Wide_Wide_Text_IO; use Ada.Wide_Wide_Text_IO;
+with Ada.Text_IO; use Ada.Text_IO;
 
+-- Each line gives the password policy and then the password. 
+-- The password policy indicates the lowest and highest number of times a given letter 
+-- must appear for the password to be valid. 
+-- For example, 1-3 a means that the password must contain a at least 1 time and at most 3 times.
 
 procedure Puzzle_02_A is
 
@@ -10,7 +14,7 @@ procedure Puzzle_02_A is
     Count_Good_Passwords : Natural := 0;
 
 --  DAT_File_Name : String(1..2**15); -- 32_768
-    Database : File_Type;
+    Database : Ada.Text_IO.File_Type;
     Missing_FileName : exception;
 
 
@@ -25,11 +29,12 @@ begin
          Name => Argument(1));
 
     while not end_of_file(Database) loop
-        -- put(Standard_Error,"."); -- some trace breadcum ...
         some_Password := get_Next_Password(Database);
         if is_OK(some_Password) then
             put(Standard_Error,"!"); -- some trace breadcum ...
             Count_Good_Passwords := Count_Good_Passwords +1;
+        else
+            put(Standard_Error,"."); -- some trace breadcum ...
         end if;
     end loop;
 

@@ -4,5 +4,6 @@ env/
 .pytest_cache/
 .ipynb_checkpoints
 .mypy_cache/
+*.egg-info
 
 .vscode/

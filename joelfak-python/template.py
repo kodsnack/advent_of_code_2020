@@ -3,20 +3,19 @@
 from helpfunctions import *
 import unittest, sys
 
-def test_calculate_something(data):
-    return 2
-
+@timing
 def part1(data):
     return 0
 
+@timing
 def part2(data):
     return 0
 
 ## Unit tests ########################################################
 
 class TestDayXX(unittest.TestCase):
-    def test_calculate_something(self):
-        self.assertEqual(test_calculate_something(1), 2)
+    def test_part1(self):
+        self.assertEqual(part1(1), 0)
 
 ## Main ########################################################
 

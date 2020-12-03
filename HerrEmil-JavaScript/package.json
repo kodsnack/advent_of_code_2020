@@ -1,0 +1,20 @@
+{
+  "name": "herremil-javascript",
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=14"
+  },
+  "engineStrict": true,
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index",
+    "test:w": "mocha *.spec.js -w",
+    "test": "mocha *.spec.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^8.2.1"
+  }
+}

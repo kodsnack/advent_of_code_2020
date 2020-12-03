@@ -2,12 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 using AdventOfCode;
-//using Position = AdventOfCode.GenericPosition2D<int>;
 
 namespace day03
 {
@@ -18,15 +14,41 @@ namespace day03
 
         static Object PartA()
         {
-            List<int> input = ReadInputs.ReadInts(inputPath);
+            List<string> input = ReadInputs.ReadStrings(inputPath);
             int ans = 0;
+            int c = 0;
+            for (int r = 0; r < input.Count; r++)
+            {
+                if (input[r][c % input[0].Count()] == '#')
+                    ans++;
+                c += 3;
+            }
             Console.WriteLine("Part A: Result is {0}", ans);
             return ans;
         }
 
+        static int calcTrees(List<string> input, int radd, int cadd)
+        {
+            int a = 0;
+            int c = 0;
+            for (int r = 0; r < input.Count; r += radd)
+            {
+                if (input[r][c % input[0].Count()] == '#')
+                    a++;
+                c += cadd;
+            }
+            return a;
+        }
+
         static Object PartB()
         {
-            int ans = 0;
+            List<string> input = ReadInputs.ReadStrings(inputPath);
+            int a = 0;
+            long ans = calcTrees(input, 1, 1);
+            ans *= calcTrees(input, 1, 3);
+            ans *= calcTrees(input, 1, 5);
+            ans *= calcTrees(input, 1, 7);
+            ans *= calcTrees(input, 2, 1);
             Console.WriteLine("Part B: Result is {0}", ans);
             return ans;
         }
@@ -40,8 +62,8 @@ namespace day03
 
         public static bool MainTest()
         {
-            int a = 42;
-            int b = 4711;
+            int a = 218;
+            long b = 3847183340;
             return (PartA().Equals(a)) && (PartB().Equals(b));
         }
     }

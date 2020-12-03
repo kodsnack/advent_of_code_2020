@@ -34,8 +34,10 @@ package Password_Database_UTF8 is
    package Max_occurrence_IO is new Integer_IO(Integer); use Max_occurrence_IO;
 
 
-   function get_Next_Password(Database_File : Ada.Wide_Wide_Text_IO.File_Type) return Password_Item;
+   function get_Next_Password(Database_File : File_Type) return Password_Item;
 
-   function is_OK(Password : Password_Item) return Boolean;
+   function is_OK_Rule_1(Password : Password_Item) return Boolean;
+   function is_OK_Rule_2(Password : Password_Item) return Boolean;
+
 
 end Password_Database_UTF8;

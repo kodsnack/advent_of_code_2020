@@ -18,9 +18,13 @@
 #include <unordered_set>
 #include <utility>
 
+#define CATCH_CONFIG_RUNNER
+#include <catch2/catch.hpp>
+
 using namespace westerstrom;
 using namespace std;
 using namespace std::string_literals;
+using std::filesystem::path;
 
 int parseLine(const string& line)
 {
@@ -47,24 +51,36 @@ auto parseLines(const vector<string>& lines)
 	return parsedLines;
 }
 
-void solve_part1()
+auto solve_part1(const path& inputFile)
 {
 	auto parsedInput = parseLines(readLines(string(inputFile)));
 	for(auto x : parsedInput)
 	{
 	}
 
-	cout << dayName << " - part 1: " << endl;
+	return -1;
 }
 
-void solve_part2()
+auto solve_part2(const path& inputFile)
 {
-	cout << dayName << " - part 2: " << endl;
+	return -1;
 }
 
-int main()
+TEST_CASE("examples-part1", "[solve_part1]")
 {
-	solve_part1();
-	solve_part2();
-	return 0;
+	REQUIRE(solve_part1(path(dataDir) / path("inputExample1.txt")) == -1);
+}
+
+TEST_CASE("examples-part2", "[solve_part2]")
+{
+	REQUIRE(solve_part2(path(dataDir) / path("inputExample1.txt")) == -1);
+}
+
+int main(int argc, char* argv[])
+{
+	int result = Catch::Session().run(argc, argv);
+
+	cout << dayName << " - part 1: " << solve_part1(path(dataDir) / path("input.txt")) << "\n";
+	cout << dayName << " - part 2: " << solve_part2(path(dataDir) / path("input.txt")) << "\n";
+	return result;
 }

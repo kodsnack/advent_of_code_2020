@@ -5,10 +5,11 @@
 #include <regex>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 namespace westerstrom
 {
-	inline std::vector<std::string> readLines(const std::string& inputFile)
+	inline std::vector<std::string> readLines(const std::filesystem::path& inputFile)
 	{
 		std::vector<std::string> lines;
 		std::fstream f(inputFile);
@@ -24,6 +25,11 @@ namespace westerstrom
 			}
 		}
 		return lines;
+	}
+
+	inline std::vector<std::string> readLines(const std::string& inputFile)
+	{
+		return readLines(std::filesystem::path(inputFile));
 	}
 
 	inline std::vector<std::string> split(const std::regex& re, const std::string& subject)

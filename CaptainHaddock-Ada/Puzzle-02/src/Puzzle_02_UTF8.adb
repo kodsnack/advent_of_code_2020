@@ -15,7 +15,7 @@ use Ada.Strings.UTF_Encoding;
 -- must appear for the password to be valid. 
 -- For example, 1-3 a means that the password must contain a at least 1 time and at most 3 times.
 
-procedure Puzzle_02_A_UTF8 is
+procedure Puzzle_02_UTF8 is
 
     some_Password : Password_Item;
     Count_Good_Passwords_Rule_1, Count_Good_Passwords_Rule_2 : Natural := 0;
@@ -79,4 +79,4 @@ exception
         put_line(Standard_Error,"Error reading the structure of some record in the file !");
         set_Exit_Status(Failure);
         raise;
-end Puzzle_02_A_UTF8;
+end Puzzle_02_UTF8;

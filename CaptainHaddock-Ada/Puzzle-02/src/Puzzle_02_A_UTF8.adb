@@ -18,10 +18,10 @@ use Ada.Strings.UTF_Encoding;
 procedure Puzzle_02_A_UTF8 is
 
     some_Password : Password_Item;
-    Count_Good_Passwords : Natural := 0;
+    Count_Good_Passwords_Rule_1, Count_Good_Passwords_Rule_2 : Natural := 0;
 
 --  DAT_File_Name : String(1..2**15); -- 32_768
-    Database : Ada.Wide_Wide_Text_IO.File_Type;
+    Database : File_Type;
     Missing_FileName : exception;
 
 
@@ -31,39 +31,52 @@ begin
         raise Missing_FileName;
     end if;
 
-    Ada.Wide_Wide_Text_IO.open(File => Database,
-         Mode => Ada.Wide_Wide_Text_IO.In_File,
+    open(File => Database,
+         Mode => In_File,
          Name => Argument(1));
 
-    while not Ada.Wide_Wide_Text_IO.end_of_file(Database) loop
+    while not end_of_file(Database) loop
         some_Password := get_Next_Password(Database);
-        if is_OK(some_Password) then
-            put(Standard_Error,"!"); -- some trace breadcum ...
-            Count_Good_Passwords := Count_Good_Passwords +1;
+
+        -- Verify first rule
+        if is_OK_Rule_1(some_Password) then
+            -- put(Standard_Error,"!"); -- some trace breadcum ...
+            Count_Good_Passwords_Rule_1 := Count_Good_Passwords_Rule_1 +1;
         else
-            put(Standard_Error,"."); -- some trace breadcum ...
+            null;
+            -- put(Standard_Error,"."); -- some trace breadcum ...
+        end if;
+
+        -- Verify second rule
+        if is_OK_Rule_2(some_Password) then
+            -- put(Standard_Error,"!"); -- some trace breadcum ...
+            Count_Good_Passwords_Rule_2 := Count_Good_Passwords_Rule_2 +1;
+        else
+            null;
+            -- put(Standard_Error,"."); -- some trace breadcum ...
         end if;
     end loop;
 
     New_Line;
-    Ada.Wide_Wide_Text_IO.Put_Line("Number of good Passwords detected =" & Natural'Wide_Wide_Image(Count_Good_Passwords));
+    Put_Line("Number of good Passwords detected according to Rule #1 =" & Natural'Wide_Wide_Image(Count_Good_Passwords_Rule_1));
+    Put_Line("Number of good Passwords detected according to Rule #2 =" & Natural'Wide_Wide_Image(Count_Good_Passwords_Rule_2));
 
-    Ada.Wide_Wide_Text_IO.close(Database);
+    close(Database);
 
     set_Exit_Status(Success);
 
 exception
     When Missing_FileName =>
-        Ada.Wide_Wide_Text_IO.put_line("usage: "& Wide_Wide_Strings.Decode(Strings.Encode(Command_Name,UTF_8),UTF_8) & " Password_File_Name");
+        put_line("usage: "& Wide_Wide_Strings.Decode(Strings.Encode(Command_Name,UTF_8),UTF_8) & " Password_File_Name");
         set_Exit_Status(Failure);
     
     when Status_Error =>
-        Ada.Wide_Wide_Text_IO.put_line(Ada.Wide_Wide_Text_IO.Standard_Error,"File '"& Wide_Wide_Strings.Decode(Strings.Encode(Argument(1),UTF_8),UTF_8) & "' not found!");
+        put_line(Standard_Error,"File '"& Wide_Wide_Strings.Decode(Strings.Encode(Argument(1),UTF_8),UTF_8) & "' not found!");
         set_Exit_Status(Failure);
         raise;
   
     when others => 
-        put_line(Standard_Error,"No results!");
+        put_line(Standard_Error,"Error reading the structure of some record in the file !");
         set_Exit_Status(Failure);
         raise;
 end Puzzle_02_A_UTF8;

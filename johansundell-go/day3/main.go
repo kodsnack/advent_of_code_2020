@@ -22,13 +22,13 @@ func (s slope) hasTree(y, x int) bool {
 }
 
 func (s slope) travel(mY, mX int) (trees int) {
-	x := 0
-	for y, _ := range s.mapData {
+	y, x := 0, 0
+	for y < len(s.mapData) {
 		if s.hasTree(y, x) {
 			trees++
 		}
 		x += mX
-		y += mY - 1
+		y += mY
 	}
 	return
 }
@@ -37,8 +37,5 @@ func main() {
 	data, _ := adventofcode2017.GetInput("day3.txt")
 	s := slope{mapData: strings.Split(data, "\n")}
 	fmt.Println(s.travel(1, 3))
-	fmt.Println(s.travel(1, 1))
-	fmt.Println(s.travel(1, 5))
-	fmt.Println(s.travel(1, 7))
-	fmt.Println(s.travel(2, 1))
+	fmt.Println(s.travel(1, 1) * s.travel(1, 3) * s.travel(1, 5) * s.travel(1, 7) * s.travel(2, 1))
 }

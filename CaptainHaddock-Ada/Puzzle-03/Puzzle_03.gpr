@@ -1,4 +1,4 @@
-project Puzzle_0 is
+project Puzzle_03 is
 
    for Languages use ("Ada");
    for Main use ("src/Puzzle_03.adb");

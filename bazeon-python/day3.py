@@ -37,4 +37,4 @@ def get_trees(ymove, xmove):
 
 
 print(solve_a())
-print(solve_b())
+print(solve_b()

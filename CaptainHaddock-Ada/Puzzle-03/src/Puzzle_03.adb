@@ -1,82 +1,105 @@
-with Password_Database_UTF8; use Password_Database_UTF8;
+With Forest;
+Use Forest;
 
 with Ada.Command_Line; use Ada.Command_Line;
-
-with Ada.Wide_Wide_Text_IO; use Ada.Wide_Wide_Text_IO;
-
-with Ada.Strings.UTF_Encoding; 
-with Ada.Strings.UTF_Encoding.Strings;
-with Ada.Strings.UTF_Encoding.Wide_Wide_Strings;
-use Ada.Strings.UTF_Encoding;
+with Ada.Text_IO; use Ada.Text_IO;
 
 
--- Each line gives the password policy and then the password. 
--- The password policy indicates the lowest and highest number of times a given letter 
--- must appear for the password to be valid. 
--- For example, 1-3 a means that the password must contain a at least 1 time and at most 3 times.
+procedure Puzzle_03 is
 
-procedure Puzzle_02_UTF8 is
-
-    some_Password : Password_Item;
-    Count_Good_Passwords_Rule_1, Count_Good_Passwords_Rule_2 : Natural := 0;
-
+    myMap : Forest.Map;
+--    NS_Line_index, WE_Row_index : Forest.Dimension ;
 --  DAT_File_Name : String(1..2**15); -- 32_768
     Database : File_Type;
     Missing_FileName : exception;
 
 
+    type Step_increment is record 
+        to_east  : Natural range 0 .. Forest.East_border;
+        to_South : Natural range 0 .. Forest.South_border;
+    end record;
+
+    type Test_Slope is record
+        Step : Step_increment;
+        Nb_trees : Natural := 0;
+    end record;
+       
+    type Test_Slopes is array (1.. 5) of Test_Slope;
+
+    Test_Cases : Test_Slopes;
+    Magic_Number : Long_Integer := 1;
+    
+    -- ==============================================================
+    function get_Nb_Trees(This_map: Map ; for_slope : Step_increment) return Natural is
+
+        East_Location  : WE_Dimension := NW_Origin;
+        South_Location : NS_Dimension := NW_Origin;
+
+        Nb_trees : natural := 0;
+    
+    begin
+        -- Start at origin, has the origin location a Tree ?
+        if This_map (NW_Origin, NW_Origin) = TREE then
+            Nb_trees := 1;
+        end if;
+
+        -- go through the forest until you meet the South border, while counting trees on your traversal
+        while South_Location + for_slope.to_South <= Forest.South_border loop
+               -- East_Location  := WE_Dimension(WE_infinity'Mod(East_Location + for_slope.to_East -1) +1); -- /!\ modulus starts at 0.
+
+                if East_Location + for_slope.to_East >  East_border then
+                   East_Location := East_Location + for_slope.to_East - East_border;
+                else
+                   East_Location := East_Location + for_slope.to_East;
+                end if;
+                South_Location := South_Location + for_slope.to_South;
+                --put("X="&Integer'Image(East_Location) & "Y=" & Integer'Image(South_Location)&"/");
+                if This_map (East_Location, South_Location) = Forest.Tree then
+                    Nb_Trees := Nb_Trees +1;
+                end if;
+        end loop;
+        return Nb_Trees;
+    end get_Nb_Trees;
+
+-- ----------------------    
 begin
+    Test_Cases(1) := (Step => (to_east => 1, to_South => 1), Nb_trees => 0);
+    Test_Cases(2) := (Step => (to_east => 3, to_South => 1), Nb_trees => 0);
+    Test_Cases(3) := (Step => (to_east => 5, to_South => 1), Nb_trees => 0);
+    Test_Cases(4) := (Step => (to_east => 7, to_South => 1), Nb_trees => 0);
+    Test_Cases(5) := (Step => (to_east => 1, to_South => 2), Nb_trees => 0);
+
     -- get the filename
     if Argument_Count /= 1 then
         raise Missing_FileName;
     end if;
 
-    open(File => Database,
-         Mode => In_File,
-         Name => Argument(1));
+    -- get the Tree-map
+    myMap := Forest.get_Map(Argument(1));
 
-    while not end_of_file(Database) loop
-        some_Password := get_Next_Password(Database);
+    new_Line;
+    for i in Test_Slopes'Range loop
 
-        -- Verify first rule
-        if is_OK_Rule_1(some_Password) then
-            -- put(Standard_Error,"!"); -- some trace breadcum ...
-            Count_Good_Passwords_Rule_1 := Count_Good_Passwords_Rule_1 +1;
-        else
-            null;
-            -- put(Standard_Error,"."); -- some trace breadcum ...
-        end if;
-
-        -- Verify second rule
-        if is_OK_Rule_2(some_Password) then
-            -- put(Standard_Error,"!"); -- some trace breadcum ...
-            Count_Good_Passwords_Rule_2 := Count_Good_Passwords_Rule_2 +1;
-        else
-            null;
-            -- put(Standard_Error,"."); -- some trace breadcum ...
-        end if;
+        Test_Cases(i).Nb_Trees := get_Nb_Trees(This_map => myMap, for_slope => Test_Cases(i).Step );
+        put_line("On slope"&Integer'Image(i)&", I'v encountered "& Test_Cases(i).Nb_trees'Image & " Trees." );
+        Magic_Number := Magic_number * Long_Integer(Test_Cases(i).Nb_Trees);
     end loop;
 
-    New_Line;
-    Put_Line("Number of good Passwords detected according to Rule #1 =" & Natural'Wide_Wide_Image(Count_Good_Passwords_Rule_1));
-    Put_Line("Number of good Passwords detected according to Rule #2 =" & Natural'Wide_Wide_Image(Count_Good_Passwords_Rule_2));
-
-    close(Database);
-
+    put_line("Magic number ="&Long_Integer'Image(Magic_Number) );
     set_Exit_Status(Success);
 
 exception
     When Missing_FileName =>
-        put_line("usage: "& Wide_Wide_Strings.Decode(Strings.Encode(Command_Name,UTF_8),UTF_8) & " Password_File_Name");
+        put_line("usage: "& Command_Name & " Tree-Map_file_name");
         set_Exit_Status(Failure);
     
     when Status_Error =>
-        put_line(Standard_Error,"File '"& Wide_Wide_Strings.Decode(Strings.Encode(Argument(1),UTF_8),UTF_8) & "' not found!");
+        put_line(Standard_Error,"file '"&Argument(1)&"' not found!");
         set_Exit_Status(Failure);
         raise;
   
     when others => 
-        put_line(Standard_Error,"Error reading the structure of some record in the file !");
+        put_line(Standard_Error,"Error when Reading the file !");
         set_Exit_Status(Failure);
         raise;
-end Puzzle_02_UTF8;
+end Puzzle_03;

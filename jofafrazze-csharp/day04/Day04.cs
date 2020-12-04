@@ -65,57 +65,56 @@ namespace day04
             foreach (var d in input)
             {
                 int n = 0;
-                if (d.ContainsKey("byr"))
+                foreach ((string k, string v) in d)
                 {
-                    int a = int.Parse(d["byr"]);
-                    if (a >= 1920 && a <= 2002)
-                        n++;
-                }
-                if (d.ContainsKey("iyr"))
-                {
-                    int a = int.Parse(d["iyr"]);
-                    if (a >= 2010 && a <= 2020)
-                        n++;
-                }
-                if (d.ContainsKey("eyr"))
-                {
-                    int a = int.Parse(d["eyr"]);
-                    if (a >= 2020 && a <= 2030)
-                        n++;
-                }
-                if (d.ContainsKey("hgt"))
-                {
-                    string s = d["hgt"];
-                    int a = 0;
-                    if (s.Length > 2)
-                        a = int.Parse(s.Remove(s.Length - 2));
-                    if (s.EndsWith("cm") && a >= 150 && a <= 193)
-                        n++;
-                    else if (s.EndsWith("in") && a >= 59 && a <= 76)
-                        n++;
-                }
-                if (d.ContainsKey("hcl"))
-                {
-                    string s = d["hcl"];
-                    if (s.Length == 7 && s[0] == '#')
+                    if (k == "byr")
                     {
-                        string hex = new string(s.Where(Uri.IsHexDigit).ToArray());
-                        if (hex.Length == 6)
+                        int a = int.Parse(v);
+                        if (a >= 1920 && a <= 2002)
                             n++;
                     }
-                }
-                if (d.ContainsKey("ecl"))
-                {
-                    string s = d["ecl"];
-                    if (s == "amb" || s == "blu" || s == "brn" || s == "gry" || s == "grn" || s == "hzl" || s == "oth")
-                        n++;
-                }
-                if (d.ContainsKey("pid"))
-                {
-                    string s = d["pid"];
-                    string dec = new string(s.Where(char.IsDigit).ToArray());
-                    if (dec.Length == 9)
-                        n++;
+                    else if (k == "iyr")
+                    {
+                        int a = int.Parse(v);
+                        if (a >= 2010 && a <= 2020)
+                            n++;
+                    }
+                    else if (k == "eyr")
+                    {
+                        int a = int.Parse(v);
+                        if (a >= 2020 && a <= 2030)
+                            n++;
+                    }
+                    else if (k == "hgt")
+                    {
+                        int a = 0;
+                        if (v.Length > 2)
+                            a = int.Parse(v.Remove(v.Length - 2));
+                        if (v.EndsWith("cm") && a >= 150 && a <= 193)
+                            n++;
+                        else if (v.EndsWith("in") && a >= 59 && a <= 76)
+                            n++;
+                    }
+                    else if (k == "hcl")
+                    {
+                        if (v.Length == 7 && v[0] == '#')
+                        {
+                            string hex = new string(v.Where(Uri.IsHexDigit).ToArray());
+                            if (hex.Length == 6)
+                                n++;
+                        }
+                    }
+                    else if (k == "ecl")
+                    {
+                        if (v == "amb" || v == "blu" || v == "brn" || v == "gry" || v == "grn" || v == "hzl" || v == "oth")
+                            n++;
+                    }
+                    else if (k == "pid")
+                    {
+                        string dec = new string(v.Where(char.IsDigit).ToArray());
+                        if (dec.Length == 9)
+                            n++;
+                    }
                 }
                 if (n >= 7)
                     ans++;

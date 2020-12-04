@@ -1,3 +1,12 @@
+-- ------------------------------------------------
+-- Author : William J. FRANCK
+-- e-Mail : william@sterna.io
+--
+-- Initial creation date : 2020-12-03
+-- ------------------------------------------------
+-- License : CC-BY-SA 
+-- ------------------------------------------------
+
 with Ada.Text_IO;
 use Ada.Text_IO;
 

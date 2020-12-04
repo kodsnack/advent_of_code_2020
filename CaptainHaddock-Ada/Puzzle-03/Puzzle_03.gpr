@@ -1,3 +1,11 @@
+-- ------------------------------------------------
+-- Author : William J. FRANCK
+-- e-Mail : william@sterna.io
+--
+-- Initial creation date : 2020-12-03
+-- ------------------------------------------------
+-- License : CC-BY-SA 
+-- ------------------------------------------------
 project Puzzle_03 is
 
    for Languages use ("Ada");

@@ -32,5 +32,5 @@
 	path = ygge-java
 	url = https://github.com/ygge/adventofcode2020
 [submodule "lemonad-r"]
-	path = lemonad-r
-	url = https://github.com/lemonad/advent-of-code.git
+ 	path = lemonad-r
+ 	url = https://github.com/lemonad/advent-of-code.git

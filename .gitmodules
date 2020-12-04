@@ -25,3 +25,6 @@
 [submodule "prositen-python"]
 	path = prositen-python
 	url = https://github.com/prositen/advent-of-code
+[submodule "odnoletkov-jq"]
+	path = odnoletkov-jq
+	url = https://github.com/odnoletkov/advent-of-code-2020-jq.git

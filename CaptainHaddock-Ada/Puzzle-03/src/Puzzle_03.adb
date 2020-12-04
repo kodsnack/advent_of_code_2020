@@ -1,3 +1,12 @@
+-- ------------------------------------------------
+-- Author : William J. FRANCK
+-- e-Mail : william@sterna.io
+--
+-- Initial creation date : 2020-12-03
+-- ------------------------------------------------
+-- License : CC-BY-SA 
+-- ------------------------------------------------
+
 With Forest;
 Use Forest;
 
@@ -26,7 +35,14 @@ procedure Puzzle_03 is
        
     type Test_Slopes is array (1.. 5) of Test_Slope;
 
-    Test_Cases : Test_Slopes;
+    Test_Cases : Test_Slopes := (
+     (Step => (to_east => 1, to_South => 1), Nb_trees => 0),
+     (Step => (to_east => 3, to_South => 1), Nb_trees => 0),
+     (Step => (to_east => 5, to_South => 1), Nb_trees => 0),
+     (Step => (to_east => 7, to_South => 1), Nb_trees => 0),
+     (Step => (to_east => 1, to_South => 2), Nb_trees => 0));
+
+
     Magic_Number : Long_Integer := 1;
     
     -- ==============================================================
@@ -63,12 +79,6 @@ procedure Puzzle_03 is
 
 -- ----------------------    
 begin
-    Test_Cases(1) := (Step => (to_east => 1, to_South => 1), Nb_trees => 0);
-    Test_Cases(2) := (Step => (to_east => 3, to_South => 1), Nb_trees => 0);
-    Test_Cases(3) := (Step => (to_east => 5, to_South => 1), Nb_trees => 0);
-    Test_Cases(4) := (Step => (to_east => 7, to_South => 1), Nb_trees => 0);
-    Test_Cases(5) := (Step => (to_east => 1, to_South => 2), Nb_trees => 0);
-
     -- get the filename
     if Argument_Count /= 1 then
         raise Missing_FileName;

@@ -27,10 +27,11 @@ func Test_Ex1(t *testing.T) {
 		p := newPassport(v)
 		if p.isValid() {
 			//fmt.Println("valid")
+			if p.isValidPart2() {
+				fmt.Println("valid part2")
+			}
 		}
-		if p.isValidPart2() {
-			fmt.Println("valid part2")
-		}
+
 		pp = append(pp, p)
 	}
 	t.Fail()

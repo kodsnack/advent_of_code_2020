@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -21,10 +22,8 @@ type passport struct {
 
 func newPassport(str string) (p passport) {
 	str = strings.ReplaceAll(str, "\n", " ")
-	//fmt.Println(str)
 	data := strings.Split(str, " ")
 	for _, v := range data {
-		//fmt.Println(v[0:3])
 		switch v[0:3] {
 		case "byr":
 			p.byr = v[4:]
@@ -44,7 +43,6 @@ func newPassport(str string) (p passport) {
 			p.cid = v[4:]
 		}
 	}
-	//fmt.Printf("%+v\n", p)
 	return
 }
 
@@ -80,18 +78,64 @@ func (p passport) isValidPart2() bool {
 		return false
 	}
 
+	if len(p.hgt) < 4 {
+		return false
+	}
+	htgType := p.hgt[len(p.hgt)-2:]
+	htg, err := strconv.Atoi(p.hgt[:len(p.hgt)-2])
+	if err != nil {
+		return false
+	}
+	switch htgType {
+	case "cm":
+		if htg < 150 || htg > 193 {
+			return false
+		}
+	case "in":
+		if htg < 59 || htg > 76 {
+			return false
+		}
+	default:
+		return false
+	}
+
+	if m, err := regexp.MatchString("^#[0-9a-f]{6}$", p.hcl); err != nil || !m {
+		return false
+	}
+
+	em := []string{"amb", "blu", "brn", "gry", "grn", "hzl", "oth"}
+	found := false
+	for _, v := range em {
+		if v == p.ecl {
+			found = true
+		}
+	}
+	if !found {
+		return false
+	}
+
+	if len(p.pid) != 9 {
+		return false
+	}
+	_, err = strconv.Atoi(p.pid)
+	if err != nil {
+		return false
+	}
 	return true
 }
 
 func main() {
 	input, _ := adventofcode2017.GetInput("day4.txt")
 	data := strings.Split(input, "\n\n")
-	noValid := 0
+	noValid, noValidPart2 := 0, 0
 	for _, v := range data {
 		p := newPassport(v)
 		if p.isValid() {
 			noValid++
+			if p.isValidPart2() {
+				noValidPart2++
+			}
 		}
 	}
-	fmt.Println(noValid)
+	fmt.Println(noValid, noValidPart2)
 }

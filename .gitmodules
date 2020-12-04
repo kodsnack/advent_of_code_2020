@@ -40,3 +40,6 @@
 [submodule "bjornin-python"]
 	path = bjornin-python
 	url = https://github.com/bjornin/adventofcode2020
+[submodule "Mango0x45-C-Awk"]
+	path = Mango0x45-C-Awk
+	url = https://github.com/Mango0x45/advent-of-code-2020.git

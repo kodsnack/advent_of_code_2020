@@ -37,3 +37,6 @@
 [submodule "heinerud-go-python"]
 	path = heinerud-go-python
 	url = https://github.com/heinerud/aoc20
+[submodule "bjornin-python"]
+	path = bjornin-python
+	url = https://github.com/bjornin/adventofcode2020

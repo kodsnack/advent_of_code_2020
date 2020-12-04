@@ -9,7 +9,7 @@
 
 int main() {
     std::vector<std::function<std::tuple<std::string,std::string>(std::istream&)>> problems
-            { p01, p02, p03 };
+            { p01, p02, p03, p04 };
 
     std::chrono::microseconds total_time{0};
 

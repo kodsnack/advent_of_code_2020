@@ -2,7 +2,7 @@ const { strictEqual } = require("assert");
 const {
   findPairWithSum2020,
   findTripleWithSum2020,
-  parseDay01Data,
+  parseData,
 } = require("./day-01");
 
 describe("Day 01 tests", () => {
@@ -12,7 +12,7 @@ describe("Day 01 tests", () => {
 299
 675
 1456`;
-  const data = parseDay01Data(testInput);
+  const data = parseData(testInput);
 
   it("should find a pair and multiply them", () => {
     strictEqual(findPairWithSum2020(data), 514579)

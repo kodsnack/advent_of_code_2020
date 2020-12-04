@@ -1,3 +1,11 @@
+-- ------------------------------------------------
+-- Author : William J. FRANCK
+-- e-Mail : william@sterna.io
+--
+-- Initial creation date : 2020-12-02 
+-- ------------------------------------------------
+-- License : CC-BY-SA 
+-- ------------------------------------------------
 with Password_Database_UTF8; use Password_Database_UTF8;
 
 with Ada.Command_Line; use Ada.Command_Line;

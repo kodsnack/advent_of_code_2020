@@ -28,3 +28,6 @@
 [submodule "odnoletkov-jq"]
 	path = odnoletkov-jq
 	url = https://github.com/odnoletkov/advent-of-code-2020-jq.git
+[submodule "ygge-java"]
+	path = ygge-java
+	url = https://github.com/ygge/adventofcode2020

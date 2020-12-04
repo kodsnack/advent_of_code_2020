@@ -20,9 +20,11 @@ const findTripleWithSum2020 = (input) => {
   }
 };
 
-const parseDay01Data = (string) =>
+const parseData = (string) =>
   string.split(/\r?\n/).map((number) => parseInt(number, 10));
 
 module.exports.findPairWithSum2020 = findPairWithSum2020;
 module.exports.findTripleWithSum2020 = findTripleWithSum2020;
-module.exports.parseDay01Data = parseDay01Data;
+module.exports.solve1 = findPairWithSum2020;
+module.exports.solve2 = findTripleWithSum2020;
+module.exports.parseData = parseData;

@@ -1,26 +1,24 @@
 package main
 
 import (
-    "bufio"
-    "fmt"    
-	"os"
+	"bufio"
+	"fmt"
 	"log"
+	"os"
 	"strconv"
 )
 
 func check(e error) {
-    if e != nil {
-        panic(e)
-    }
+	if e != nil {
+		panic(e)
+	}
 }
 
-
 func main() {
-	
-	
-	file, err := os.Open("./data short.txt")
+
+	file, err := os.Open("./data.txt")
 	check(err)
-	
+
 	defer file.Close()
 
 	numbers := []int{}
@@ -37,20 +35,19 @@ func main() {
 
 	fmt.Println(len(numbers))
 
-	
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
-		
+
 	}
 
 	// O(n³) lol
 	for _, value := range numbers {
 		for _, value2 := range numbers {
 			for _, value3 := range numbers {
-				if (value + value2 + value3 == 2020) {
-					fmt.Printf("Answer: %d\n", value * value2 * value3)
-				}	
+				if value+value2+value3 == 2020 {
+					fmt.Printf("Answer: %d\n", value*value2*value3)
+				}
 			}
 		}
-	}	
+	}
 }

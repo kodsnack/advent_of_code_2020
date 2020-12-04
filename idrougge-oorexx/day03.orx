@@ -1,0 +1,32 @@
+/* Advent of code 2020, day 3, part 1+2 in Open Object REXX */
+
+file = .stream~new('day03.txt')
+map = .array~new
+
+loop line over file~arrayin
+    map~append(line~translate('10', '#.'))
+end
+width = line~length
+
+-- Part 1
+hits = trace(3, 1)
+say hits
+
+-- Part 2
+numeric digits 12
+
+loop slope over .list~of((1,1), (5,1), (7,1), (1,2))
+    hits *= trace(slope[1], slope[2])
+end
+say hits
+
+exit
+
+trace: procedure expose width map
+arg dx, dy
+hits = 0; x=0
+do y = 1 by dy while y <= map~size
+    hits += map[y][x+1]
+    x = (x + dx) // width
+end
+return hits

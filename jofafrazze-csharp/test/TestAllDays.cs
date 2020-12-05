@@ -39,14 +39,14 @@ namespace test
         }
     }
 
-    //public class TestDay05
-    //{
-    //    [Fact]
-    //    public void Test()
-    //    {
-    //        Assert.True(day05.Day05.MainTest());
-    //    }
-    //}
+    public class TestDay05
+    {
+        [Fact]
+        public void Test()
+        {
+            Assert.True(day05.Day05.MainTest());
+        }
+    }
 
     //public class TestDay06
     //{

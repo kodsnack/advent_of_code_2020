@@ -1,3 +1,11 @@
+-- ------------------------------------------------
+-- Author : William J. FRANCK
+-- e-Mail : william@sterna.io
+--
+-- Initial creation date : 2020-12-02 
+-- ------------------------------------------------
+-- License : CC-BY-SA 
+-- ------------------------------------------------
 with Ada.Strings.Wide_Wide_Bounded;
 use Ada.Strings.Wide_Wide_Bounded;
 

@@ -31,3 +31,15 @@
 [submodule "ygge-java"]
 	path = ygge-java
 	url = https://github.com/ygge/adventofcode2020
+[submodule "lemonad-r"]
+	path = lemonad-r
+	url = https://github.com/lemonad/advent-of-code.git
+[submodule "heinerud-go-python"]
+	path = heinerud-go-python
+	url = https://github.com/heinerud/aoc20
+[submodule "bjornin-python"]
+	path = bjornin-python
+	url = https://github.com/bjornin/adventofcode2020
+[submodule "Mango0x45-C-Awk"]
+	path = Mango0x45-C-Awk
+	url = https://github.com/Mango0x45/advent-of-code-2020.git

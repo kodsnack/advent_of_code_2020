@@ -1,0 +1,16 @@
+/* Advent of code 2020, day 5, part 1+2 in Open Object REXX */
+
+highest = 0
+seats = .set~new
+
+loop line over .stream~new('day05.txt')~arrayin
+	id = line~translate('0101','FBLR')~b2x~x2d
+	highest = max(id, highest)
+	seats~put(id)	
+end
+
+say highest
+
+loop seat over seats
+	if \seats~hasitem(seat + 1) & seats~hasitem(seat + 2) then say seat + 1
+end

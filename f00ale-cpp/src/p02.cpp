@@ -2,27 +2,18 @@
 #include <vector>
 #include <algorithm>
 
-std::tuple<std::string, std::string> p02(std::istream & is) {
+std::tuple<std::string, std::string> p02(const std::string & input) {
     int64_t ans1 = 0;
     int64_t ans2 = 0;
-    std::vector<std::tuple<int,int,char, std::string>> v;
 
     {
-        bool done = false;
         int num1 = 0, num2 = 0;
         char ch = 0;
         int num = 0;
         int len = 0;
         int cnt = 0;
         int cnt2 = 0;
-        while(!done) {
-            char c;
-            is.get(c);
-            if(!is.good()) {
-                done = true;
-                c = '\n';
-            }
-
+        for(const auto c : input) {
             if(c >= '0' && c <= '9') {
                 num *= 10;
                 num += c - '0';

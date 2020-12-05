@@ -4,49 +4,38 @@
 #include <numeric>
 #include <iostream>
 
-std::tuple<std::string, std::string> p05(std::istream & is) {
-    int ans1 = 0;
-    int ans2 = 0;
-    std::vector<int> v;
-    v.reserve(1000);
-
+std::tuple<std::string, std::string> p05(const std::string & input) {
+    uint32_t ans1 = 0;
+    uint32_t ans2 = 1024;
+    char v[1024] = {0, };
     {
-        bool done = false;
-        int id = 0;
-        while(!done) {
-            char c;
-            is.get(c);
-            if(!is.good()) {
-                done = true;
-                c = '\n';
-            }
-
+        uint32_t id = 0;
+        for(const auto c : input) {
             switch(c) {
                 case 'B':
                 case 'R':
-                    id <<= 1;
-                    id |= 1;
+                    id <<= 1u;
+                    id |= 1u;
                     break;
                 case 'F':
                 case 'L':
-                    id <<= 1;
+                    id <<= 1u;
                     break;
                 case '\n':
                     if(id) {
                         ans1 = std::max(id, ans1);
-                        v.push_back(id);
+                        ans2 = std::min(id, ans2);
+                        v[id] = 1;
                         id = 0;
                     }
                     break;
+                default:
+                    break;
             }
-
         }
     }
 
-    std::sort(v.begin(), v.end());
-    for(size_t i = 0; i < v.size()-1; i++) {
-        if(v[i] + 1 != v[i+1]) ans2 = v[i]+1;
-    }
+    while(v[ans2]) ans2++;
 
     return {std::to_string(ans1), std::to_string(ans2)};
 }

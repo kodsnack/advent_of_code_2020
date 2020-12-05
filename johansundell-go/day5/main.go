@@ -48,9 +48,11 @@ func main() {
 	data := strings.Split(input, "\n")
 	max := 0
 	list := make(map[seat]int)
+	ids := make(map[int]int)
 	for _, v := range data {
 		s := newSeat(v)
 		list[s] = s.getId()
+		ids[s.getId()] = s.getId()
 		if s.getId() > max {
 			max = s.getId()
 		}
@@ -59,9 +61,12 @@ func main() {
 	for y := 0; y < 128; y++ {
 		for x := 0; x < 8; x++ {
 			ts := seat{row: y, column: x}
-			_, isThere := list[ts]
-			if !isThere {
-				fmt.Println(y, x, ts.getId())
+			if _, isThere := list[ts]; !isThere {
+				if _, checkLowId := ids[ts.getId()-1]; checkLowId {
+					if _, checkHighId := ids[ts.getId()+1]; checkHighId {
+						fmt.Println(ts.getId())
+					}
+				}
 			}
 		}
 	}

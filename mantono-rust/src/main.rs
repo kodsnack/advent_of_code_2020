@@ -22,8 +22,11 @@ fn main() -> Result<(), String> {
     setup_logging(cfg.verbosity_level);
     msg(&cfg);
     let puzzle_input: String = get_input(&cfg.puzzle, &cfg.session_token)?;
+    let start = std::time::Instant::now();
     let output: String = run_puzzle(&cfg.puzzle, puzzle_input);
-    print_out(output, &cfg);
+    let end = std::time::Instant::now();
+    let elapsed = end.duration_since(start);
+    print_out(output, elapsed, &cfg);
 
     Ok(())
 }
@@ -36,6 +39,8 @@ fn run_puzzle(puzzle: &Puzzle, input: String) -> String {
         (2, Part::Two) => days::day2::second(input),
         (3, Part::One) => days::day3::first(input),
         (3, Part::Two) => days::day3::second(input),
+        (4, Part::One) => days::day4::first(input),
+        (4, Part::Two) => days::day4::second(input),
         _ => panic!("Not supported"),
     }
 }

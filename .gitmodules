@@ -61,3 +61,6 @@
 [submodule "iamkaarp-dart"]
 	path = iamkaarp-dart
 	url = https://github.com/iamkaarp/aoc-2020.git
+[submodule "rodgco-javascript+svelte_frontend"]
+	path = rodgco-javascript+svelte
+	url = https://github.com/rodgco/aoc2020-svelte

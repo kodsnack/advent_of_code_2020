@@ -1,49 +1,36 @@
-use std::str::Chars;
-
 pub fn first(input: String) -> String {
-    input
+    transform(&input).max().unwrap().to_string()
 }
 
 pub fn second(input: String) -> String {
-    input
+    let mut boarding_passes: Vec<u16> = transform(&input).collect::<Vec<u16>>();
+    boarding_passes.sort();
+
+    let (prior_seat, _) = boarding_passes
+        .iter()
+        .zip(boarding_passes.iter().skip(1))
+        .find(|(b0, b1)| *b1 - *b0 > 1)
+        .unwrap();
+
+    (prior_seat + 1).to_string()
 }
 
-fn seat_id(input: &str) -> usize {
-    let mut chars = input.chars();
-    let row = dbg!(row_num(&mut chars, 0, 127));
-    let col = col_num(&mut chars, 0, 7);
-
-    (row * col * 8) as usize
+fn transform(input: &str) -> impl Iterator<Item = u16> + '_ {
+    input.lines().map(|line| seat_id(line))
 }
 
-fn row_num(iter: &mut Chars<'_>, min: u8, max: u8) -> u8 {
-    print!("min {}, max {} ==> {:?} ==> ", min, max, iter);
-    if min == max {
-        min
-    } else {
-        let range = (max - min) + 1;
-        let next = min + (range / 2);
-        match iter.next() {
-            Some('F') => row_num(iter, min, next - 1),
-            Some('B') => row_num(iter, next, max),
-            Some(x) => panic!("Unexpected char: {}", x),
-            None => panic!("Out ouf chars"),
-        }
-    }
+fn seat_id(input: &str) -> u16 {
+    row_num(input) * 8 + col_num(input)
 }
 
-fn col_num(iter: &mut Chars<'_>, min: u8, max: u8) -> u8 {
-    dbg!(&iter);
-    if min == max {
-        min
-    } else {
-        match iter.next() {
-            Some('L') => row_num(iter, min, max / 2),
-            Some('R') => row_num(iter, max / 2, max),
-            Some(x) => panic!("Unexpected char: {}", x),
-            None => panic!("Out ouf chars"),
-        }
-    }
+fn row_num(input: &str) -> u16 {
+    let binary: String = input[0..=6].replace("F", "0").replace("B", "1");
+    u16::from_str_radix(&binary, 2).unwrap()
+}
+
+fn col_num(input: &str) -> u16 {
+    let binary: String = input[7..=9].replace("L", "0").replace("R", "1");
+    u16::from_str_radix(&binary, 2).unwrap()
 }
 
 #[cfg(test)]
@@ -60,7 +47,6 @@ mod tests {
     #[test]
     fn test_row_num() {
         let row = "FBFBBFF";
-        let mut row = row.chars();
-        assert_eq!(44, row_num(&mut row, 0, 127));
+        assert_eq!(44, row_num(row));
     }
 }

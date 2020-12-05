@@ -47,8 +47,8 @@ fn run_puzzle(puzzle: &Puzzle, input: String) -> String {
         (3, Part::Two) => days::day3::second(input),
         (4, Part::One) => days::day4::first(input),
         (4, Part::Two) => days::day4::second(input),
-        (5, Part::One) => days::day4::first(input),
-        (5, Part::Two) => days::day4::second(input),
+        (5, Part::One) => days::day5::first(input),
+        (5, Part::Two) => days::day5::second(input),
         _ => panic!("Not supported"),
     }
 }

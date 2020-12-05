@@ -4,30 +4,22 @@
 #include <numeric>
 #include <iostream>
 
-std::tuple<std::string, std::string> p05(std::istream & is) {
-    int ans1 = 0;
-    int ans2 = 1024;
+std::tuple<std::string, std::string> p05(const std::string & input) {
+    uint32_t ans1 = 0;
+    uint32_t ans2 = 1024;
     char v[1024] = {0, };
     {
-        bool done = false;
-        int id = 0;
-        while(!done) {
-            char c;
-            is.get(c);
-            if(!is.good()) {
-                done = true;
-                c = '\n';
-            }
-
+        uint32_t id = 0;
+        for(const auto c : input) {
             switch(c) {
                 case 'B':
                 case 'R':
-                    id <<= 1;
-                    id |= 1;
+                    id <<= 1u;
+                    id |= 1u;
                     break;
                 case 'F':
                 case 'L':
-                    id <<= 1;
+                    id <<= 1u;
                     break;
                 case '\n':
                     if(id) {
@@ -37,8 +29,9 @@ std::tuple<std::string, std::string> p05(std::istream & is) {
                         id = 0;
                     }
                     break;
+                default:
+                    break;
             }
-
         }
     }
 

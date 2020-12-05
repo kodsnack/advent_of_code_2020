@@ -46,3 +46,6 @@
 [submodule "albertgustavsson-c"]
 	path = albertgustavsson-c
 	url = https://github.com/albertgustavsson/aoc20.git
+[submodule "yxhuvud-crystal"]
+	path = yxhuvud-crystal
+	url = git@github.com:yxhuvud/aoc20.git

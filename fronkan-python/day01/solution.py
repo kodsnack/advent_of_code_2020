@@ -1,7 +1,5 @@
 from typing import Iterable
 from itertools import combinations
-from functools import reduce
-import operator
 from pathlib import Path
 from aoc_lib.maths import prod
 

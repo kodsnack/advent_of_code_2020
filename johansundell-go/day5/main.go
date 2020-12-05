@@ -47,12 +47,12 @@ func main() {
 	input, _ := adventofcode2017.GetInput("day5.txt")
 	data := strings.Split(input, "\n")
 	max := 0
-	list := make(map[seat]int)
-	ids := make(map[int]int)
+	list := make(map[seat]struct{})
+	ids := make(map[int]struct{})
 	for _, v := range data {
 		s := newSeat(v)
-		list[s] = s.getId()
-		ids[s.getId()] = s.getId()
+		list[s] = struct{}{}
+		ids[s.getId()] = struct{}{}
 		if s.getId() > max {
 			max = s.getId()
 		}

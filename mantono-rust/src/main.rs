@@ -2,6 +2,7 @@
 extern crate clap;
 extern crate lazy_static;
 
+use aoc_macro::aoc;
 use cfg::Puzzle;
 use cfg::{Config, Part};
 use input::get_input;
@@ -31,6 +32,11 @@ fn main() -> Result<(), String> {
     Ok(())
 }
 
+#[aoc(4, "First")]
+fn test() {
+    println!("test")
+}
+
 fn run_puzzle(puzzle: &Puzzle, input: String) -> String {
     match (puzzle.day, &puzzle.part) {
         (1, Part::One) => days::day1::first(input),
@@ -41,6 +47,8 @@ fn run_puzzle(puzzle: &Puzzle, input: String) -> String {
         (3, Part::Two) => days::day3::second(input),
         (4, Part::One) => days::day4::first(input),
         (4, Part::Two) => days::day4::second(input),
+        (5, Part::One) => days::day4::first(input),
+        (5, Part::Two) => days::day4::second(input),
         _ => panic!("Not supported"),
     }
 }

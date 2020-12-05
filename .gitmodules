@@ -58,3 +58,6 @@
 [submodule "mlogic1-cpp"]
 	path = mlogic1-cpp
 	url = https://github.com/mlogic1/advent_of_code_2020.git
+[submodule "iamkaarp-dart"]
+	path = iamkaarp-dart
+	url = https://github.com/iamkaarp/aoc-2020.git

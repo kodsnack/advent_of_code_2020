@@ -64,3 +64,6 @@
 [submodule "AOC"]
 	path = AOC
 	url = https://github.com/Abrahamberg/AOC.git
+[submodule "rodgco-javascript+svelte_frontend"]
+	path = rodgco-javascript+svelte
+	url = https://github.com/rodgco/aoc2020-svelte

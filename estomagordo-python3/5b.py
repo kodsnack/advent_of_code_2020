@@ -7,31 +7,28 @@ from itertools import combinations, permutations, product
 from helpers import distance, distance_sq, ints, manhattan, neighs, neighs_bounded
 
 
+def binsearch(lo, hi, goleft, s):
+    for c in s:
+        midway = (lo + hi) // 2
+
+        if c == goleft:
+            hi = midway
+        else:
+            lo = midway+1
+
+    return lo
+
+
 def solve(lines):
     ids = set()
 
     for line in lines:
-        minrow = 0
-        maxrow = 127
-        mincol = 0
-        maxcol = 7
+        row = binsearch(0, 127, 'F', line[:7])
+        col = binsearch(0, 7, 'L', line[7:])
+        id = row * 8 + col
+        ids.add(id)
 
-        for x in range(7):
-            if line[x] == 'F':
-                maxrow = (minrow + maxrow) // 2
-            else:
-                minrow = (minrow + maxrow) // 2 + 1
-
-        for y in range(7, 10):
-            if line[y] == 'L':
-                maxcol = (mincol + maxcol) // 2
-            else:
-                mincol = (mincol + maxcol) // 2 + 1
-
-        print(minrow == maxrow, mincol == maxcol)
-        ids.add(minrow * 8 + mincol)
-
-    return [x for x in range(min(ids), max(ids) + 1) if x not in ids]
+    return [x for x in range(min(ids), max(ids) + 1) if x not in ids][0]
 
 if __name__ == '__main__':
     lines = []
@@ -41,5 +38,3 @@ if __name__ == '__main__':
             lines.append(line.strip())
 
     print(solve(lines))
-
-# 897

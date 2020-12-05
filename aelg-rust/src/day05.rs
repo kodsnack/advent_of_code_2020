@@ -30,7 +30,6 @@ fn solve2(mut v: Data) -> Option<String> {
     let first = v.first()?;
     let sum = v.iter().sum::<u32>();
     let all_sum = ((v.len() as u32 + 1) * (last + first)) / 2;
-    println!("{} {} {} {}", first, last, sum, all_sum);
     Some(all_sum - sum)
   }
   v.sort_unstable();

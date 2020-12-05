@@ -17,3 +17,7 @@
 (deftest day04 ()
   (is (= 196 (aoc2020.day04::part1 (input-for 2020 04))))
   (is (= 114 (aoc2020.day04::part2 (input-for 2020 04)))))
+
+(deftest day05 ()
+  (is (= 855 (aoc2020.day05::part1 (input-for 2020 05))))
+  (is (= 552 (aoc2020.day05::part2 (input-for 2020 05)))))

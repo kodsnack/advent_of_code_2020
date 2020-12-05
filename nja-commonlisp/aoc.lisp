@@ -19,3 +19,11 @@
 
 (defun strip-cr (string)
   (remove #\Return string))
+
+(defun tr (from to str)
+  (map 'string
+       (lambda (c)
+         (alexandria:if-let (p (position c from))
+           (aref to p)
+           c))
+       str))

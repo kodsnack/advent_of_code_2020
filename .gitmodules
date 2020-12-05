@@ -52,3 +52,6 @@
 [submodule "Advent-of-code-in-Go"]
 	path = Advent-of-code-in-Go
 	url = git@github.com:thijsheijden/Advent-of-code-in-Go.git
+[submodule "fluff-java"]
+	path = fluff-java
+	url = git@github.com:fluffis/adventofcode2019.git

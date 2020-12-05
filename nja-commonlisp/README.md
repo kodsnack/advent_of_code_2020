@@ -1,4 +1,6 @@
 ```
+CL-USER> (push "~/advent_of_code_2020/nja-commonlisp/" ql:*local-project-directories*)
+("~/advent_of_code_2020/nja-commonlisp/")
 CL-USER> (ql:quickload "advent-of-code")
 To load "advent-of-code":
   Load 1 ASDF system:
@@ -10,7 +12,8 @@ To load "advent-of-code":
 [package aoc2020.day02]...........................
 [package aoc2020.day03]...........................
 [package aoc2020.day04]...........................
-[package aoc2020.tests].....
+[package aoc2020.day05]...........................
+[package aoc2020.tests]......
 ("advent-of-code")
 CL-USER> (fiasco:all-tests)
 ALL-TESTS (Suite)
@@ -19,8 +22,8 @@ ALL-TESTS (Suite)
     DAY02.................................................................[ OK ]
     DAY03.................................................................[ OK ]
     DAY04.................................................................[ OK ]
+    DAY05.................................................................[ OK ]
 
 T
-(#<test-run of ALL-TESTS: 6 tests, 8 assertions, 0 failures in 0.141 sec>)
-CL-USER>
+(#<test-run of ALL-TESTS: 7 tests, 10 assertions, 0 failures in 0.187 sec>)
 ```

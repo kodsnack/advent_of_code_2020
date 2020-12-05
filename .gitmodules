@@ -49,3 +49,6 @@
 [submodule "yxhuvud-crystal"]
 	path = yxhuvud-crystal
 	url = git@github.com:yxhuvud/aoc20.git
+[submodule "Advent-of-code-in-Go"]
+	path = Advent-of-code-in-Go
+	url = git@github.com:thijsheijden/Advent-of-code-in-Go.git

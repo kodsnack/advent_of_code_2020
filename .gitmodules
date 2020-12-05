@@ -55,3 +55,6 @@
 [submodule "fluff-java"]
 	path = fluff-java
 	url = git@github.com:fluffis/adventofcode2019.git
+[submodule "mlogic1-cpp"]
+	path = mlogic1-cpp
+	url = https://github.com/mlogic1/advent_of_code_2020.git

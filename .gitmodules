@@ -55,3 +55,6 @@
 [submodule "fluff-java"]
 	path = fluff-java
 	url = git@github.com:fluffis/adventofcode2019.git
+[submodule "iamkaarp-dart"]
+	path = iamkaarp-dart
+	url = https://github.com/iamkaarp/aoc-2020

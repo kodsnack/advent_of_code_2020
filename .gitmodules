@@ -64,3 +64,6 @@
 [submodule "rodgco-javascript+svelte"]
 	path = rodgco-javascript+svelte
 	url = https://github.com/rodgco/aoc2020-svelte
+[submodule "phunh-scala"]
+	path = phunh-scala
+	url = https://github.com/PhuNH/AoC

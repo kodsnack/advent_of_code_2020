@@ -2,12 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 using AdventOfCode;
-//using Position = AdventOfCode.GenericPosition2D<int>;
 
 namespace day06
 {
@@ -30,8 +26,7 @@ namespace day06
                 }
                 else
                 {
-                    foreach (char c in s)
-                        set.Add(c);
+                    set.UnionWith(s.ToHashSet());
                 }
             }
             ans += set.Count;
@@ -77,8 +72,8 @@ namespace day06
 
         public static bool MainTest()
         {
-            int a = 42;
-            int b = 4711;
+            int a = 6521;
+            int b = 3305;
             return (PartA().Equals(a)) && (PartB().Equals(b));
         }
     }

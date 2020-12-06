@@ -18,15 +18,52 @@ namespace day06
 
         static Object PartA()
         {
-            List<int> input = ReadInputs.ReadInts(inputPath);
+            List<string> input = ReadInputs.ReadStrings(inputPath);
             int ans = 0;
+            HashSet<char> set = new HashSet<char>();
+            foreach (string s in input)
+            {
+                if (s == "")
+                {
+                    ans += set.Count;
+                    set = new HashSet<char>();
+                }
+                else
+                {
+                    foreach (char c in s)
+                        set.Add(c);
+                }
+            }
+            ans += set.Count;
             Console.WriteLine("Part A: Result is {0}", ans);
             return ans;
         }
 
         static Object PartB()
         {
+            List<string> input = ReadInputs.ReadStrings(inputPath);
             int ans = 0;
+            Dictionary<char, int> dict = new Dictionary<char, int>();
+            int n = 0;
+            foreach (string s in input)
+            {
+                if (s == "")
+                {
+                    ans += dict.Where(x => x.Value == n).Count();
+                    dict = new Dictionary<char, int>();
+                    n = 0;
+                }
+                else
+                {
+                    foreach (char c in s)
+                    {
+                        if (!dict.ContainsKey(c))
+                            dict[c] = 0;
+                        dict[c]++;
+                    }
+                    n++;
+                }
+            }
             Console.WriteLine("Part B: Result is {0}", ans);
             return ans;
         }

@@ -13,17 +13,21 @@ func main() {
 	fmt.Println(countYes(input))
 }
 
-func countYes(input []string) (tot int) {
-	groups := make([]map[rune]struct{}, 0)
+func countYes(input []string) (tot, totPart2 int) {
 	for _, v := range input {
 		str := strings.ReplaceAll(v, "\n", "")
-		g := make(map[rune]struct{})
+		sizeOfGroup := len(strings.Split(v, "\n"))
+		g := make(map[rune]int)
 		for _, r := range str {
-			g[r] = struct{}{}
+			g[r]++
 		}
-		groups = append(groups, g)
-	}
-	for _, g := range groups {
+		i := 0
+		for _, n := range g {
+			if n == sizeOfGroup {
+				i++
+			}
+		}
+		totPart2 += i
 		tot += len(g)
 	}
 	return

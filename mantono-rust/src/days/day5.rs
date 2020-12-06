@@ -24,12 +24,12 @@ fn seat_id(input: &str) -> u16 {
 }
 
 fn row_num(input: &str) -> u16 {
-    let binary: String = input[0..=6].replace("F", "0").replace("B", "1");
+    let binary: String = input[..=6].replace("F", "0").replace("B", "1");
     u16::from_str_radix(&binary, 2).unwrap()
 }
 
 fn col_num(input: &str) -> u16 {
-    let binary: String = input[7..=9].replace("L", "0").replace("R", "1");
+    let binary: String = input[7..].replace("L", "0").replace("R", "1");
     u16::from_str_radix(&binary, 2).unwrap()
 }
 

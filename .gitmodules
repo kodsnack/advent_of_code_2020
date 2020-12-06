@@ -61,6 +61,9 @@
 [submodule "iamkaarp-dart"]
 	path = iamkaarp-dart
 	url = https://github.com/iamkaarp/aoc-2020.git
+[submodule "AOC"]
+	path = AOC
+	url = https://github.com/Abrahamberg/AOC.git
 [submodule "rodgco-javascript+svelte"]
 	path = rodgco-javascript+svelte
 	url = https://github.com/rodgco/aoc2020-svelte

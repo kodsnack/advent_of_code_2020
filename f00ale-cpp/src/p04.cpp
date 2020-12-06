@@ -3,29 +3,21 @@
 #include <algorithm>
 #include <iostream>
 #include <unordered_set>
-std::tuple<std::string, std::string> p04(std::istream & is) {
+
+std::tuple<std::string, std::string> p04(const std::string & input) {
     int64_t ans1 = 0;
     int64_t ans2 = 0;
     std::vector<int> v;
     std::unordered_set<std::string> ecls { "amb", "blu", "brn", "gry", "grn", "hzl", "oth"};
     {
-        bool done = false;
         int f = 0;
         int l = 0;
         std::string code, data;
         bool hascid = false;
         bool hascolon = false;
         bool invalid = false;
-        bool end = false;
-        while(!done) {
-            char c;
-            is.get(c);
-            if(!is.good()) {
-                done = true;
-                c = '\n';
-                end = true;
-            }
 
+        for(const auto c : input) {
             if((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '#') {
                 if(!hascolon) code += c;
                 else data += c;
@@ -77,7 +69,7 @@ std::tuple<std::string, std::string> p04(std::istream & is) {
                 hascolon = false;
             }
 
-            if(c == '\n' || end) {
+            if(c == '\n') {
                 if(!l) {
                     if((f == 7 && !hascid) || f == 8) {
                         ans1++;

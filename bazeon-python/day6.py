@@ -19,7 +19,6 @@ def solve_a():
             for c in line:
                 if c not in letters:
                     letters.append(c)
-    print(letters)
 
     return total + len(letters)
 
@@ -42,8 +41,6 @@ def solve_b():
                 if c in line:
                     nletters.append(c)
             letters = nletters
-
-    print(letters)
 
     return total + len(letters)
 

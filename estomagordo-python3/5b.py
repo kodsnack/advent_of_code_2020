@@ -27,7 +27,7 @@ def solve(lines):
         col = binsearch(0, 7, 'L', line[7:])
         id = row * 8 + col
         ids.add(id)
-
+    
     return [x for x in range(min(ids), max(ids) + 1) if x not in ids][0]
 
 if __name__ == '__main__':

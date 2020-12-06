@@ -8,7 +8,7 @@ let lines = data.split('\n');
 let passports = [];
 let passport = {};
 lines.forEach(line => {
-    if (line.length <= 1) {
+    if (line.length <= 1) { // 1 för jag tror min win-maskin fuckade med radbrytningar. Borde vara 0 
         passports.push(passport);
         passport = {};
     }

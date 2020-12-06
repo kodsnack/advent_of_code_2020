@@ -122,34 +122,29 @@ fn valid_passport(p: Passport) -> Option<()> {
     _ => return None,
   }
 
-  // How to make this compile?
-  //match tuple((tag("#"), many_m_n(6, 6, is_a("0123456789abcdef"))))(p.hcl.as_str()) {
-  //  Ok(("", _)) => (),
-  //  _ => return None,
-  //}
-
-  for (i, c) in p.hcl.chars().enumerate() {
-    if i == 0 {
-      if c != '#' {
-        return None;
-      }
-    } else if !((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f')) {
-      return None;
-    }
+  match tuple::<_, _, (), _>((tag("#"), many_m_n(6, 6, one_of("0123456789abcdef"))))(p.hcl.as_str())
+  {
+    Ok(("", _)) => (),
+    _ => return None,
   }
 
-  let ecolors = vec!["amb", "blu", "brn", "gry", "grn", "hzl", "oth"];
-  if !ecolors.contains(&p.ecl.as_str()) {
-    return None;
+  match alt::<_, _, (), _>((
+    tag("amb"),
+    tag("blu"),
+    tag("brn"),
+    tag("gry"),
+    tag("grn"),
+    tag("hzl"),
+    tag("oth"),
+  ))(p.ecl.as_str())
+  {
+    Ok(("", _)) => (),
+    _ => return None,
   }
 
-  if p.pid.len() != 9 {
-    return None;
-  }
-  for c in p.pid.chars() {
-    if !(c >= '0' && c <= '9') {
-      return None;
-    }
+  match many_m_n::<_, _, (), _>(9, 9, one_of("0123456789"))(p.pid.as_str()) {
+    Ok(("", _)) => (),
+    _ => return None,
   }
 
   Some(())

@@ -28,14 +28,26 @@ DIRECTORY = Path(__file__).parent
 solution = importlib.import_module(f"{DIRECTORY.name}.solution")
 
 
-@pytest.mark.parametrize("puzzle, result", [(1, None), (2, None)])
+@pytest.mark.parametrize(
+    "puzzle, result",
+    [
+        # (1, None),
+        # (2, None)
+    ],
+)
 def test_puzzle_example_input(puzzle, result):
     input_file = Path(__file__).parent / "example_input.txt"
     puzzle_solver = getattr(solution, f"puzzle{puzzle}")
     assert puzzle_solver(input_file) == result
 
 
-@pytest.mark.parametrize("puzzle, result", [(1, None), (2, None)])
+@pytest.mark.parametrize(
+    "puzzle, result",
+    [
+        # (1, None),
+        # (2, None)
+    ],
+)
 def test_puzzle_real_input(puzzle, result):
     input_file = Path(__file__).parent / "input.txt"
     puzzle_solver = getattr(solution, f"puzzle{puzzle}")
@@ -44,13 +56,12 @@ def test_puzzle_real_input(puzzle, result):
 SOLUTION_FILE_CONTENT = f"""
 from pathlib import Path
 
-
-def puzzle1(input_file):
+def puzzle1(input_file: Path):
     raise NotImplementedError()
 
 
 
-def puzzle2(input_file):
+def puzzle2(input_file: Path):
     raise NotImplementedError()
 
 

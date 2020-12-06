@@ -4,7 +4,7 @@ from functools import reduce
 from heapq import heappop, heappush
 from itertools import combinations, permutations, product
 
-from helpers import distance, distance_sq, ints, manhattan, neighs, neighs_bounded
+from helpers import distance, distance_sq, grouped_lines, ints, manhattan, neighs, neighs_bounded
 
 
 def solve(qs):

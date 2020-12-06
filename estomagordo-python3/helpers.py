@@ -39,3 +39,20 @@ def neighs_bounded(y, x, rmin, rmax, cmin, cmax):
         neighs.append([y, x+1])
 
     return neighs
+
+
+def grouped_lines(lines):
+    groups = []
+    group = []
+
+    for line in lines:
+        if not line.strip():
+            groups.append(group)
+            group = []
+        else:
+            group.append(line.rstrip())
+
+    if group:
+        groups.append(group)
+
+    return groups

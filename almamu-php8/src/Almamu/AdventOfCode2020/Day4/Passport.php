@@ -7,7 +7,7 @@
             'amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth'
         ];
 
-        function __construct (
+        protected function __construct (
             public int $birthYear,
             public int $issueYear,
             public int $expirationYear,

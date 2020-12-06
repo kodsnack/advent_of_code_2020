@@ -2,6 +2,7 @@
 extern crate clap;
 extern crate lazy_static;
 
+use aoc_macro::aoc;
 use cfg::Puzzle;
 use cfg::{Config, Part};
 use input::get_input;
@@ -22,10 +23,18 @@ fn main() -> Result<(), String> {
     setup_logging(cfg.verbosity_level);
     msg(&cfg);
     let puzzle_input: String = get_input(&cfg.puzzle, &cfg.session_token)?;
+    let start = std::time::Instant::now();
     let output: String = run_puzzle(&cfg.puzzle, puzzle_input);
-    print_out(output, &cfg);
+    let end = std::time::Instant::now();
+    let elapsed = end.duration_since(start);
+    print_out(output, elapsed, &cfg);
 
     Ok(())
+}
+
+#[aoc(4, "First")]
+fn test() {
+    println!("test")
 }
 
 fn run_puzzle(puzzle: &Puzzle, input: String) -> String {
@@ -34,6 +43,12 @@ fn run_puzzle(puzzle: &Puzzle, input: String) -> String {
         (1, Part::Two) => days::day1::second(input),
         (2, Part::One) => days::day2::first(input),
         (2, Part::Two) => days::day2::second(input),
+        (3, Part::One) => days::day3::first(input),
+        (3, Part::Two) => days::day3::second(input),
+        (4, Part::One) => days::day4::first(input),
+        (4, Part::Two) => days::day4::second(input),
+        (5, Part::One) => days::day5::first(input),
+        (5, Part::Two) => days::day5::second(input),
         _ => panic!("Not supported"),
     }
 }

@@ -2,22 +2,14 @@
 #include <vector>
 #include <algorithm>
 
-std::tuple<std::string, std::string> p01(std::istream & is) {
+std::tuple<std::string, std::string> p01(const std::string & input) {
     int64_t ans1 = 0;
     int64_t ans2 = 0;
     std::vector<int> v;
 
     {
-        bool done = false;
         int num = 0;
-        while(!done) {
-            char c;
-            is.get(c);
-            if(!is.good()) {
-                done = true;
-                c = '\n';
-            }
-
+        for(const auto c : input) {
             if(c >= '0' && c <= '9') {
                 num *= 10;
                 num += c-'0';

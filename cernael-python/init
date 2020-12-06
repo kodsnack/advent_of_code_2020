@@ -7,6 +7,7 @@ then
   echo 'file already exists'
 else
   sed "s/£/$day/g" template.py > $f
-  firefox "https://adventofcode.com/2020/day/$day/input"
+  source cookie.txt
+  curl "https://adventofcode.com/2020/day/${day}/input" -H "$cookie" --compressed > $day.txt
   firefox "https://adventofcode.com/2020/day/$day"
 fi

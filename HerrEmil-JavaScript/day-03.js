@@ -1,9 +1,9 @@
-const parseDay03Data = (data) =>
+const parseData = (data) =>
   data
     .split(/\r?\n/)
     .map((line) => line.split("").map((char) => (char === "." ? 0 : 1)));
 
-const solve1 = (data, right = 3, down = 1) =>
+const treesOnSlope = (data, right = 3, down = 1) =>
   data
     .map((line, lineIndex) => {
       if (lineIndex % down) {
@@ -15,11 +15,20 @@ const solve1 = (data, right = 3, down = 1) =>
     .map((number) => parseInt(number, 10))
     .filter((number) => number).length;
 
-const solve2 = (data, slopes) =>
+const productOfTreesOnSlopes = (data, slopes) =>
   slopes
-    .map(([right, down]) => solve1(data, right, down))
+    .map(([right, down]) => treesOnSlope(data, right, down))
     .reduce((cumulative, current) => cumulative * current, 1);
 
-module.exports.solve1 = solve1;
-module.exports.solve2 = solve2;
-module.exports.parseDay03Data = parseDay03Data;
+module.exports.treesOnSlope = treesOnSlope;
+module.exports.productOfTreesOnSlopes = productOfTreesOnSlopes;
+module.exports.solve1 = (data) => treesOnSlope(data, 3, 1);
+module.exports.solve2 = (data) =>
+  productOfTreesOnSlopes(data, [
+    [1, 1],
+    [3, 1],
+    [5, 1],
+    [7, 1],
+    [1, 2],
+  ]);
+module.exports.parseData = parseData;

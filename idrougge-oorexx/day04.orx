@@ -1,0 +1,57 @@
+/* Advent of code 2020, day 4, part 1+2 in Open Object REXX */
+
+input = .stream~new('day04.txt')~arrayin~~append('')
+
+passports = .list~new
+
+fields = .directory~new
+
+do line over input
+    do field over line~makearray(' ')
+        parse var field key ':' value
+        fields[key] = value
+    end
+    if line = '' then do
+        passports~append(fields)
+        fields = .directory~new
+    end
+end
+
+valid_1 = 0; valid_2 = 0
+do passport over passports
+    valid_1 += check_1(passport)
+    valid_2 += check_2(passport)
+end
+say valid_1
+say valid_2
+exit
+
+::routine check_1
+    required = .set~of('byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid')
+    return required~subset(arg(1)~allindexes)
+
+::routine check_2
+    use arg passport
+    if \check_1(passport) then return .false
+    if passport['byr'] < 1920 | passport['byr'] > 2002 then return .false
+    if passport['iyr'] < 2010 | passport['iyr'] > 2020 then return .false
+    if passport['eyr'] < 2020 | passport['eyr'] > 2030 then return .false
+    hgt = passport['hgt']
+    select
+        when hgt~right(2) = 'cm' then do
+            parse var hgt cm'cm'
+            if cm < 150 | cm > 193 then return .false
+        end
+        when hgt~right(2) = 'in' then do
+            parse var hgt in'in'
+            if in < 59 | in > 76 then return .false
+        end
+        otherwise return .false
+    end
+    parse value passport['hcl'] with '#'hex
+    if hex~length \= 6 then return .false
+    if hex~verify('0123456789abcdef') \= 0 then return .false
+    if \.list~of('amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth')~hasitem(passport['ecl']) then return .false
+    if passport['pid']~datatype \= num then return .false
+    if passport['pid']~length \= 9 then return .false
+    return .true

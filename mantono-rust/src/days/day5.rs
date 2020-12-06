@@ -3,16 +3,21 @@ pub fn first(input: String) -> String {
 }
 
 pub fn second(input: String) -> String {
-    let mut boarding_passes: Vec<u16> = transform(&input).collect::<Vec<u16>>();
-    boarding_passes.sort();
+    let mut checksum: u16 = 0;
+    let mut min: u16 = u16::max_value();
+    let mut max: u16 = u16::min_value();
 
-    let (prior_seat, _) = boarding_passes
-        .iter()
-        .zip(boarding_passes.iter().skip(1))
-        .find(|(b0, b1)| *b1 - *b0 > 1)
-        .unwrap();
+    for pass in transform(&input) {
+        checksum ^= pass;
+        min = min.min(pass);
+        max = max.max(pass);
+    }
 
-    (prior_seat + 1).to_string()
+    for n in min..=max {
+        checksum ^= n;
+    }
+
+    checksum.to_string()
 }
 
 fn transform(input: &str) -> impl Iterator<Item = u16> + '_ {

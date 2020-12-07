@@ -25,5 +25,15 @@ console.log(`Day 04, puzzle 2 answer: ${day04.solve2(day04Data)}`); // 198
 
 const day05 = require("./day-05");
 const day05Data = day05.parseData(readInput(05));
-console.log(`Day 05, puzzle 1 answer: ${day05.solve1(day05Data)}`); //
-console.log(`Day 05, puzzle 2 answer: ${day05.solve2(day05Data)}`); //
+console.log(`Day 05, puzzle 1 answer: ${day05.solve1(day05Data)}`); // 883
+console.log(`Day 05, puzzle 2 answer: ${day05.solve2(day05Data)}`); // 532
+
+const day06 = require("./day-06");
+const day06Data = day06.parseData(readInput(06));
+console.log(`Day 06, puzzle 1 answer: ${day06.solve1(day06Data)}`); // 6542
+console.log(`Day 06, puzzle 2 answer: ${day06.solve2(day06Data)}`); // 3299
+
+const day07 = require("./day-07");
+const day07Data = day07.parseData(readInput(07));
+console.log(`Day 07, puzzle 1 answer: ${day07.solve1(day07Data)}`); //
+console.log(`Day 07, puzzle 2 answer: ${day07.solve2(day07Data)}`); //

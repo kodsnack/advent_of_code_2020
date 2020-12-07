@@ -1,21 +1,11 @@
 using Printf
-function extractPosition(boardingPass)
-    rowBin = ""
-    colBin = ""
-    for character in boardingPass[1:7]
-        rowBin *= character == 'F' ? "0" : "1"
-    end
-    for character in boardingPass[8:10]
-        colBin *= character == 'L' ? "0" : "1"
-    end
-    return parse(Int,rowBin;base=2),parse(Int,colBin;base=2)
+function extractBoardingId(boardingPass)
+    return parse(Int,replace(replace(replace(replace(boardingPass,'F'=>"0"),'B'=>"1"),'L'=>"0"),'R'=>"1");base=2)
 end
 rowIDs = []
 data = readlines(open("input.txt","r"))
-# Create list of boarding pass IDs
 for line in data
-    row,col = extractPosition(line)
-    id = row * 8 + col
+    id = extractBoardingId(line)
     push!(rowIDs,id)
 end
 # If we find where the difference is 2, then we found our boarding pass

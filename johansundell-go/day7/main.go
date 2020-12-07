@@ -8,6 +8,8 @@ import (
 	"github.com/johansundell/advent_of_code_2017/johansundell-go/adventofcode2017"
 )
 
+type Rules map[string]map[string]int
+
 func main() {
 	data, _ := adventofcode2017.GetInput("day7.txt")
 	rules := getRules(strings.Split(data, "\n"))
@@ -15,8 +17,8 @@ func main() {
 	fmt.Println(part2(rules, make(map[string]int), "shiny gold"))
 }
 
-func getRules(input []string) map[string]map[string]int {
-	rules := make(map[string]map[string]int)
+func getRules(input []string) Rules {
+	rules := make(Rules)
 	for _, v := range input {
 		strs := strings.Split(v, " contain ")
 		mainBag := strs[0][:len(strs[0])-5]
@@ -34,7 +36,7 @@ func getRules(input []string) map[string]map[string]int {
 	return rules
 }
 
-func part1(rules map[string]map[string]int) int {
+func part1(rules Rules) int {
 	isFound := true
 	list := make(map[string]bool)
 	list["shiny gold"] = true
@@ -56,7 +58,7 @@ func part1(rules map[string]map[string]int) int {
 	return len(list) - 1
 }
 
-func part2(rules map[string]map[string]int, list map[string]int, name string) int {
+func part2(rules Rules, list map[string]int, name string) int {
 	if val, ok := list[name]; ok {
 		return val
 	}

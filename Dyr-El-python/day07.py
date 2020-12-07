@@ -21,11 +21,50 @@ def fileParse(inp, lineparser=lineParse,
 
 ## End of header boilerplate ###################################################
 
+from collections import deque
+from itertools import count
+
+def countBags(theBag, bagMap):
+   return sum(noBags*countBags(nextBag, bagMap) 
+              for nextBag, noBags in bagMap.get(theBag, [])) + 1
+
+def parseBags(l):
+   for bagDef in l:
+      container, content = (bagDef[0] + " " + bagDef[1]), []
+      for idx in count(start=4, step=4):
+         try:
+            noBags, bagType = int(bagDef[idx]), bagDef[idx+1] + " " + bagDef[idx+2]
+            content.append((bagType, noBags))
+         except:
+            yield (container, content)
+            break
+
+from collections import defaultdict
+
+def buildReverseBagTree(bags):
+   reverseBag = defaultdict(list)
+   for bagType, content in bags:
+      for containedBagType, noBags in content:
+         reverseBag[containedBagType].append(bagType)
+   return reverseBag
+
 def part1(pinp):
-    return "<solution1>"
+   revBag = buildReverseBagTree(parseBags(pinp))
+   bagQueue = deque(["shiny gold"])
+   sgContainers = set()
+   while len(bagQueue) > 0:
+      bag = bagQueue.popleft()
+      for containingBag in revBag[bag]:
+         if containingBag not in sgContainers:
+            sgContainers.add(containingBag)
+            bagQueue.append(containingBag)
+   return len(sgContainers)
+
+def buildBagTree(bags):
+   return {bagType:content for bagType, content in bags}
 
 def part2(pinp):
-    return "<solution2>"
+   return countBags("shiny gold", buildBagTree(parseBags(pinp))) - 1
 
 ## Start of footer boilerplate #################################################
 

@@ -2,11 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-using AdventOfCode;
 
 namespace day07
 {
@@ -63,48 +59,30 @@ namespace day07
             return bags;
         }
 
-        public static Dictionary<string, Bag> bags;
-
-        public static bool CanContain(Bag bag, Bag c)
+        public static bool CanContain(Bag bag, Bag inside)
         {
-            if (bag.children.ContainsKey(c))
-                return true;
-            foreach (var v in bag.children)
-                if (CanContain(v.Key, c))
-                    return true;
-            return false;
+            return bag.children.Where(x => x.Key == inside || CanContain(x.Key, inside)).Count() > 0;
         }
 
         static Object PartA()
         {
-            bags = ReadInput(inputPath);
-            int ans = 0;
+            var bags = ReadInput(inputPath);
             Bag ourBag = bags["shiny gold"];
-            foreach (var bag in bags)
-            {
-                if (CanContain(bag.Value, ourBag))
-                    ans++;
-            }
+            int ans = bags.Where(x => CanContain(x.Value, ourBag)).Count();
             Console.WriteLine("Part A: Result is {0}", ans);
             return ans;
         }
 
-        public static long ContainsAmount(Bag bag)
+        public static long BagsContained(Bag bag)
         {
-            if (bag.children.Count() == 0)
-                return 0;
-            long n = 0;
-            foreach (var v in bag.children)
-                if (v.Key.name != bag.name)
-                    n += v.Value * (1 + ContainsAmount(v.Key));
-            return n;
+            return bag.children.Select(x => x.Value * (BagsContained(x.Key) + 1)).Sum();
         }
 
         static Object PartB()
         {
-            bags = ReadInput(inputPath);
+            var bags = ReadInput(inputPath);
             Bag ourBag = bags["shiny gold"];
-            long ans = ContainsAmount(ourBag);
+            long ans = BagsContained(ourBag);
             Console.WriteLine("Part B: Result is {0}", ans);
             return ans;
         }
@@ -118,8 +96,8 @@ namespace day07
 
         public static bool MainTest()
         {
-            int a = 42;
-            int b = 4711;
+            int a = 224;
+            long b = 1488;
             return (PartA().Equals(a)) && (PartB().Equals(b));
         }
     }

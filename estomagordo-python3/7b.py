@@ -15,15 +15,12 @@ def solve(d):
             return seen[colour]
 
         if colour not in d or not d[colour]:
-            return 1
+            return 0
 
         amount = 0
 
         for pair in d[colour]:
-            val = count(pair[1])
-            if val > 1:
-                val += 1
-            amount += pair[0] * val
+            amount += pair[0] * (count(pair[1])+1)
 
         seen[colour] = amount
         return amount

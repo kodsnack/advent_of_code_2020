@@ -16,21 +16,14 @@ namespace day05
             HashSet<int> ids = new HashSet<int>();
             foreach (string s in list)
             {
-                int row = 0;
-                for (int i = 0; i < 7; i++)
+                int a = 0;
+                for (int i = 0; i < 10; i++)
                 {
-                    row <<= 1;
-                    int bit = s[i] == 'F' ? 0 : 1;
-                    row |= bit;
+                    a <<= 1;
+                    int bit = s[i] == 'F' || s[i] == 'L' ? 0 : 1;
+                    a |= bit;
                 }
-                int col = 0;
-                for (int i = 7; i < 10; i++)
-                {
-                    col <<= 1;
-                    int bit = s[i] == 'L' ? 0 : 1;
-                    col |= bit;
-                }
-                ids.Add(row * 8 + col);
+                ids.Add(a);
             }
             return ids;
         }

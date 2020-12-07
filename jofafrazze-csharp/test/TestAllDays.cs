@@ -39,32 +39,32 @@ namespace test
         }
     }
 
-    //public class TestDay05
-    //{
-    //    [Fact]
-    //    public void Test()
-    //    {
-    //        Assert.True(day05.Day05.MainTest());
-    //    }
-    //}
+    public class TestDay05
+    {
+        [Fact]
+        public void Test()
+        {
+            Assert.True(day05.Day05.MainTest());
+        }
+    }
 
-    //public class TestDay06
-    //{
-    //    [Fact]
-    //    public void Test()
-    //    {
-    //        Assert.True(day06.Day06.MainTest());
-    //    }
-    //}
+    public class TestDay06
+    {
+        [Fact]
+        public void Test()
+        {
+            Assert.True(day06.Day06.MainTest());
+        }
+    }
 
-    //public class TestDay07
-    //{
-    //    [Fact]
-    //    public void Test()
-    //    {
-    //        Assert.True(day07.Day07.MainTest());
-    //    }
-    //}
+    public class TestDay07
+    {
+        [Fact]
+        public void Test()
+        {
+            Assert.True(day07.Day07.MainTest());
+        }
+    }
 
     //public class TestDay08
     //{

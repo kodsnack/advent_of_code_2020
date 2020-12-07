@@ -22,6 +22,7 @@ dependencies = [
 name = "aoc"
 version = "0.1.0"
 dependencies = [
+ "aoc_macro",
  "chrono",
  "clap",
  "env_logger",
@@ -30,6 +31,16 @@ dependencies = [
  "regex",
  "reqwest",
  "termcolor",
+]
+
+[[package]]
+name = "aoc_macro"
+version = "0.1.0"
+dependencies = [
+ "lazy_static",
+ "quote",
+ "regex",
+ "syn",
 ]
 
 [[package]]

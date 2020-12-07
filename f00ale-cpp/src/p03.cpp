@@ -2,22 +2,14 @@
 #include <vector>
 #include <algorithm>
 
-std::tuple<std::string, std::string> p03(std::istream & is) {
+std::tuple<std::string, std::string> p03(const std::string & input) {
     int64_t ans1 = 0;
     int64_t ans2 = 0;
     std::vector<std::vector<char>> v;
 
     {
-        bool done = false;
         std::vector<char> line;
-        while(!done) {
-            char c;
-            is.get(c);
-            if(!is.good()) {
-                done = true;
-                c = '\n';
-            }
-
+        for(const auto c : input) {
             if(c == '.' || c == '#') {
                 line.push_back(c);
             } else if(c == '\n') {

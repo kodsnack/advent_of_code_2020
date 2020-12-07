@@ -1,3 +1,11 @@
+-- ------------------------------------------------
+-- Author : William J. FRANCK
+-- e-Mail : william@sterna.io
+--
+-- Initial creation date : 2020-12-01 
+-- ------------------------------------------------
+-- License : CC-BY-SA 
+-- ------------------------------------------------
 with Ada.Text_IO; use Ada.Text_IO;
 
 package body Expenses is

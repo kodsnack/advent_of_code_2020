@@ -3,13 +3,12 @@
 #include <functional>
 #include <chrono>
 #include <iomanip>
-#include <sstream>
 
 #include "aoc.h"
 
 int main() {
-    std::vector<std::function<std::tuple<std::string,std::string>(std::istream&)>> problems
-            { p01, p02, p03 };
+    std::vector<std::function<std::tuple<std::string,std::string>(const std::string&)>> problems
+            { p01, p02, p03, p04, p05, p06, p07 };
 
     std::chrono::microseconds total_time{0};
 
@@ -27,10 +26,10 @@ int main() {
                 str.append(buffer, cnt);
                 done = !(input.good() && cnt > 0);
             }
+            if(str.empty() || str.back() != '\n') str.push_back('\n'); // always end with newline
 
-            std::istringstream is(str);
             auto start = std::chrono::high_resolution_clock::now();
-            auto ret = problems[i](is);
+            auto ret = problems[i](str);
             auto end = std::chrono::high_resolution_clock::now();
 
             auto timeus = std::chrono::duration_cast<std::chrono::microseconds>(end-start);

@@ -1,3 +1,11 @@
+-- ------------------------------------------------
+-- Author : William J. FRANCK
+-- e-Mail : william@sterna.io
+--
+-- Initial creation date : 2020-12-01 
+-- ------------------------------------------------
+-- License : CC-BY-SA 
+-- ------------------------------------------------
 with Expenses; use Expenses;
 
 with Ada.Command_Line; use Ada.Command_Line;

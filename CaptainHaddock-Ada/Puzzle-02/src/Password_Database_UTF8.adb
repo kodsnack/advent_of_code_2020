@@ -1,3 +1,11 @@
+-- ------------------------------------------------
+-- Author : William J. FRANCK
+-- e-Mail : william@sterna.io
+--
+-- Initial creation date : 2020-12-02 
+-- ------------------------------------------------
+-- License : CC-BY-SA 
+-- ------------------------------------------------
 with Ada.Assertions; use Ada.Assertions;
 
 with Ada.Wide_Wide_Text_IO;

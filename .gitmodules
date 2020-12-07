@@ -37,3 +37,36 @@
 [submodule "heinerud-go-python"]
 	path = heinerud-go-python
 	url = https://github.com/heinerud/aoc20
+[submodule "bjornin-python"]
+	path = bjornin-python
+	url = https://github.com/bjornin/adventofcode2020
+[submodule "Mango0x45-C-Awk"]
+	path = Mango0x45-C-Awk
+	url = https://github.com/Mango0x45/advent-of-code-2020.git
+[submodule "albertgustavsson-c"]
+	path = albertgustavsson-c
+	url = https://github.com/albertgustavsson/aoc20.git
+[submodule "yxhuvud-crystal"]
+	path = yxhuvud-crystal
+	url = git@github.com:yxhuvud/aoc20.git
+[submodule "fluff-java"]
+	path = fluff-java
+	url = git@github.com:fluffis/adventofcode2019.git
+[submodule "mlogic1-cpp"]
+	path = mlogic1-cpp
+	url = https://github.com/mlogic1/advent_of_code_2020.git
+[submodule "iamkaarp-dart"]
+	path = iamkaarp-dart
+	url = https://github.com/iamkaarp/aoc-2020.git
+[submodule "AOC"]
+	path = AOC
+	url = https://github.com/Abrahamberg/AOC.git
+[submodule "rodgco-javascript+svelte"]
+	path = rodgco-javascript+svelte
+	url = https://github.com/rodgco/aoc2020-svelte
+[submodule "phunh-scala"]
+	path = phunh-scala
+	url = https://github.com/PhuNH/AoC
+[submodule "Advent-of-code-in-Go"]
+	path = Advent-of-code-in-Go
+	url = git@github.com:thijsheijden/Advent-of-code-in-Go.git

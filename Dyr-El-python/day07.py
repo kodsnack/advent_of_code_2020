@@ -22,55 +22,49 @@ def fileParse(inp, lineparser=lineParse,
 ## End of header boilerplate ###################################################
 
 from collections import deque
+from itertools import count
 
-def countBags(bag, bags):
-   if bag in bags:
-      sm = 0
-      for bt, bn in bags[bag]:
-         print(bn, countBags(bt, bags))
-         sm += (bn * countBags(bt, bags))
-      print(sm)
-      return sm + 1
-   return 1
+def countBags(theBag, bagMap):
+   return sum(noBags*countBags(nextBag, bagMap) 
+              for nextBag, noBags in bagMap.get(theBag, [])) + 1
+
+def parseBags(l):
+   for bagDef in l:
+      container, content = (bagDef[0] + " " + bagDef[1]), []
+      for idx in count(start=4, step=4):
+         try:
+            noBags, bagType = int(bagDef[idx]), bagDef[idx+1] + " " + bagDef[idx+2]
+            content.append((bagType, noBags))
+         except:
+            yield (container, content)
+            break
+
+from collections import defaultdict
+
+def buildReverseBagTree(bags):
+   reverseBag = defaultdict(list)
+   for bagType, content in bags:
+      for containedBagType, noBags in content:
+         reverseBag[containedBagType].append(bagType)
+   return reverseBag
 
 def part1(pinp):
-   d = {}
-   rd = {}
-   for bag in pinp:
-      container = bag[0]+" "+bag[1]
-      if container not in bag:
-         d[container] = []
-      if bag[4] != "no":
-         idx = 4
-         while len(bag) > idx + 2:
-            noBags = int(bag[idx])
-            typeBags = bag[idx+1]+" "+bag[idx+2]
-            if typeBags not in rd:
-               rd[typeBags] = []
-            rd[typeBags].append(container)
-            d[container].append([typeBags, noBags])
-            idx += 4
-   b = deque()
-   s = set()
-   b.append("shiny gold")
-   while len(b)>0:
-      bag = b.popleft()
-      if bag not in rd:
-         s.add(bag)
-         continue
-      for cb in rd[bag]:
-         if cb not in s:
-            b.append(cb)
-            s.add(cb)
-   if "shiny gold" in b:
-      print("self contained")
-      b.remove("shiny gold")
-   print(len(s))
-   print(countBags("shiny gold", d))
-   return "<solution1>"
+   revBag = buildReverseBagTree(parseBags(pinp))
+   bagQueue = deque(["shiny gold"])
+   sgContainers = set()
+   while len(bagQueue) > 0:
+      bag = bagQueue.popleft()
+      for containingBag in revBag[bag]:
+         if containingBag not in sgContainers:
+            sgContainers.add(containingBag)
+            bagQueue.append(containingBag)
+   return len(sgContainers)
+
+def buildBagTree(bags):
+   return {bagType:content for bagType, content in bags}
 
 def part2(pinp):
-    return "<solution2>"
+   return countBags("shiny gold", buildBagTree(parseBags(pinp))) - 1
 
 ## Start of footer boilerplate #################################################
 

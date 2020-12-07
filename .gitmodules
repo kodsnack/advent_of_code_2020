@@ -49,9 +49,6 @@
 [submodule "yxhuvud-crystal"]
 	path = yxhuvud-crystal
 	url = git@github.com:yxhuvud/aoc20.git
-[submodule "Advent-of-code-in-Go"]
-	path = Advent-of-code-in-Go
-	url = git@github.com:thijsheijden/Advent-of-code-in-Go.git
 [submodule "fluff-java"]
 	path = fluff-java
 	url = git@github.com:fluffis/adventofcode2019.git
@@ -70,3 +67,6 @@
 [submodule "phunh-scala"]
 	path = phunh-scala
 	url = https://github.com/PhuNH/AoC
+[submodule "Advent-of-code-in-Go"]
+	path = Advent-of-code-in-Go
+	url = git@github.com:thijsheijden/Advent-of-code-in-Go.git

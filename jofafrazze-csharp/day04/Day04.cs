@@ -37,6 +37,7 @@ namespace day04
                 list.Add(dict);
             return list;
         }
+
         static Object PartA()
         {
             List<Dictionary<string, string>> input = ReadInput(inputPath);

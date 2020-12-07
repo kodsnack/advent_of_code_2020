@@ -1,6 +1,6 @@
 pub fn calculate(s: &str) -> i32 {
     let numbers: Vec<i32> = s.lines().map(|x| get_seat_id(x)).collect();
-    numbers.iter().cloned().fold()
+    numbers.iter().cloned().fold(0, i32::max)
 }
 
 fn get_seat_id(passport: &str) -> i32 {

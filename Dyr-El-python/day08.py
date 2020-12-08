@@ -21,6 +21,18 @@ def fileParse(inp, lineparser=lineParse,
 
 ## End of header boilerplate ###################################################
 
+class InstructionChanger:
+   def __init__(self, pc, address, newInstr):
+      self._pc = pc
+      self._address = address
+      self._newInstr = newInstr
+   def __enter__(self):
+      self._oldInstr = self._pc.changeInstr(self._address, self._newInstr)
+      return self
+   def __exit__(self, exc_type, exc_val, exc_tb):
+      self._pc.changeInstr(self._address, self._oldInstr)
+      return False
+
 class PC:
 
    def reset(self):
@@ -73,8 +85,13 @@ class PC:
          if cmd == instr:
             yield address
    
+   def swap(self, address, instr):
+      return InstructionChanger(self, address, instr)
+
    def changeInstr(self, address, instr):
+      oldInstr = self._prg[address][0]
       self._prg[address] = [instr, self._prg[address][1]]
+      return oldInstr
 
 def part1(pinp):
    pc = PC(pinp)
@@ -83,13 +100,13 @@ def part1(pinp):
 
 def part2(pinp):
    pc = PC(pinp)
-   for address in pc.findInstr("jmp"):
-      pc.changeInstr(address, "nop")
-      pc.reset()
-      pc.run()
-      if pc.isFinished():
-         return pc.acc
-      pc.changeInstr(address, "jmp")
+   for fromInstr, toInstr in (("jmp", "nop"), ("nop", "jmp")):
+      for address in pc.findInstr(fromInstr):
+         with pc.swap(address, toInstr):
+            pc.reset()
+            pc.run()
+            if pc.isFinished():
+               return pc.acc
 
 ## Start of footer boilerplate #################################################
 

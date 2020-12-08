@@ -2,12 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 using AdventOfCode;
-//using Position = AdventOfCode.GenericPosition2D<int>;
 
 namespace day08
 {
@@ -53,44 +49,29 @@ namespace day08
             {
                 var opCodes = new List<OpCode>()
                 {
-                    new OpCode("nop", delegate(int a) {}),
-                    new OpCode("acc", delegate(int a) { acc += a; }),
+                    new OpCode("nop", delegate(int a) { pc++;  }),
+                    new OpCode("acc", delegate(int a) { acc += a; pc++; }),
                     new OpCode("jmp", delegate(int a) { pc += a; }),
                 };
                 instructionSet = opCodes.ToDictionary(a => a.name, a => a);
             }
-
-            public void LoadProgram(string path)
-            {
-                var reader = File.OpenText(path);
-                source = new List<string>();
-                string line;
-                while ((line = reader.ReadLine()) != null)
-                    source.Add(line);
-                BuildProgram();
-            }
-
             private void BuildProgram()
             {
-                program.Clear();
+                program = new List<Instruction>();
                 foreach (string line in source)
                 {
                     string[] s = line.Split(' ').ToArray();
                     program.Add(new Instruction(instructionSet[s[0]], int.Parse(s[1])));
                 }
             }
-
-            public bool Execute()
+            public bool Run()
             {
                 while ((pc >= 0) && (pc < program.Count))
                 {
                     if (!visited.Add(pc))
                         return false;
                     orderVisited.Add(pc);
-                    bool inc = program[pc].opCode.name != "jmp";
                     program[pc].Execute();
-                    if (inc)
-                        pc++;
                 }
                 return true;
             }
@@ -98,9 +79,9 @@ namespace day08
 
         static Object PartA()
         {
-            var c = new Computer();
-            c.LoadProgram(inputPath);
-            c.Execute();
+            var input = ReadInputs.ReadStrings(inputPath);
+            var c = new Computer(input);
+            c.Run();
             var ans = c.acc;
             Console.WriteLine("Part A: Result is {0}", ans);
             return ans;
@@ -108,22 +89,22 @@ namespace day08
 
         static Object PartB()
         {
-            var c = new Computer();
-            c.LoadProgram(inputPath);
-            c.Execute();
+            var input = ReadInputs.ReadStrings(inputPath);
+            var computer = new Computer(input);
+            computer.Run();
             int ans = 0;
-            foreach (int offs in c.orderVisited)
+            foreach (int offs in computer.orderVisited)
             {
-                var d = new Computer(c.source);
-                var i = d.program[offs];
+                var c = new Computer(computer.source);
+                var i = c.program[offs];
                 var n = i.opCode.name;
                 if (n != "acc")
                 {
-                    i.opCode = d.instructionSet[n == "jmp" ? "nop" : "jmp"];
-                    d.program[offs] = i;
-                    if (d.Execute())
+                    i.opCode = c.instructionSet[n == "jmp" ? "nop" : "jmp"];
+                    c.program[offs] = i;
+                    if (c.Run())
                     {
-                        ans = d.acc;
+                        ans = c.acc;
                         break;
                     }
                 }

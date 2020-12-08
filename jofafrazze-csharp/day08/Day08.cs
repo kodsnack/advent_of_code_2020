@@ -16,120 +16,118 @@ namespace day08
         readonly static string nsname = typeof(Day08).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
-        struct OpCode
+        public class Computer
         {
-            public string name;
-            public Action<int> action;
-            public OpCode(string n, Action<int> a) { name = n; action = a; }
-        };
-
-        static int register = 0;
-        static int pc = 0;
-
-        static readonly List<OpCode> opCodes = new List<OpCode>()
-        {
-            new OpCode("nop", delegate(int a) {}),
-            new OpCode("acc", delegate(int a) { register += a; }),
-            new OpCode("jmp", delegate(int a) { pc += a; }),
-        };
-        static readonly Dictionary<string, int> instructionSet = opCodes.Select((x, i) => new { x, i }).ToDictionary(a => a.x.name, a => a.i);
-
-        struct Instruction
-        {
-            public OpCode opCode;
-            public int argument;
-            public void Execute()
+            public struct OpCode
             {
-                opCode.action(argument);
+                public string name;
+                public Action<int> action;
+                public OpCode(string n, Action<int> a) { name = n; action = a; }
+            };
+            public struct Instruction
+            {
+                public OpCode opCode;
+                public int argument;
+                public Instruction(OpCode c, int a) { opCode = c; argument = a; }
+                public void Execute() { opCode.action(argument); }
+            };
+            public int acc = 0;
+            public int pc = 0;
+            public List<string> source = new List<string>();
+            public List<Instruction> program = new List<Instruction>();
+            public Dictionary<string, OpCode> instructionSet;
+            public HashSet<int> visited = new HashSet<int>();
+            public List<int> orderVisited = new List<int>();
+            public Computer(Computer c) : this(c.source)
+            {
+                acc = c.acc;
+                pc = c.pc;
             }
-        };
-
-        static List<Instruction> ReadInput(string path)
-        {
-            StreamReader reader = File.OpenText(path);
-            List<Instruction> list = new List<Instruction>();
-            string line;
-            while ((line = reader.ReadLine()) != null)
+            public Computer(List<string> s) : this()
             {
-                Instruction i = new Instruction();
-                string[] s = line.Split(' ').ToArray();
-                i.opCode = opCodes[instructionSet[s[0]]];
-                i.argument = int.Parse(s[1]);
-                list.Add(i);
+                source = new List<string>(s);
+                BuildProgram();
             }
-            return list;
-        }
-
-        static HashSet<int> visited = new HashSet<int>();
-        static List<int> order = new List<int>();
-
-        static bool RunProgramA(List<Instruction> program, bool registerOrder)
-        {
-            pc = 0;
-            register = 0;
-            while ((pc >= 0) && (pc < program.Count))
+            public Computer() { Init(); }
+            private void Init()
             {
-                if (visited.Contains(pc))
+                var opCodes = new List<OpCode>()
                 {
-                    return false;
+                    new OpCode("nop", delegate(int a) {}),
+                    new OpCode("acc", delegate(int a) { acc += a; }),
+                    new OpCode("jmp", delegate(int a) { pc += a; }),
+                };
+                instructionSet = opCodes.ToDictionary(a => a.name, a => a);
+            }
+
+            public void LoadProgram(string path)
+            {
+                var reader = File.OpenText(path);
+                source = new List<string>();
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                    source.Add(line);
+                BuildProgram();
+            }
+
+            private void BuildProgram()
+            {
+                program.Clear();
+                foreach (string line in source)
+                {
+                    string[] s = line.Split(' ').ToArray();
+                    program.Add(new Instruction(instructionSet[s[0]], int.Parse(s[1])));
                 }
-                else {
-                    visited.Add(pc);
-                    if (registerOrder)
-                        order.Add(pc);
+            }
+
+            public bool Execute()
+            {
+                while ((pc >= 0) && (pc < program.Count))
+                {
+                    if (!visited.Add(pc))
+                        return false;
+                    orderVisited.Add(pc);
                     bool inc = program[pc].opCode.name != "jmp";
                     program[pc].Execute();
                     if (inc)
                         pc++;
                 }
-            }
-            return true;
-        }
-
-        static void RunProgramB(List<Instruction> program)
-        {
-            foreach (int offs in order)
-            {
-                visited = new HashSet<int>();
-                List<Instruction> p = new List<Instruction>(program);
-                string s = p[offs].opCode.name;
-                if (s != "acc")
-                {
-                    Instruction i = p[offs];
-                    if (s == "jmp")
-                        i.opCode = opCodes[instructionSet["nop"]];
-                    else
-                        i.opCode = opCodes[instructionSet["jmp"]];
-                    p[offs] = i;
-                    if (RunProgramA(p, false))
-                        return;
-                }
+                return true;
             }
         }
-
-        //static void PartAB()
-        //{
-        //    List<Instruction> program = ReadInput();
-        //    RunProgram(program, 0);
-        //    Console.WriteLine("Part A: Result is {0}.", registers[1]);
-        //    RunProgram(program, 1);
-        //    Console.WriteLine("Part B: Result is {0}.", registers[1]);
-        //}
 
         static Object PartA()
         {
-            List<Instruction> program = ReadInput(inputPath);
-            RunProgramA(program, true);
-            int ans = register;
+            var c = new Computer();
+            c.LoadProgram(inputPath);
+            c.Execute();
+            var ans = c.acc;
             Console.WriteLine("Part A: Result is {0}", ans);
             return ans;
         }
 
         static Object PartB()
         {
-            List<Instruction> program = ReadInput(inputPath);
-            RunProgramB(program);
-            int ans = register;
+            var c = new Computer();
+            c.LoadProgram(inputPath);
+            c.Execute();
+            int ans = 0;
+            foreach (int offs in c.orderVisited)
+            {
+                var d = new Computer(c.source);
+                var i = d.program[offs];
+                var n = i.opCode.name;
+                if (n != "acc")
+                {
+                    i.opCode = d.instructionSet[n == "jmp" ? "nop" : "jmp"];
+                    d.program[offs] = i;
+                    if (d.Execute())
+                    {
+                        ans = d.acc;
+                        break;
+                    }
+                }
+            }
             Console.WriteLine("Part B: Result is {0}", ans);
             return ans;
         }
@@ -143,8 +141,8 @@ namespace day08
 
         public static bool MainTest()
         {
-            int a = 42;
-            int b = 4711;
+            int a = 1709;
+            int b = 1976;
             return (PartA().Equals(a)) && (PartB().Equals(b));
         }
     }

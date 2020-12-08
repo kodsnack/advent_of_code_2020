@@ -73,3 +73,6 @@
 [submodule "advent-of-code"]
 	path = advent-of-code
 	url = https://github.com/pblcc/advent-of-code
+[submodule "albertdahlin-elm"]
+	path = albertdahlin-elm
+	url = git@github.com:albertdahlin/elm-advent-of-code.git

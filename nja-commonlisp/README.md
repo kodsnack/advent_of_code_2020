@@ -14,7 +14,9 @@ To load "advent-of-code":
 [package aoc2020.day04]...........................
 [package aoc2020.day05]...........................
 [package aoc2020.day06]...........................
-[package aoc2020.tests].......
+[package aoc2020.day07]...........................
+[package aoc2020.day08]...........................
+[package aoc2020.tests].........
 ("advent-of-code")
 CL-USER> (fiasco:all-tests)
 ALL-TESTS (Suite)
@@ -25,8 +27,10 @@ ALL-TESTS (Suite)
     DAY04.................................................................[ OK ]
     DAY05.................................................................[ OK ]
     DAY06.................................................................[ OK ]
+    DAY07.................................................................[ OK ]
+    DAY08.................................................................[ OK ]
 
 T
-(#<test-run of ALL-TESTS: 8 tests, 12 assertions, 0 failures in 0.188 sec>)
-CL-USER>
+(#<test-run of ALL-TESTS: 10 tests, 16 assertions, 0 failures in 0.203 sec>)
+CL-USER> 
 ```

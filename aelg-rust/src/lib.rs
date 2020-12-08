@@ -4,10 +4,13 @@ mod day03;
 mod day04;
 mod day05;
 mod day06;
+mod day07;
+mod day08;
 pub mod error;
 pub mod parser;
 pub mod readinput;
 pub mod testhelper;
+pub mod vm;
 
 pub type AOCResult<T> = Result<T, error::AOCError>;
 pub use error::AOCError;
@@ -40,6 +43,14 @@ pub fn solveday(
         6 => {
             let r = day06::parse(input);
             r.map(day06::solve)
+        }
+        7 => {
+            let r = day07::parse(input);
+            r.map(day07::solve)
+        }
+        8 => {
+            let r = day08::parse(input);
+            r.map(day08::solve)
         }
         _ => Ok((Some("No solution for this day yet.".into()), None)),
     }

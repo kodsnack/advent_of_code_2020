@@ -71,3 +71,6 @@
 [submodule "Advent-of-code-in-Go"]
 	path = Advent-of-code-in-Go
 	url = git@github.com:thijsheijden/Advent-of-code-in-Go.git
+[submodule "advent-of-code"]
+	path = advent-of-code
+	url = https://github.com/pblcc/advent-of-code

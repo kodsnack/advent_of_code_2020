@@ -37,23 +37,6 @@ def part2(pinp):
 
 if __name__ == "__main__":
     inp = readInput()
-#     inp = """abc
-
-# a
-# b
-# c
-
-# ab
-# ac
-
-# a
-# a
-# a
-# a
-
-# b"""
-    
-    ## Update for input specifics ##############################################
     parseInp = fileParse(inp, tokenPattern=wsTokenPattern)
 
     print("Input is '" + str(parseInp[:10])[:160] + 

@@ -20,7 +20,6 @@ def run_program(program):
     while pc not in checked:
 
         pline = program[pc]
-        #print(' pc = ' + str(pc) + ' instruction = ' + pline[0] + 'nr = ' + str(pline[1]))
         checked.append(pc)
 
         if pline[0] == 'nop':
@@ -52,7 +51,6 @@ def solve_b():
 
     f_acc = None
     for i, line in enumerate(programl):
-        #print('i = ' + str(i) + ' line[0] = ' + line[0] + ' line[1] = ' + str(line[1]))
         if line[0] == 'acc':
             continue
 
@@ -62,8 +60,7 @@ def solve_b():
 
         elif line[0] == 'jmp':
             tempprog[i][0] = 'nop'
-        #print(programl)
-        #print(tempprog)
+
 
         acc, fin = run_program(tempprog)
         if fin is True:
@@ -74,6 +71,6 @@ def solve_b():
 
 initialize()
 
-# print(solve_a())
+print(solve_a())
 
 print(solve_b())

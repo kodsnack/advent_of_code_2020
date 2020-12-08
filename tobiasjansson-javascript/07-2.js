@@ -14,7 +14,7 @@ lines.forEach(line => {
     subbags(top, contain);
 });
 
-console.log(countshiny(0, 'shiny gold'));
+console.log(countbags(0, 'shiny gold'));
 
 function subbags(top, subbags) {
     subbags.split(',').forEach(x => {
@@ -32,11 +32,11 @@ function subbags(top, subbags) {
     });
 }
 
-function countshiny(count, bag) {
+function countbags(count, bag) {
     if (bags[bag]) {
         bags[bag].forEach(b => {
            count += b.amount;
-           count += b.amount * countshiny(0, b.color);
+           count += b.amount * countbags(0, b.color);
         });
     }
     return count;

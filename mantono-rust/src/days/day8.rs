@@ -89,64 +89,40 @@ pub fn first(input: String) -> String {
 }
 
 pub fn second(input: String) -> String {
-    let mut instr: Vec<Instruction> = input
+    let instr: Vec<Instruction> = input
         .lines()
         .map(|line| Instruction::from(line))
         .collect::<Vec<Instruction>>();
 
-    let mut executed_instr: HashSet<usize> = HashSet::with_capacity(instr.len());
-    let mut intrs_stack: Vec<usize> = Vec::with_capacity(instr.len());
-
-    let mut instr_ptr: ArchSize = 0;
-    let mut acc: ArchSize = 0;
+    let halt_and_catch_fire: usize = instr.len();
+    let mut comp = Computer::load(instr.clone());
     let mut restart_attempts = 0;
+    let mut do_not_execute: HashSet<usize> = HashSet::with_capacity(instr.len());
     loop {
-        println!("{}", instr_ptr);
-        let safe_ptr: usize = instr_ptr as usize;
-        if executed_instr.contains(&safe_ptr) {
-            // Restart computer
-            println!("Restarting computer, {}", restart_attempts);
-            executed_instr.clear();
-            acc = 0;
-            instr_ptr = 0;
-            restart_attempts += 1;
-
-            let i = intrs_stack.len() - (1 + restart_attempts);
-            let addr = intrs_stack.get(i).unwrap();
-            let change_instr = &instr.get(*addr).unwrap();
-            match change_instr {
-                Instruction::Nop(n) => instr.insert(*addr, Instruction::Jmp(*n)),
-                Instruction::Jmp(n) => instr.insert(*addr, Instruction::Nop(*n)),
-                _ => {}
+        match comp.next() {
+            Some((i, _)) if i == halt_and_catch_fire => break,
+            Some((i, _)) if do_not_execute.contains(&i) => {
+                if restart_attempts == halt_and_catch_fire {
+                    panic!("ffs")
+                }
+                comp.restart();
+                println!("Flipping {}", restart_attempts);
+                comp.flip(restart_attempts);
+                restart_attempts += 1;
             }
-            intrs_stack.clear();
-        }
-
-        if safe_ptr == instr.len() {
-            return acc.to_string();
-        }
-
-        let next_instr: &Instruction = instr
-            .get(safe_ptr)
-            .expect(&format!("Failed to get instruction at index {}", instr_ptr));
-
-        executed_instr.insert(safe_ptr);
-
-        match next_instr {
-            Instruction::Nop(_) => instr_ptr += 1,
-            Instruction::Jmp(m) => instr_ptr += m,
-            Instruction::Acc(v) => {
-                instr_ptr += 1;
-                acc += v;
+            Some((i, _)) => {
+                do_not_execute.insert(i);
             }
+            None => break,
         }
-        intrs_stack.push(safe_ptr)
     }
+    return comp.acc().to_string();
 }
 
 type ArchSize = isize;
 
 struct Computer {
+    firmware: Vec<Instruction>,
     instructions: Vec<Instruction>,
     ptr: usize,
     acc: isize,
@@ -155,25 +131,41 @@ struct Computer {
 impl Computer {
     pub fn load(instructions: Vec<Instruction>) -> Computer {
         Computer {
+            firmware: instructions.clone(),
             instructions,
             ptr: 0,
             acc: 0,
         }
     }
 
+    pub fn acc(&self) -> isize {
+        self.acc
+    }
+
     pub fn restart(&mut self) {
         self.ptr = 0;
         self.acc = 0;
+        self.instructions = self.firmware.clone();
+    }
+
+    pub fn flip(&mut self, i: usize) {
+        let new_instr: Instruction = match self.instructions.remove(i) {
+            Instruction::Jmp(n) => Instruction::Nop(n),
+            Instruction::Nop(n) => Instruction::Jmp(n),
+            x => x,
+        };
+        self.instructions.insert(i, new_instr)
     }
 
     fn move_pointer(&mut self, change: isize) {
         let abs_change: usize = change.abs() as usize;
         if change < 0 {
-            self.ptr
+            self.ptr = self
+                .ptr
                 .checked_sub(abs_change)
                 .expect("Unable to subtract");
         } else {
-            self.ptr.checked_add(abs_change).expect("Unable to add");
+            self.ptr = self.ptr.checked_add(abs_change).expect("Unable to add");
         }
     }
 }
@@ -182,16 +174,17 @@ impl Iterator for Computer {
     type Item = (usize, Instruction);
 
     fn next(&mut self) -> Option<(usize, Instruction)> {
+        let ptr_before: usize = self.ptr;
         let next: Instruction = self.instructions.get(self.ptr)?.clone();
         match next {
-            Instruction::Nop(_) => self.ptr += 1,
+            Instruction::Nop(_) => self.move_pointer(1),
             Instruction::Jmp(n) => self.move_pointer(n),
             Instruction::Acc(n) => {
-                self.ptr += 1;
+                self.move_pointer(1);
                 self.acc += n;
             }
         };
-        Some((self.ptr - 1, next))
+        Some((ptr_before, next))
     }
 }
 
@@ -212,13 +205,6 @@ impl Instruction {
             "acc" => Instruction::Acc(num),
             "jmp" => Instruction::Jmp(num),
             _ => panic!("Unsupported instructiuon: {}", inst),
-        }
-    }
-
-    fn is_acc(&self) -> bool {
-        match self {
-            Instruction::Acc(_) => true,
-            _ => false,
         }
     }
 }

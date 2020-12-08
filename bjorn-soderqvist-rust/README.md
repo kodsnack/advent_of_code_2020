@@ -52,3 +52,23 @@ These are some things I learned along the way.
 - I got to try out both `HashSet` and `HashMap` today
 - Being most proficient in JavaScript I have no understanding of where I need `&`, `&&`, `*` or `**`. Rustc is extremely forgiving and keeps correcting me until the code seems good. After which point it works. Magic?
 - `hashmap.entry(key)or_insert(0) += 1` was perfect for a histogram scenario. In JS I'd need to check for presence of the key and optionally setting it to 0 before adding 1 to it.
+
+
+# Day 7
+
+- First time using a `tuple`.
+
+I was considering using something clever for the text parsing:
+- `nom` seems to be popular, however I deemed myself too impatient to try and learn it.
+- I don't like regular expressions.
+- In the end I just went with string slices, `lines()`, `split()`, `replace()`
+
+At the end of the solution I just kept trying to fix whatever the compiler told me was wrong instead of thinking. There's a lot of things I am not so certain about, when should I `clone` a string and when should I lend it out? 
+
+
+# Day 8
+
+I was quite pleased with my first attempt at making a `run()` function returning a `Result<i32,  &'static str>`. Then threw it out because of the following: I wanted a function to mutate the vector that was passed as an argument. But since the vector is borrowed that's not allowed. I tried various approaches and in the end I just gave up and made a big function containing everything.
+
+In part 2 I'm starting to understand a bit more about how to control flow in Rust. Even though I would have liked to break it up into more functions, I like how there's an outer `for` loop which controls which line to alter, then a `loop` for the actual program and it will `break` as soon as it has detected that the virtual program is stuck in a loop (or the next line is a negative number). Only if it correctly detects a solution it will return a number. If it can't find any solutions it will `panic`.
+

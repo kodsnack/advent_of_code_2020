@@ -1,0 +1,42 @@
+/* Advent of code 2020, day 8, part 1+2 in Open Object REXX */
+
+input = .stream~new('day08.txt')~arrayin
+
+say .CPU~new~run(input)~accumulator -- Part 1
+
+loop i over input~allindexes
+    parse value input[i] with opcode operand
+    if opcode = 'acc' then iterate -- Save some cycles
+    input[i] = opcode~translate('nojm', 'jmno') operand
+    cpu = .CPU~new
+    if cpu~run(input)~pc > input~items then leave
+    input[i] = opcode operand -- Restore program
+end
+
+say cpu~run(input)~accumulator -- Part 2
+exit
+
+::class CPU
+::attribute pc
+::attribute accumulator
+
+::method init
+    expose pc accumulator
+    use strict arg pc = 1, accumulator = 0
+
+::method run
+    expose pc accumulator
+    use strict arg input
+    seen = .set~new
+    loop forever
+        if seen~hasitem(pc) then return self
+        seen~put(pc)
+        parse value input[pc] with opcode operand
+        pc += 1
+        select
+            when opcode = 'acc' then accumulator += operand
+            when opcode = 'nop' then nop
+            when opcode = 'jmp' then pc += operand - 1
+            otherwise return self
+        end
+    end

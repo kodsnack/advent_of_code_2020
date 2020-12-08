@@ -46,3 +46,9 @@ These are some things I learned along the way.
 - To get automatic feedback after each save, you can [`cargo install cargo-watch`](https://crates.io/crates/cargo-watch).
 - To import a file as a `utf-8` string, use the macro [`include_str!("input.txt")`](https://doc.rust-lang.org/std/macro.include_str.html).
 
+
+## Day 6
+
+- I got to try out both `HashSet` and `HashMap` today
+- Being most proficient in JavaScript I have no understanding of where I need `&`, `&&`, `*` or `**`. Rustc is extremely forgiving and keeps correcting me until the code seems good. After which point it works. Magic?
+- `hashmap.entry(key)or_insert(0) += 1` was perfect for a histogram scenario. In JS I'd need to check for presence of the key and optionally setting it to 0 before adding 1 to it.

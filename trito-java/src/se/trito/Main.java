@@ -18,5 +18,7 @@ public class Main {
         Dec04b.run("trito-java/files/dec04.txt");
         Dec05a.run("trito-java/files/dec05.txt");
         Dec05b.run("trito-java/files/dec05.txt");
+        Dec06a.run("trito-java/files/dec06.txt");
+        Dec06b.run("trito-java/files/dec06.txt");
     }
 }

@@ -1,17 +1,11 @@
 const { strictEqual } = require("assert");
-const { solve1, solve2, parseData } = require("./day-05");
+const { getSeatID } = require("./day-05");
 
 describe("Day 05 tests", () => {
-  const testInput = ``;
-  const data = parseData(testInput);
-
-  it("should", () => {
-    const result = solve1(data);
-    strictEqual(result, true);
-  });
-
-  it("should", () => {
-    const result = solve2(data);
-    strictEqual(result, true);
+  it("should find seat IDs", () => {
+    strictEqual(getSeatID("FBFBBFFRLR"), 357);
+    strictEqual(getSeatID("BFFFBBFRRR"), 567);
+    strictEqual(getSeatID("FFFBBBFRRR"), 119);
+    strictEqual(getSeatID("BBFFBBFRLL"), 820);
   });
 });

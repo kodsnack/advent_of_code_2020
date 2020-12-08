@@ -9,6 +9,7 @@
 (defpackage #:aoc2020.day03 (:use #:cl))
 (defpackage #:aoc2020.day04 (:use #:cl))
 (defpackage #:aoc2020.day05 (:use #:cl))
+(defpackage #:aoc2020.day06 (:use #:cl #:alexandria))
 
 (fiasco:define-test-package #:aoc2020.tests
   (:use #:aoc))

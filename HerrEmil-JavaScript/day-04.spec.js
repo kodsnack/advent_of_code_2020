@@ -32,7 +32,7 @@ iyr:2011 ecl:brn hgt:59in`;
   });
 });
 
-describe.only("Day 04, Puzzle 2 tests", () => {
+describe("Day 04, Puzzle 2 tests", () => {
   it("should validate birth year", () => {
     strictEqual(validByr("2002"), true);
     strictEqual(validByr("2003"), false);

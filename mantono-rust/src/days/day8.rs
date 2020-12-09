@@ -58,7 +58,7 @@ use std::convert::TryFrom;
 pub fn first(input: String) -> String {
     let instr: Vec<Instruction> = input
         .lines()
-        .map(|line| Instruction::from(line))
+        .filter_map(|line| Instruction::from(line).ok())
         .collect::<Vec<Instruction>>();
 
     let mut executed_instr: HashSet<usize> = HashSet::with_capacity(instr.len());
@@ -91,29 +91,31 @@ pub fn first(input: String) -> String {
 pub fn second(input: String) -> String {
     let instr: Vec<Instruction> = input
         .lines()
-        .map(|line| Instruction::from(line))
+        .filter_map(|line| Instruction::from(line).ok())
         .collect::<Vec<Instruction>>();
 
     let halt_and_catch_fire: usize = instr.len();
     let mut comp = Computer::load(instr.clone());
     let mut restart_attempts = 0;
-    let mut do_not_execute: HashSet<usize> = HashSet::with_capacity(instr.len());
+    let mut executed_instr: usize = 0;
     loop {
         match comp.next() {
             Some((i, _)) if i == halt_and_catch_fire => break,
-            Some((i, _)) if do_not_execute.contains(&i) => {
-                if restart_attempts == halt_and_catch_fire {
-                    panic!("ffs")
-                }
-                comp.restart();
-                println!("Flipping {}", restart_attempts);
-                comp.flip(restart_attempts);
-                restart_attempts += 1;
-            }
-            Some((i, _)) => {
-                do_not_execute.insert(i);
-            }
             None => break,
+            _ => {
+                if executed_instr < halt_and_catch_fire {
+                    executed_instr += 1;
+                } else {
+                    if restart_attempts == halt_and_catch_fire {
+                        panic!("ffs")
+                    }
+                    comp.restart();
+                    println!("Flipping {}", restart_attempts);
+                    comp.flip(restart_attempts);
+                    executed_instr = 0;
+                    restart_attempts += 1;
+                }
+            }
         }
     }
     return comp.acc().to_string();
@@ -196,15 +198,49 @@ enum Instruction {
 }
 
 impl Instruction {
-    fn from(input: &str) -> Instruction {
-        let parts = input.split_ascii_whitespace().collect::<Vec<&str>>();
-        let inst: &str = parts.get(0).unwrap();
-        let num: ArchSize = parts.get(1).unwrap().parse::<ArchSize>().unwrap();
+    fn from(input: &str) -> Result<Instruction, InstrErr> {
+        let parts = input.trim().split_ascii_whitespace().collect::<Vec<&str>>();
+        let inst: &str = parts.get(0).ok_or(InstrErr::NoInstruction)?;
+        let num: ArchSize = parts
+            .get(1)
+            .ok_or(InstrErr::NoNum)?
+            .parse::<ArchSize>()
+            .map_err(|_| InstrErr::NoNum)?;
         match inst {
-            "nop" => Instruction::Nop(num),
-            "acc" => Instruction::Acc(num),
-            "jmp" => Instruction::Jmp(num),
-            _ => panic!("Unsupported instructiuon: {}", inst),
+            "nop" => Ok(Instruction::Nop(num)),
+            "acc" => Ok(Instruction::Acc(num)),
+            "jmp" => Ok(Instruction::Jmp(num)),
+            _ => Err(InstrErr::UnsupportedInstruction(format!(
+                "Unsupported instructiuon: {}",
+                inst
+            ))),
         }
+    }
+}
+
+enum InstrErr {
+    NoInstruction,
+    NoNum,
+    UnsupportedInstruction(String),
+}
+
+#[cfg(test)]
+mod tests {
+    use super::second;
+
+    #[test]
+    fn test_part2_break_out() {
+        let input = r"
+            nop +0
+            acc +1
+            jmp +4
+            acc +3
+            jmp -3
+            acc -99
+            acc +1
+            jmp -4
+            acc +6
+            ";
+        second(input.to_string());
     }
 }

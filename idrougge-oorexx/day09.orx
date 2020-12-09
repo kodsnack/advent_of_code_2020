@@ -1,0 +1,39 @@
+/* Advent of code 2020, day 9, part 1+2 in Open Object REXX */
+
+input = .stream~new('day09.txt')~arrayin
+
+preamble = .circularqueue~new(25)
+
+loop nr over input for preamble~size
+    preamble~append(nr)
+end
+
+loop position = preamble~size + 1 to input~items until \found
+    target = input[position]
+    loop m over preamble~allindexes until found
+        loop n = m + 1 to preamble~size until found
+            found = preamble[m] + preamble[n] = target
+        end
+    end
+    preamble~append(target)
+end
+
+say target
+
+numeric digits 17
+
+loop start over input~allindexes
+    sum = input[start]
+    do offset = start + 1 to input~items
+        sum += input[offset]
+        if sum = target then leave start
+        if sum > target then leave
+    end
+end
+
+hi = 0; lo = target
+loop i = start to offset
+    hi = max(input[i], hi)
+    lo = min(input[i], lo)
+end
+say hi + lo

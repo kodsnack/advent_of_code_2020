@@ -74,36 +74,24 @@ pub fn second(input: String) -> String {
         .map(|line: &str| map_bags(line))
         .collect::<HashMap<String, Vec<BagContent>>>();
 
-    (rec_explore(&bags, "shiny gold")).to_string()
-}
+    let mut stack: Vec<String> = Vec::with_capacity(512);
+    stack.push("shiny gold".to_string());
+    let mut bag_count: usize = 0;
 
-// shiny gold bags contain 1 dark olive bag, 2 vibrant plum bags.
-// dark olive bags contain 3 faded blue bags, 4 dotted black bags.
-// vibrant plum bags contain 5 faded blue bags, 6 dotted black bags.
-// faded blue bags contain no other bags.
-// dotted black bags contain no other bags.
-fn rec_explore(bags: &HashMap<String, Vec<BagContent>>, bag: &str) -> usize {
-    let next: &Vec<BagContent> = match bags.get(bag) {
-        None => {
-            println!("{} return => {}", bag, 1);
-            return 1;
+    while !stack.is_empty() {
+        let next: String = stack.pop().unwrap();
+        let content: &Vec<BagContent> = bags.get(&next).unwrap();
+
+        for bag in content {
+            for _ in 0..bag.quantity {
+                stack.push(bag.bag_type.clone())
+            }
         }
-        Some(next) => next,
-    };
 
-    if next.is_empty() {
-        println!("{} return => {}", bag, 1);
-        return 1;
+        bag_count += 1;
     }
 
-    let sum: usize = next
-        .iter()
-        .map(|c| rec_explore(bags, &c.bag_type) * c.size())
-        .sum();
-
-    let ret = sum + 1;
-    println!("{} return => {}", bag, ret);
-    ret
+    (bag_count - 1).to_string()
 }
 
 lazy_static::lazy_static! {

@@ -50,7 +50,7 @@ pub fn second(input: String) -> String {
     let mut end: usize = 2;
 
     loop {
-        let range: Range<usize> = dbg!(start..end);
+        let range: Range<usize> = start..end;
         let length = range.len();
         let sum: u64 = num[range].iter().sum();
         if sum == TARGET {

@@ -5,7 +5,7 @@ const input = fs.readFileSync("day06/input.txt").toString().split("\n\n");
 function computePartOne() {
   return input.reduce((sum, groupInput) => {
     const groupVotes = groupInput.split("\n");
-    const uniqueVotes = getUniqeVotes(groupVotes);
+    const uniqueVotes = getUniuqeVotes(groupVotes);
     return sum + uniqueVotes.length;
   }, 0);
 }
@@ -13,7 +13,7 @@ function computePartOne() {
 function computePartTwo() {
   return input.reduce((sum, groupInput) => {
     const groupVotes = groupInput.split("\n");
-    const uniqueVotes = getUniqeVotes(groupVotes);
+    const uniqueVotes = getUniuqeVotes(groupVotes);
     const commonGroupVotes = uniqueVotes.filter((vote) =>
       groupVotes.every((personVotes) => personVotes.includes(vote))
     );
@@ -21,7 +21,7 @@ function computePartTwo() {
   }, 0);
 }
 
-function getUniqeVotes(groupVotes) {
+function getUniuqeVotes(groupVotes) {
   const uniqueVotes = new Set();
   groupVotes.forEach((personVotes) => {
     const votes = personVotes.split("");

@@ -1,20 +1,9 @@
 using Printf
 using Test
 using Combinatorics
+include("part1.jl")
 testinput = parse.(Int,readlines("testinput.txt"))
 realData = parse.(Int64,readlines("input.txt"))
-function validNumber(data,index,lookBack)
-        comb = collect(combinations(data[index-lookBack:index-1],2))
-        filter!((x) -> sum(x) == data[index],comb)
-        return length(comb) > 0
-end
-function findInvalidNumber(data,lookback)
-        for index in range(lookback+1,stop=length(data))
-                if !validNumber(data,index,lookback)
-                        return index
-                end
-        end
-end
 function findMessage(data,lookback)
         invalidNumberIndex = findInvalidNumber(data,lookback)
         for start in range(1,stop=invalidNumberIndex-1)

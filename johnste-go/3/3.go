@@ -84,6 +84,7 @@ func main() {
 
 	product := 1
 	for _, num := range allSlopes {
+		fmt.Println(num)
 		product *= num
 	}
 	fmt.Printf("3B Answer: %d\n", product)

@@ -17,33 +17,23 @@ namespace day09
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
         static readonly int z = 25;
+
         static Object PartA()
         {
             var input = ReadInputs.ReadLongs(inputPath);
             long ans = 0;
-            for (int t = z; z < input.Count; t++)
+            bool found = true;
+            int t = z;
+            while (found)
             {
-                var pre = input.Skip(t - z).Take(z).ToList();
-                long tgt = input[t];
-                bool found = false;
+                found = false;
+                int offs = t - z;
+                ans = input[t];
                 for (int i = 0; i < z; i++)
-                {
-                    long a = pre[i];
                     for (int j = 0; j < z; j++)
-                    {
-                        if (i != j)
-                        {
-                            if (a + pre[j] == tgt)
-                                found = true;
-                        }
-
-                    }
-                }
-                if (!found)
-                {
-                    ans = tgt;
-                    break;
-                }
+                        if ((i != j) && (input[offs + i] + input[offs + j] == ans))
+                            found = true;
+                t++;
             }
             Console.WriteLine("Part A: Result is {0}", ans);
             return ans;
@@ -54,21 +44,19 @@ namespace day09
             var input = ReadInputs.ReadLongs(inputPath);
             long ans = 0;
             const long tgt = 167829540;
-            for (int t = 0; t < input.Count; t++)
+            int t = 0;
+            while (ans <= 0)
             {
                 long sum = 0;
                 int n = 0;
-                while ((sum < tgt) || (n < 2))
-                {
+                for (n = 0; n < 2 || sum < tgt; n++)
                     sum += input[t + n];
-                    n++;
-                }
                 if (sum == tgt)
                 {
                     var r = input.Skip(t).Take(n).ToList();
                     ans = r.Min() + r.Max();
-                    break;
                 }
+                t++;
             }
             Console.WriteLine("Part B: Result is {0}", ans);
             return ans;

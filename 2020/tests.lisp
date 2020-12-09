@@ -33,3 +33,7 @@
 (deftest day08 ()
   (is (= 1563 (aoc2020.day08::part1 (input-for 2020 08))))
   (is (= 767 (aoc2020.day08::part2 (input-for 2020 08)))))
+
+(deftest day09 ()
+  (is (= 26134589 (aoc2020.day09::part1 (input-for 2020 09))))
+  (is (= 3535124 (aoc2020.day09::part2 (input-for 2020 09) 26134589))))

@@ -63,11 +63,10 @@ func part1(input []int, num int) int {
 
 func part2(input []int, num int) int {
 	for n := range input {
-		res := make([]int, 0)
 		for i, sum := n, 0; i < len(input); i++ {
-			res = append(res, input[i])
 			sum += input[i]
 			if sum == num {
+				res := input[n : i+1]
 				sort.Ints(res)
 				return res[0] + res[len(res)-1]
 			}

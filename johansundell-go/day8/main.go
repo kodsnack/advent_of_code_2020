@@ -12,7 +12,6 @@ import (
 type op struct {
 	operation string
 	argument  int
-	hits      int
 }
 
 type instructions []op
@@ -24,10 +23,13 @@ func main() {
 	fmt.Println(p.fixProgram())
 }
 
+func (p instructions) test() int {
+	return 0
+}
+
 func (p instructions) fixProgram() int {
 	for i := 0; i < len(p); i++ {
 		t := make(instructions, len(p))
-		p.reset()
 		copy(t, p)
 		switch t[i].operation {
 		case "jmp":
@@ -46,11 +48,12 @@ func (p instructions) fixProgram() int {
 }
 
 func (program instructions) run() (tot int, err error) {
+	check := make(map[int]struct{}, len(program))
 	for pos := 0; pos < len(program); {
-		if program[pos].hits > 0 {
+		if _, found := check[pos]; found {
 			return tot, errors.New("About to enter loop")
 		}
-		program[pos].hits++
+		check[pos] = struct{}{}
 		switch program[pos].operation {
 		case "acc":
 			tot = tot + program[pos].argument
@@ -62,12 +65,6 @@ func (program instructions) run() (tot int, err error) {
 		}
 	}
 	return tot, nil
-}
-
-func (p instructions) reset() {
-	for i := 0; i < len(p); i++ {
-		p[i].hits = 0
-	}
 }
 
 func parseInput(data []string) instructions {

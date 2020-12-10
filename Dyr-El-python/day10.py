@@ -21,126 +21,28 @@ def fileParse(inp, lineparser=lineParse,
 
 ## End of header boilerplate ###################################################
 
-def findChain(d, j, s, t, tot):
-   # print(j, t, s)
-   if j == t-3:
-      if len(s) == tot:
-         return []
-      else:
-         print(len(s))
-         return None
-   if j in d:
-      l = d[j]
-      for i in sorted(l):
-         if i in s:
-            continue
-         s2=set(s)
-         s2.add(i)
-         r = findChain(d, i, s2, t, tot)
-         if r != None:
-            return [i] + r
-   return None
-
+def joltages(pinp):
+   result = sorted(list(map(int, pinp)))
+   return [0] + result + [max(result)+3]
 
 def part1(pinp):
-   joltages = list(map(int, pinp))
-   d = dict()
-   target = max(joltages)+3
-   for j in joltages:
-      for v in range(1, 4):
-         if j-v not in d:
-            d[j-v] = list()
-         d[j-v].append(j)
-   chain = findChain(d, 0, set(), target, len(joltages))
-   chain = [0] + chain + [target]
-   s1, s3 = 0, 0
-   for i, j in zip(chain, chain[1:]):
-      if j-i==1:
-         s1+=1
-      if j-i==3:
-         s3+=1
-   print(chain)
-   print(s1, s3, s1*s3)
-   return "<solution1>"
-
-cache = {}
-def countWays(d, s, target):
-   print(target, s)
-   fs = frozenset(s)
-   if (fs, target) in cache:
-      return cache[(fs, target)]
-   sm = 0
-   for i in range(1, 4):
-      nxt = target - i
-      if nxt in d and nxt not in s:
-         s2 = set(s)
-         s2.add(nxt)
-         sm += countWays(d, s2, nxt)
-   cache[(fs, target)] = sm
-   return sm
-
-def noWays(l, idx):
-   if idx > len(l) - 2:
-      return 1
-   if l[idx+1] - l[idx-1] > 3:
-      v = noWays(l, idx+1)
-      return v
-   l2 = l[:idx] + l[idx+1:]
-   v = noWays(l, idx+1) + noWays(l2, idx)
-   return v
-   
+   j = joltages(pinp)
+   print(j)
+   diffs = [y-x for x, y in zip(j, j[1:])]
+   return diffs.count(1)*diffs.count(3)
 
 def part2(pinp):
-   joltages = [0] + list(map(int, pinp))
-   joltages.append(max(joltages)+3)
-   joltages.sort()
-   print(joltages)
-   print(noWays(joltages, 1))
-   # d = dict()
-   # for j in joltages:
-   #    for v in range(1, 4):
-   #       if j+v not in d:
-   #          d[j+v] = list()
-   #       d[j+v].append(j)
-   # nw = {target:1}
-   # print(countWays(d, set(), target))
-   
+   j = joltages(pinp)
+   d = {0:1}
+   for i in j[1:]:
+      d[i] = d.get(i-1, 0) + d.get(i-2, 0) + d.get(i-3, 0)
+   return d[max(j)]   
 
 ## Start of footer boilerplate #################################################
 
 if __name__ == "__main__":
     inp = readInput()
-#     inp = """28
-# 33
-# 18
-# 42
-# 31
-# 14
-# 46
-# 20
-# 48
-# 47
-# 24
-# 23
-# 49
-# 45
-# 19
-# 38
-# 39
-# 11
-# 1
-# 32
-# 25
-# 35
-# 8
-# 17
-# 7
-# 9
-# 4
-# 2
-# 34
-# 10
-# 3"""
+#     inp = """"""
     
     ## Update for input specifics ##############################################
     parseInp = fileParse(inp, tokenPattern=wsTokenPattern)

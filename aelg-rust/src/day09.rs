@@ -44,27 +44,16 @@ fn find_non_match(preamble: usize, v: &Vec<i64>) -> i64 {
 }
 
 fn find_contig(x: i64, v: &Data) -> i64 {
-  let (mut a, mut b) = (v.len(), 0); // Backwards is faster...
-  loop {
-    if let Some(s) = v.get(a..b) {
-      let sum: i64 = s.iter().sum();
-      if sum < x {
-        b += 1;
-      }
-      if sum > x {
-        a -= 1;
-        b = a + 2;
-      }
-      if sum == x {
-        if let (Some(a), Some(b)) = (s.iter().min(), s.iter().max()) {
+  for window_size in 2.. {
+    for w in v.windows(window_size) {
+      if w.iter().sum::<i64>() == x {
+        if let (Some(a), Some(b)) = (w.iter().min(), w.iter().max()) {
           return a + b;
         }
       }
-    } else {
-      a -= 1;
-      b = a + 2;
     }
   }
+  -1
 }
 
 fn solve1(v: &Data) -> Option<String> {

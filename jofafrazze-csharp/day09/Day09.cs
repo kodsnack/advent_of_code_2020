@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
 using AdventOfCode;
-//using Position = AdventOfCode.GenericPosition2D<int>;
 
 namespace day09
 {
@@ -16,22 +10,20 @@ namespace day09
         readonly static string nsname = typeof(Day09).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
-        static readonly int z = 25;
-
         static Object PartA()
         {
             var input = ReadInputs.ReadLongs(inputPath);
             long ans = 0;
             bool found = true;
-            int t = z;
+            const int n = 25;
+            int t = n;
             while (found)
             {
                 found = false;
-                int offs = t - z;
                 ans = input[t];
-                for (int i = 0; i < z; i++)
-                    for (int j = 0; j < z; j++)
-                        if ((i != j) && (input[offs + i] + input[offs + j] == ans))
+                for (int i = 0; i < n; i++)
+                    for (int j = 0; j < n; j++)
+                        if ((i != j) && (input[t - n + i] + input[t - n + j] == ans))
                             found = true;
                 t++;
             }

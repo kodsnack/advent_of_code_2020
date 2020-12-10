@@ -8,15 +8,20 @@
 #include <algorithm>
 #include <cassert>
 #include <deque>
+#include <filesystem>
 #include <functional>
 #include <iostream>
 #include <regex>
+#include <stddef.h>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <tuple>
+#include <type_traits>
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
+#include <vector>
 
 #define CATCH_CONFIG_RUNNER
 #include <catch2/catch.hpp>
@@ -33,12 +38,12 @@ int parseLine(const string& line)
 	auto n = std::stoi(remaining, &taken);
 	return n;
 
-/*
-	regex re("(\\w+)\\)(\\w+)");
-	smatch m;
-	regex_match(line, m, re);
-	return {m[1].str(), m[2].str()};
-*/
+	/*
+	    regex re("(\\w+)\\)(\\w+)");
+	    smatch m;
+	    regex_match(line, m, re);
+	    return {m[1].str(), m[2].str()};
+	*/
 }
 
 auto parseLines(const vector<string>& lines)
@@ -53,7 +58,7 @@ auto parseLines(const vector<string>& lines)
 
 auto solve_part1(const path& inputFile)
 {
-	auto parsedInput = parseLines(readLines(string(inputFile)));
+	auto parsedInput = parseLines(readLines(inputFile));
 	for(auto x : parsedInput)
 	{
 	}

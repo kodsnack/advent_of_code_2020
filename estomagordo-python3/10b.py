@@ -21,8 +21,6 @@ def solve(nums):
         if pos in seen:
             return seen[pos]
 
-        val = nums[pos]
-
         poss = count(pos+1)
 
         if pos < n-2 and nums[pos+2] <= nums[pos] + 3:

@@ -9,7 +9,7 @@ import (
 )
 
 func Test_Ex1(t *testing.T) {
-	strs := strings.Split(testData, "\n")
+	strs := strings.Split(testData2, "\n")
 	arr := make([]int, len(strs))
 	for k, v := range strs {
 		n, _ := strconv.Atoi(v)
@@ -19,6 +19,8 @@ func Test_Ex1(t *testing.T) {
 	//fmt.Println(arr)
 	//start := arr[0]
 	no1, no3 := 0, 1
+	m := make(map[int]int)
+	m[0] = 1
 	for i, start := 0, 0; i < len(arr); i++ {
 		switch arr[i] - start {
 		case 1:
@@ -27,10 +29,15 @@ func Test_Ex1(t *testing.T) {
 			no3++
 		}
 
+		for n := -3; n <= -1; n++ {
+			m[arr[i]] += m[arr[i]+n]
+		}
+
 		fmt.Println(arr[i], start, arr[i]-start)
 		start = arr[i]
 	}
 	fmt.Println(no1, no3)
+	fmt.Println(m[arr[len(arr)-1]])
 }
 
 const testData = `16

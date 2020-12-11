@@ -21,6 +21,8 @@ func main() {
 	//fmt.Println(arr)
 	//start := arr[0]
 	no1, no3 := 0, 1
+	m := make(map[int]int)
+	m[0] = 1
 	for i, start := 0, 0; i < len(arr); i++ {
 		switch arr[i] - start {
 		case 1:
@@ -29,8 +31,13 @@ func main() {
 			no3++
 		}
 
+		for n := -3; n <= -1; n++ {
+			m[arr[i]] += m[arr[i]+n]
+		}
+
 		fmt.Println(arr[i], start, arr[i]-start)
 		start = arr[i]
 	}
 	fmt.Println(no1, no3, no1*no3)
+	fmt.Println(m[arr[len(arr)-1]])
 }

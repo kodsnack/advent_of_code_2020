@@ -4,7 +4,7 @@ from functools import reduce
 from heapq import heappop, heappush
 from itertools import combinations, permutations, product
 
-from helpers import distance, distance_sq, grouped_lines, ints, manhattan, neighs, neighs_bounded
+from helpers import distance, distance_sq, eight_neighs, eight_neighs_bounded, grouped_lines, ints, manhattan, neighs, neighs_bounded
 
 
 def solve(lines):
@@ -23,32 +23,22 @@ def solve(lines):
                 if c == '.':
                     continue
 
-                neighempt = 0
-                neighocc = 0
+                occupied = 0
 
-                for dy in range(max(0, y-1), min(height, y+2)):
-                    for dx in range(max(0, x-1), min(width, x+2)):
-                        if dy == y and dx == x:
-                            continue
+                for dy, dx in eight_neighs_bounded(y, x, 0, height-1, 0, width-1):
+                    if lines[dy][dx] == '#':
+                        occupied += 1
 
-                        if lines[dy][dx] == 'L':
-                            neighempt += 1
-                        elif lines[dy][dx] == '#':
-                            neighocc += 1
-
-                if c == 'L' and neighocc == 0:
+                if c == 'L' and occupied == 0:
                     newlines[y][x] = '#'
                     changed = True
-                if c == '#' and neighocc >= 4:
+                if c == '#' and occupied >= 4:
                     newlines[y][x] = 'L'
                     changed = True
 
         if not changed:
             break
 
-        # print(sum(lines[y][x] != newlines[y][x] for x in range(width) for y in range(height) ))
-        print('\n'.join(''.join(line) for line in lines))
-        print()
         lines = newlines
 
     return sum(sum(c == '#' for c in row) for row in lines)

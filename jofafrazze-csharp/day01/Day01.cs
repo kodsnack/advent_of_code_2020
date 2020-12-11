@@ -13,7 +13,7 @@ namespace day01
 
         static Object PartA()
         {
-            List<int> input = ReadInputs.ReadInts(inputPath);
+            List<int> input = ReadIndata.Ints(inputPath);
             input.Sort();
             int ans = 0;
             foreach (int a in input)
@@ -31,7 +31,7 @@ namespace day01
 
         static Object PartB()
         {
-            List<long> input = ReadInputs.ReadLongs(inputPath);
+            List<long> input = ReadIndata.Longs(inputPath);
             input.Sort();
             long ans = 0;
             for (int i = 0; i < input.Count; i++)

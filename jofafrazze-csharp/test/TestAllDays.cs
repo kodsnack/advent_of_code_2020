@@ -102,14 +102,14 @@ namespace test
         }
     }
 
-    //public class TestDay12
-    //{
-    //    [Fact]
-    //    public void Test()
-    //    {
-    //        Assert.True(day12.Day12.MainTest());
-    //    }
-    //}
+    public class TestDay12
+    {
+        [Fact]
+        public void Test()
+        {
+            Assert.True(day12.Day12.MainTest());
+        }
+    }
 
     //public class TestDay13
     //{

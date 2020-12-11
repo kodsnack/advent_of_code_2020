@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
 using AdventOfCode;
 using Position = AdventOfCode.GenericPosition2D<int>;
 
@@ -15,19 +11,6 @@ namespace day11
     {
         readonly static string nsname = typeof(Day11).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
-
-        static readonly Position goUpL = new Position(-1, -1);
-        static readonly Position goUp = new Position(0, -1);
-        static readonly Position goUpR = new Position(1, -1);
-        static readonly Position goLeft = new Position(-1, 0);
-        static readonly Position goRight = new Position(1, 0);
-        static readonly Position goDownL = new Position(-1, 1);
-        static readonly Position goDown = new Position(0, 1);
-        static readonly Position goDownR = new Position(1, 1);
-        static readonly List<Position> directions = new List<Position>()
-        {
-            goUp, goRight, goDown, goLeft, goUpL, goUpR, goDownL, goDownR
-        };
 
         static Map BuildMap(List<string> list)
         {
@@ -44,43 +27,41 @@ namespace day11
         {
             int w = m.width;
             int h = m.height;
-            Map a = new Map(m);
+            Map mNext = new Map(m);
             for (int y = 0; y < h; y++)
+            {
                 for (int x = 0; x < w; x++)
                 {
-                    if (m.data[x, y] != '.')
+                    var p = new Position(x, y);
+                    var c = m[p];
+                    if (c != '.')
                     {
-                        int n = 0;
-                        foreach (var d in directions)
-                        {
-                            var p = new Position(x, y) + d;
-                            if (m.HasPosition(p) && m.data[p.x, p.y] == '#')
-                                n++;
-                        }
-                        if (n == 0 && m.data[x, y] == 'L')
-                            a.data[x, y] = '#';
-                        if (n >= 4 && m.data[x, y] == '#')
-                            a.data[x, y] = 'L';
+                        int n = Utils.directions8.Where(d => m.HasPosition(p + d) && m[p + d] == '#').Count();
+                        if (n == 0 && c == 'L')
+                            mNext[p] = '#';
+                        if (n >= 4 && c == '#')
+                            mNext[p] = 'L';
                     }
                 }
-            return a;
+            }
+            return mNext;
         }
 
         static Object PartA()
         {
-            var input = ReadInputs.ReadStrings(inputPath);
+            var input = ReadIndata.Strings(inputPath);
             Map m = BuildMap(input);
+            Map m2 = new Map(m);
             //m.Print();
             int n = 0;
-            while (true)
+            do
             {
-                Map m2 = StepMap(m);
-                n++;
-                //m2.Print();
-                if (m.data.Cast<char>().SequenceEqual(m2.data.Cast<char>()))
-                    break;
                 m = m2;
+                m2 = StepMap(m);
+                //m2.Print();
+                n++;
             }
+            while (m != m2);
             int ans = m.data.Cast<char>().Where(x => x == '#').Count();
             Console.WriteLine("Part A: Result is {0}", ans);
             return ans;
@@ -90,57 +71,52 @@ namespace day11
         {
             int w = m.width;
             int h = m.height;
-            Map a = new Map(m);
+            Map mNext = new Map(m);
             for (int y = 0; y < h; y++)
+            {
                 for (int x = 0; x < w; x++)
                 {
-                    if (m.data[x, y] != '.')
+                    var p = new Position(x, y);
+                    var c = m[p];
+                    if (c != '.')
                     {
                         int n = 0;
-                        foreach (var d in directions)
+                        foreach (var d in Utils.directions8)
                         {
                             bool done = false;
                             int k = 1;
                             while (!done)
                             {
-                                var p = new Position(x, y) + d * k;
-                                if (m.HasPosition(p))
-                                {
-                                    var ch = m.data[p.x, p.y];
-                                    if (ch == 'L' || ch == '#')
-                                        done = true;
-                                    if (ch == '#')
-                                        n++;
-                                }
-                                else
-                                    done = true;
+                                var pd = p + d * k;
+                                done = !m.HasPosition(pd) || (m[pd] == '#' || m[pd] == 'L');
+                                if (m.HasPosition(pd) && (m[pd] == '#'))
+                                    n++;
                                 k++;
                             }
                         }
-                        if (n == 0 && m.data[x, y] == 'L')
-                            a.data[x, y] = '#';
-                        if (n >= 5 && m.data[x, y] == '#')
-                            a.data[x, y] = 'L';
+                        if (n == 0 && c == 'L')
+                            mNext[p] = '#';
+                        if (n >= 5 && c == '#')
+                            mNext[p] = 'L';
                     }
                 }
-            return a;
+            }
+            return mNext;
         }
 
         static Object PartB()
         {
-            var input = ReadInputs.ReadStrings(inputPath);
+            var input = ReadIndata.Strings(inputPath);
             Map m = BuildMap(input);
-            //m.Print();
+            Map m2 = new Map(m);
             int n = 0;
-            while (true)
+            do
             {
-                Map m2 = StepMapB(m);
-                n++;
-                //m2.Print();
-                if (m.data.Cast<char>().SequenceEqual(m2.data.Cast<char>()))
-                    break;
                 m = m2;
+                m2 = StepMapB(m);
+                n++;
             }
+            while (m != m2);
             int ans = m.data.Cast<char>().Where(x => x == '#').Count();
             Console.WriteLine("Part B: Result is {0}", ans);
             return ans;

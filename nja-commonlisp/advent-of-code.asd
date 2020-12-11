@@ -17,5 +17,7 @@
                  (:file "day06")
                  (:file "day07")
                  (:file "day08")
+                 (:file "day09")
+                 (:file "day10")
                  (:file "tests"))))
   :depends-on (#:alexandria #:fiasco #:cl-ppcre #:fare-memoization))

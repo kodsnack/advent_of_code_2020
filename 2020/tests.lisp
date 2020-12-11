@@ -41,3 +41,7 @@
 (deftest day10 ()
   (is (= 2760 (aoc2020.day10::part1 (input-for 2020 10))))
   (is (= 13816758796288 (aoc2020.day10::part2 (input-for 2020 10)))))
+
+(deftest day11 ()
+  (is (= 2359 (aoc2020.day11::part1 (input-for 2020 11))))
+  (is (= 2131 (aoc2020.day11::part2 (input-for 2020 11)))))

@@ -14,6 +14,7 @@
 (defpackage #:aoc2020.day08 (:use #:cl #:alexandria))
 (defpackage #:aoc2020.day09 (:use #:cl #:alexandria))
 (defpackage #:aoc2020.day10 (:use #:cl #:alexandria))
+(defpackage #:aoc2020.day11 (:use #:cl #:alexandria))
 
 (fiasco:define-test-package #:aoc2020.tests
   (:use #:aoc))

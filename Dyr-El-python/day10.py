@@ -14,29 +14,37 @@ def lineParse(s, f, fp):
 
 def fileParse(inp, lineparser=lineParse,
                    tokenparser=lambda x:x,
-                   tokenPattern=wsTokenPattern):
-    return tuple(map(lambda x:x, 
+                   tokenPattern=re.compile(r"^(.*)$")):
+    return tuple(map(lambda x:x[0] if len(x)==1 else x, 
                     map(lambda x:lineparser(x, tokenparser, tokenPattern),
-                        inp.split("\n\n"))))
+                        inp.splitlines())))
 
 ## End of header boilerplate ###################################################
 
-from functools import reduce
-
-def questionSetReduce(pinp, f, init):
-   groups = (reduce(f, map(set, group), set(init)) for group in pinp)
-   return sum(len(group) for group in groups)
+def joltages(pinp):
+   result = sorted(list(map(int, pinp)))
+   return [0] + result + [max(result)+3]
 
 def part1(pinp):
-   return questionSetReduce(pinp, lambda s, x:s|x, "")
+   j = joltages(pinp)
+   print(j)
+   diffs = [y-x for x, y in zip(j, j[1:])]
+   return diffs.count(1)*diffs.count(3)
 
 def part2(pinp):
-   return questionSetReduce(pinp, lambda s, x:s&x, "abcdefghijklmnopqrstuvwxyz")
+   j = joltages(pinp)
+   d = {0:1}
+   for i in j[1:]:
+      d[i] = d.get(i-1, 0) + d.get(i-2, 0) + d.get(i-3, 0)
+   return d[max(j)]   
 
 ## Start of footer boilerplate #################################################
 
 if __name__ == "__main__":
     inp = readInput()
+#     inp = """"""
+    
+    ## Update for input specifics ##############################################
     parseInp = fileParse(inp, tokenPattern=wsTokenPattern)
 
     print("Input is '" + str(parseInp[:10])[:160] + 

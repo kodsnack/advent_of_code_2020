@@ -17,24 +17,13 @@ def fileParse(inp, lineparser=lineParse,
                    tokenPattern=re.compile(r"^(.*)$")):
     return tuple(map(lambda x:x, 
                     map(lambda x:lineparser(x, tokenparser, tokenPattern),
-                        inp.splitlines())))
+                        inp.split('\n\n'))))
 
 ## End of header boilerplate ###################################################
 
 def accumulate(itemLines):
-    l = list()
-    d = dict()
-    for line in itemLines:
-        if line == ():
-            l.append(d)
-            d = dict()
-        else:
-            for item in line:
-                a, b = item.split(":")
-                d[a] = b
-    if len(d) > 0:
-        l.append(d)
-    return l
+    return [{a:b for a,b in map(lambda x:x.split(":"), line)}
+            for line in itemLines]
 
 def simpleValid(passport):
     return all(item in passport for item in ("byr", "iyr", "eyr",

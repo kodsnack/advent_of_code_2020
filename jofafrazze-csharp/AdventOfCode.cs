@@ -220,7 +220,7 @@ namespace AdventOfCode
         }
     }
 
-    public class Map
+    public class Map : IEquatable<Map>
     {
         public int width;
         public int height;
@@ -302,6 +302,55 @@ namespace AdventOfCode
         {
             Console.WriteLine(PrintToString());
         }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Map);
+        }
+
+        public bool Equals(Map other)
+        {
+            return other != null &&
+                   width == other.width &&
+                   height == other.height &&
+                   data.Cast<char>().SequenceEqual(other.data.Cast<char>());
+                   //EqualityComparer<char[,]>.Default.Equals(data, other.data);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(width, height, data);
+        }
+
+        public static bool operator ==(Map map1, Map map2)
+        {
+            return EqualityComparer<Map>.Default.Equals(map1, map2);
+        }
+
+        public static bool operator !=(Map map1, Map map2)
+        {
+            return !(map1 == map2);
+        }
+    }
+
+    public static class Utils
+    {
+        public static readonly GenericPosition2D<int> goUpLeft = new GenericPosition2D<int>(-1, -1);
+        public static readonly GenericPosition2D<int> goUp = new GenericPosition2D<int>(0, -1);
+        public static readonly GenericPosition2D<int> goUpRight = new GenericPosition2D<int>(1, -1);
+        public static readonly GenericPosition2D<int> goRight = new GenericPosition2D<int>(1, 0);
+        public static readonly GenericPosition2D<int> goDownRight = new GenericPosition2D<int>(1, 1);
+        public static readonly GenericPosition2D<int> goDown = new GenericPosition2D<int>(0, 1);
+        public static readonly GenericPosition2D<int> goDownLeft = new GenericPosition2D<int>(-1, 1);
+        public static readonly GenericPosition2D<int> goLeft = new GenericPosition2D<int>(-1, 0);
+        public static readonly List<GenericPosition2D<int>> directions4 = new List<GenericPosition2D<int>>()
+        {
+            goUp, goRight, goDown, goLeft
+        };
+        public static readonly List<GenericPosition2D<int>> directions8 = new List<GenericPosition2D<int>>()
+        {
+            goUpLeft, goUp, goUpRight, goRight, goDownRight, goDown, goDownLeft, goLeft
+        };
     }
 
     public static class Algorithms
@@ -511,9 +560,9 @@ namespace AdventOfCode
         };
     }
 
-    public static class ReadInputs
+    public static class ReadIndata
     {
-        public static List<int> ReadInts(string path)
+        public static List<int> Ints(string path)
         {
             StreamReader reader = File.OpenText(path);
             List<int> list = new List<int>();
@@ -525,7 +574,7 @@ namespace AdventOfCode
             return list;
         }
 
-        public static List<long> ReadLongs(string path)
+        public static List<long> Longs(string path)
         {
             StreamReader reader = File.OpenText(path);
             List<long> list = new List<long>();
@@ -537,7 +586,7 @@ namespace AdventOfCode
             return list;
         }
 
-        public static List<string> ReadStrings(string path)
+        public static List<string> Strings(string path)
         {
             StreamReader reader = File.OpenText(path);
             List<string> list = new List<string>();

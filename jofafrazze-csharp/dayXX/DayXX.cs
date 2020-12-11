@@ -18,7 +18,7 @@ namespace dayXX
 
         static Object PartA()
         {
-            List<int> input = ReadInputs.ReadInts(inputPath);
+            var input = ReadIndata.Ints(inputPath);
             int ans = 0;
             Console.WriteLine("Part A: Result is {0}", ans);
             return ans;

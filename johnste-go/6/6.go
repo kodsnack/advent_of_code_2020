@@ -77,10 +77,12 @@ func main() {
 
 func countAll(numPeople int, questions map[string]int) int {
 	all := 0
+
 	for _, value := range questions {
 		if numPeople == value {
 			all += 1
 		}
 	}
+	fmt.Printf("np: %d, to %d\n", numPeople, all)
 	return all
 }

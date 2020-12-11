@@ -11,12 +11,14 @@ pub use nom::branch::{alt, permutation};
 
 pub use nom::bytes::complete::{is_a, tag, take, take_till1, take_until};
 
-pub use nom::character::complete::{alpha1, anychar, char, digit1, one_of, satisfy, space1};
+pub use nom::character::complete::{
+  alpha1, anychar, char, digit1, one_of, satisfy, space0, space1,
+};
 pub use nom::character::is_hex_digit;
 
-pub use nom::combinator::{complete, map_parser, map_res, opt, recognize};
+pub use nom::combinator::{complete, map, map_parser, map_res, opt, recognize};
 
-pub use nom::multi::{many0, many1, many_m_n};
+pub use nom::multi::{many0, many1, many_m_n, many_till, separated_list1};
 
 pub use nom::sequence::{pair, preceded, terminated, tuple};
 

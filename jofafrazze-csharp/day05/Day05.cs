@@ -30,7 +30,7 @@ namespace day05
 
         static Object PartA()
         {
-            List<string> input = ReadInputs.ReadStrings(inputPath);
+            List<string> input = ReadIndata.Strings(inputPath);
             HashSet<int> ids = GetIds(input);
             int ans = ids.Max();
             Console.WriteLine("Part A: Result is {0}", ans);
@@ -39,7 +39,7 @@ namespace day05
 
         static Object PartB()
         {
-            List<string> input = ReadInputs.ReadStrings(inputPath);
+            List<string> input = ReadIndata.Strings(inputPath);
             HashSet<int> ids = GetIds(input);
             int ans = ids.Where(x => !ids.Contains(x + 1) && ids.Contains(x + 2)).Min() + 1;
             Console.WriteLine("Part B: Result is {0}", ans);

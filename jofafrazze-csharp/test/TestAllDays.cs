@@ -66,50 +66,50 @@ namespace test
         }
     }
 
-    //public class TestDay08
-    //{
-    //    [Fact]
-    //    public void Test()
-    //    {
-    //        Assert.True(day08.Day08.MainTest());
-    //    }
-    //}
+    public class TestDay08
+    {
+        [Fact]
+        public void Test()
+        {
+            Assert.True(day08.Day08.MainTest());
+        }
+    }
 
-    //public class TestDay09
-    //{
-    //    [Fact]
-    //    public void Test()
-    //    {
-    //        Assert.True(day09.Day09.MainTest());
-    //    }
-    //}
+    public class TestDay09
+    {
+        [Fact]
+        public void Test()
+        {
+            Assert.True(day09.Day09.MainTest());
+        }
+    }
 
-    //public class TestDay10
-    //{
-    //    [Fact]
-    //    public void Test()
-    //    {
-    //        Assert.True(day10.Day10.MainTest());
-    //    }
-    //}
+    public class TestDay10
+    {
+        [Fact]
+        public void Test()
+        {
+            Assert.True(day10.Day10.MainTest());
+        }
+    }
 
-    //public class TestDay11
-    //{
-    //    [Fact]
-    //    public void Test()
-    //    {
-    //        Assert.True(day11.Day11.MainTest());
-    //    }
-    //}
+    public class TestDay11
+    {
+        [Fact]
+        public void Test()
+        {
+            Assert.True(day11.Day11.MainTest());
+        }
+    }
 
-    //public class TestDay12
-    //{
-    //    [Fact]
-    //    public void Test()
-    //    {
-    //        Assert.True(day12.Day12.MainTest());
-    //    }
-    //}
+    public class TestDay12
+    {
+        [Fact]
+        public void Test()
+        {
+            Assert.True(day12.Day12.MainTest());
+        }
+    }
 
     //public class TestDay13
     //{

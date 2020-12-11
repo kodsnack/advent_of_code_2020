@@ -1,0 +1,52 @@
+/* Advent of code 2020, day 7, part 1+2 in Open Object REXX */
+
+input = .stream~new('day07.txt')~arrayin
+
+-- Build tree of bags upside-down
+bags = .relation~new
+loop line over input
+    parse var line bag ' bags contain' line
+    loop while line > ''
+        parse var line number adjective colour . line
+        bags[adjective colour] = bag
+    end
+end
+
+counted = .set~new
+say contains_1('shiny gold') - 1
+
+-- Build tree of bags
+bags = .relation~new
+loop line over input
+    parse var line bag ' bags contain' line
+    loop while line > ''
+        parse var line number adjective colour . line
+        if number~datatype <> num then iterate
+        do number
+            bags[bag] = adjective colour
+        end
+    end
+end
+
+say contains_2('shiny gold') - 1
+exit
+
+contains_1: procedure expose bags counted
+    use arg needle
+    if counted~hasitem(needle) then return 0
+    counted~put(needle)
+    children = bags~allAt(needle)
+    found = 0
+    loop child over children
+        found += contains_1(child)
+    end
+    return 1 + found
+
+contains_2: procedure expose bags
+    use arg needle
+    children = bags~allAt(needle)
+    found = 0
+    loop child over children
+        found += contains_2(child)
+    end
+    return 1 + found

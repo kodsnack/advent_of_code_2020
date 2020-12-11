@@ -25,3 +25,19 @@
 (deftest day06 ()
   (is (= 6809 (aoc2020.day06::part1 (input-for 2020 06))))
   (is (= 3394 (aoc2020.day06::part2 (input-for 2020 06)))))
+
+(deftest day07 ()
+  (is (= 332 (aoc2020.day07::part1 (input-for 2020 07))))
+  (is (= 10875 (aoc2020.day07::part2 (input-for 2020 07)))))
+
+(deftest day08 ()
+  (is (= 1563 (aoc2020.day08::part1 (input-for 2020 08))))
+  (is (= 767 (aoc2020.day08::part2 (input-for 2020 08)))))
+
+(deftest day09 ()
+  (is (= 26134589 (aoc2020.day09::part1 (input-for 2020 09))))
+  (is (= 3535124 (aoc2020.day09::part2 (input-for 2020 09) 26134589))))
+
+(deftest day10 ()
+  (is (= 2760 (aoc2020.day10::part1 (input-for 2020 10))))
+  (is (= 13816758796288 (aoc2020.day10::part2 (input-for 2020 10)))))

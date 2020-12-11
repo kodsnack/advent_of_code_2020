@@ -2,12 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
 using AdventOfCode;
-//using Position = AdventOfCode.GenericPosition2D<int>;
+using Position = AdventOfCode.GenericPosition2D<int>;
 
 namespace day11
 {
@@ -16,17 +12,112 @@ namespace day11
         readonly static string nsname = typeof(Day11).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
+        static Map BuildMap(List<string> list)
+        {
+            int w = list[0].Length;
+            int h = list.Count;
+            Map m = new Map(w, h, new Position(0, 0));
+            for (int y = 0; y < h; y++)
+                for (int x = 0; x < w; x++)
+                    m.data[x, y] = list[y][x];
+            return m;
+        }
+
+        static Map StepMap(Map m)
+        {
+            int w = m.width;
+            int h = m.height;
+            Map mNext = new Map(m);
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    var p = new Position(x, y);
+                    var c = m[p];
+                    if (c != '.')
+                    {
+                        int n = Utils.directions8.Where(d => m.HasPosition(p + d) && m[p + d] == '#').Count();
+                        if (n == 0 && c == 'L')
+                            mNext[p] = '#';
+                        if (n >= 4 && c == '#')
+                            mNext[p] = 'L';
+                    }
+                }
+            }
+            return mNext;
+        }
+
         static Object PartA()
         {
-            var input = ReadInputs.ReadInts(inputPath);
-            int ans = 0;
+            var input = ReadIndata.Strings(inputPath);
+            Map m = BuildMap(input);
+            Map m2 = new Map(m);
+            //m.Print();
+            int n = 0;
+            do
+            {
+                m = m2;
+                m2 = StepMap(m);
+                //m2.Print();
+                n++;
+            }
+            while (m != m2);
+            int ans = m.data.Cast<char>().Where(x => x == '#').Count();
             Console.WriteLine("Part A: Result is {0}", ans);
             return ans;
         }
 
+        static Map StepMapB(Map m)
+        {
+            int w = m.width;
+            int h = m.height;
+            Map mNext = new Map(m);
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    var p = new Position(x, y);
+                    var c = m[p];
+                    if (c != '.')
+                    {
+                        int n = 0;
+                        foreach (var d in Utils.directions8)
+                        {
+                            bool done = false;
+                            int k = 1;
+                            while (!done)
+                            {
+                                var pd = p + d * k;
+                                done = !m.HasPosition(pd) || (m[pd] == '#' || m[pd] == 'L');
+                                if (m.HasPosition(pd) && (m[pd] == '#'))
+                                    n++;
+                                k++;
+                            }
+                        }
+                        if (n == 0 && c == 'L')
+                            mNext[p] = '#';
+                        if (n >= 5 && c == '#')
+                            mNext[p] = 'L';
+                    }
+                }
+            }
+            return mNext;
+        }
+
         static Object PartB()
         {
-            int ans = 0;
+            var input = ReadIndata.Strings(inputPath);
+            Map m = BuildMap(input);
+            Map m2 = new Map(m);
+            int n = 0;
+            do
+            {
+                m = m2;
+                m2 = StepMapB(m);
+                n++;
+            }
+            while (m != m2);
+            int ans = m.data.Cast<char>().Where(x => x == '#').Count();
             Console.WriteLine("Part B: Result is {0}", ans);
             return ans;
         }
@@ -40,8 +131,8 @@ namespace day11
 
         public static bool MainTest()
         {
-            int a = 42;
-            int b = 4711;
+            int a = 2406;
+            int b = 2149;
             return (PartA().Equals(a)) && (PartB().Equals(b));
         }
     }

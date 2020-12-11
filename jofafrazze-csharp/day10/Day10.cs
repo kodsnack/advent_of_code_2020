@@ -12,7 +12,7 @@ namespace day10
 
         static Object PartA()
         {
-            var input = ReadInputs.ReadInts(inputPath);
+            var input = ReadIndata.Ints(inputPath);
             input.Add(0);
             input.Add(input.Max() + 3);
             input.Sort();
@@ -26,7 +26,7 @@ namespace day10
 
         static Object PartB()
         {
-            var input = ReadInputs.ReadInts(inputPath);
+            var input = ReadIndata.Ints(inputPath);
             input.Add(0);
             input.Add(input.Max() + 3);
             input.Sort();

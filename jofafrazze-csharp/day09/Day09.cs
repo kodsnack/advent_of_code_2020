@@ -12,7 +12,7 @@ namespace day09
 
         static Object PartA()
         {
-            var input = ReadInputs.ReadLongs(inputPath);
+            var input = ReadIndata.Longs(inputPath);
             long ans = 0;
             bool found = true;
             const int n = 25;
@@ -33,7 +33,7 @@ namespace day09
 
         static Object PartB()
         {
-            var input = ReadInputs.ReadLongs(inputPath);
+            var input = ReadIndata.Longs(inputPath);
             long ans = 0;
             const long tgt = 167829540;
             int t = 0;

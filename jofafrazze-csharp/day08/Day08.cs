@@ -79,7 +79,7 @@ namespace day08
 
         static Object PartA()
         {
-            var input = ReadInputs.ReadStrings(inputPath);
+            var input = ReadIndata.Strings(inputPath);
             var c = new Computer(input);
             c.Run();
             var ans = c.acc;
@@ -89,7 +89,7 @@ namespace day08
 
         static Object PartB()
         {
-            var input = ReadInputs.ReadStrings(inputPath);
+            var input = ReadIndata.Strings(inputPath);
             var computer = new Computer(input);
             computer.Run();
             int ans = 0;

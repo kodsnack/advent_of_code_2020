@@ -23,10 +23,9 @@ def solve(lines):
                 if c == '.':
                     continue
 
-                neighempt = 0
-                neighocc = 0
+                occupied = 0
 
-                dirs = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]]
+                dirs = eight_neighs(0, 0)
 
                 for dy, dx in dirs:
                     diry = dy
@@ -35,25 +34,22 @@ def solve(lines):
                     while 0 <= y+diry < height and 0 <= x+dirx < width:
                         if lines[y+diry][x+dirx] in 'L#':
                             if lines[y+diry][x+dirx] == '#':
-                                neighocc += 1
+                                occupied += 1
                             break
 
                         diry += dy
                         dirx += dx
 
-                if c == 'L' and neighocc == 0:
+                if c == 'L' and occupied == 0:
                     newlines[y][x] = '#'
                     changed = True
-                if c == '#' and neighocc >= 5:
+                if c == '#' and occupied >= 5:
                     newlines[y][x] = 'L'
                     changed = True
 
         if not changed:
             break
-
-        # print(sum(lines[y][x] != newlines[y][x] for x in range(width) for y in range(height) ))
-        print('\n'.join(''.join(line) for line in lines))
-        print()
+        
         lines = newlines
 
     return sum(sum(c == '#' for c in row) for row in lines)

@@ -29,6 +29,8 @@ dependencies = [
  "itertools",
  "lazy_static",
  "log",
+ "num-integer",
+ "num-traits",
  "regex",
  "reqwest",
  "termcolor",

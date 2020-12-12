@@ -12,6 +12,7 @@ use output::print_out;
 
 mod args;
 mod cfg;
+mod comp;
 mod days;
 mod fmt;
 mod input;
@@ -57,6 +58,10 @@ fn run_puzzle(puzzle: &Puzzle, input: String) -> String {
         (8, Part::Two) => days::day8::second(input),
         (9, Part::One) => days::day9::first(input),
         (9, Part::Two) => days::day9::second(input),
+        (10, Part::One) => days::day10::first(input),
+        (10, Part::Two) => days::day10::second(input),
+        (11, Part::One) => days::day11::first(input),
+        (11, Part::Two) => days::day11::second(input),
         _ => panic!("Not supported"),
     }
 }

@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::{collections::HashSet, fmt::Debug, str::FromStr};
 
 use std::convert::TryFrom;
 
@@ -56,10 +56,10 @@ use std::convert::TryFrom;
 // what value is in the accumulator?
 
 pub fn first(input: String) -> String {
-    let instr: Vec<Instruction> = input
+    let instr: Vec<Instruction<ArchSize>> = input
         .lines()
         .filter_map(|line| Instruction::from(line).ok())
-        .collect::<Vec<Instruction>>();
+        .collect::<Vec<Instruction<ArchSize>>>();
 
     let mut executed_instr: HashSet<usize> = HashSet::with_capacity(instr.len());
 
@@ -71,7 +71,7 @@ pub fn first(input: String) -> String {
             return acc.to_string();
         }
 
-        let next_instr: &Instruction = instr
+        let next_instr: &Instruction<ArchSize> = instr
             .get(safe_ptr)
             .expect(&format!("Failed to get instruction at index {}", instr_ptr));
 
@@ -89,10 +89,10 @@ pub fn first(input: String) -> String {
 }
 
 pub fn second(input: String) -> String {
-    let instr: Vec<Instruction> = input
+    let instr: Vec<Instruction<ArchSize>> = input
         .lines()
         .filter_map(|line| Instruction::from(line).ok())
-        .collect::<Vec<Instruction>>();
+        .collect::<Vec<Instruction<ArchSize>>>();
 
     let halt_and_catch_fire: usize = instr.len();
     let mut comp = Computer::load(instr.clone());
@@ -124,14 +124,14 @@ pub fn second(input: String) -> String {
 type ArchSize = isize;
 
 struct Computer {
-    firmware: Vec<Instruction>,
-    instructions: Vec<Instruction>,
+    firmware: Vec<Instruction<ArchSize>>,
+    instructions: Vec<Instruction<ArchSize>>,
     ptr: usize,
     acc: isize,
 }
 
 impl Computer {
-    pub fn load(instructions: Vec<Instruction>) -> Computer {
+    pub fn load(instructions: Vec<Instruction<isize>>) -> Computer {
         Computer {
             firmware: instructions.clone(),
             instructions,
@@ -151,7 +151,7 @@ impl Computer {
     }
 
     pub fn flip(&mut self, i: usize) {
-        let new_instr: Instruction = match self.instructions.remove(i) {
+        let new_instr: Instruction<ArchSize> = match self.instructions.remove(i) {
             Instruction::Jmp(n) => Instruction::Nop(n),
             Instruction::Nop(n) => Instruction::Jmp(n),
             x => x,
@@ -173,11 +173,11 @@ impl Computer {
 }
 
 impl Iterator for Computer {
-    type Item = (usize, Instruction);
+    type Item = (usize, Instruction<isize>);
 
-    fn next(&mut self) -> Option<(usize, Instruction)> {
+    fn next(&mut self) -> Option<(usize, Instruction<isize>)> {
         let ptr_before: usize = self.ptr;
-        let next: Instruction = self.instructions.get(self.ptr)?.clone();
+        let next: Instruction<ArchSize> = self.instructions.get(self.ptr)?.clone();
         match next {
             Instruction::Nop(_) => self.move_pointer(1),
             Instruction::Jmp(n) => self.move_pointer(n),
@@ -190,21 +190,24 @@ impl Iterator for Computer {
     }
 }
 
+trait WordSize: Sized + Copy + Clone + FromStr + Debug {}
+impl<T> WordSize for T where T: Sized + Copy + Clone + FromStr + Debug {}
+
 #[derive(Debug, Copy, Clone)]
-enum Instruction {
-    Nop(ArchSize),
-    Jmp(ArchSize),
-    Acc(ArchSize),
+enum Instruction<T: WordSize> {
+    Nop(T),
+    Jmp(T),
+    Acc(T),
 }
 
-impl Instruction {
-    fn from(input: &str) -> Result<Instruction, InstrErr> {
+impl<T: WordSize> Instruction<T> {
+    fn from(input: &str) -> Result<Instruction<T>, InstrErr> {
         let parts = input.trim().split_ascii_whitespace().collect::<Vec<&str>>();
         let inst: &str = parts.get(0).ok_or(InstrErr::NoInstruction)?;
-        let num: ArchSize = parts
+        let num: T = parts
             .get(1)
             .ok_or(InstrErr::NoNum)?
-            .parse::<ArchSize>()
+            .parse::<T>()
             .map_err(|_| InstrErr::NoNum)?;
         match inst {
             "nop" => Ok(Instruction::Nop(num)),

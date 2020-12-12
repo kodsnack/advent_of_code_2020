@@ -14,23 +14,17 @@ def lineParse(s, f, fp):
 
 def fileParse(inp, lineparser=lineParse,
                    tokenparser=lambda x:x,
-                   tokenPattern=re.compile(r"^(.*)$")):
-    return tuple(map(lambda x:x[0] if len(x)>0 else x, 
+                   tokenPattern=wsTokenPattern):
+    return tuple(map(lambda x:x, 
                     map(lambda x:lineparser(x, tokenparser, tokenPattern),
-                        inp.splitlines())))
+                        inp.split("\n\n"))))
 
 ## End of header boilerplate ###################################################
 
 from functools import reduce
 
 def questionSetReduce(pinp, f, init):
-   groups = list()
-   groups.append(set(init))
-   for person in pinp:
-      if person == ():
-         groups.append(set(init))
-         continue
-      groups[-1] = f(groups[-1], set(person))
+   groups = (reduce(f, map(set, group), set(init)) for group in pinp)
    return sum(len(group) for group in groups)
 
 def part1(pinp):
@@ -43,23 +37,6 @@ def part2(pinp):
 
 if __name__ == "__main__":
     inp = readInput()
-#     inp = """abc
-
-# a
-# b
-# c
-
-# ab
-# ac
-
-# a
-# a
-# a
-# a
-
-# b"""
-    
-    ## Update for input specifics ##############################################
     parseInp = fileParse(inp, tokenPattern=wsTokenPattern)
 
     print("Input is '" + str(parseInp[:10])[:160] + 

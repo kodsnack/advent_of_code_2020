@@ -103,6 +103,29 @@ namespace AdventOfCode
                 Extensions.Abs(Extensions.Subtract(y, p.y))
                 );
         }
+        // Rotates pos n steps clock-wize around center
+        public static GenericPosition2D<T> Rotate4Steps(GenericPosition2D<T> pos, int n, GenericPosition2D<T> center = new GenericPosition2D<T>())
+        {
+            GenericPosition2D<T> p = new GenericPosition2D<T>(pos - center);
+            GenericPosition2D<T> r = new GenericPosition2D<T>(p);
+            n = Utils.Modulo(n, 4);
+            if (n == 1)
+            {
+                r.x = p.y;
+                r.y = Extensions.Subtract(default(T), p.x);
+            }
+            else if (n == 2)
+            {
+                r.x = Extensions.Subtract(default(T), p.x);
+                r.y = Extensions.Subtract(default(T), p.y);
+            }
+            else if (n == 3)
+            {
+                r.x = Extensions.Subtract(default(T), p.y);
+                r.y = p.x;
+            }
+            return r + center;
+        }
     }
 
     public struct GenericPosition3D<T> : IComparable<GenericPosition3D<T>>
@@ -220,7 +243,7 @@ namespace AdventOfCode
         }
     }
 
-    public class Map
+    public class Map : IEquatable<Map>
     {
         public int width;
         public int height;
@@ -248,6 +271,17 @@ namespace AdventOfCode
             for (int y = 0; y < height; y++)
                 for (int x = 0; x < width; x++)
                     data[x, y] = m.data[x, y];
+        }
+
+        public static Map Build(List<string> list)
+        {
+            int w = list[0].Length;
+            int h = list.Count;
+            Map m = new Map(w, h, new GenericPosition2D<int>(0, 0));
+            for (int y = 0; y < h; y++)
+                for (int x = 0; x < w; x++)
+                    m.data[x, y] = list[y][x];
+            return m;
         }
 
         public char this[GenericPosition2D<int> p]
@@ -301,6 +335,103 @@ namespace AdventOfCode
         public void Print()
         {
             Console.WriteLine(PrintToString());
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Map);
+        }
+
+        public bool Equals(Map other)
+        {
+            return other != null &&
+                   width == other.width &&
+                   height == other.height &&
+                   data.Cast<char>().SequenceEqual(other.data.Cast<char>());
+                   //EqualityComparer<char[,]>.Default.Equals(data, other.data);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(width, height, data);
+        }
+
+        public static bool operator ==(Map map1, Map map2)
+        {
+            return EqualityComparer<Map>.Default.Equals(map1, map2);
+        }
+
+        public static bool operator !=(Map map1, Map map2)
+        {
+            return !(map1 == map2);
+        }
+    }
+
+    public static class CoordsRC
+    {
+        public static readonly GenericPosition2D<int> goUpLeft = new GenericPosition2D<int>(-1, -1);
+        public static readonly GenericPosition2D<int> goUp = new GenericPosition2D<int>(0, -1);
+        public static readonly GenericPosition2D<int> goUpRight = new GenericPosition2D<int>(1, -1);
+        public static readonly GenericPosition2D<int> goRight = new GenericPosition2D<int>(1, 0);
+        public static readonly GenericPosition2D<int> goDownRight = new GenericPosition2D<int>(1, 1);
+        public static readonly GenericPosition2D<int> goDown = new GenericPosition2D<int>(0, 1);
+        public static readonly GenericPosition2D<int> goDownLeft = new GenericPosition2D<int>(-1, 1);
+        public static readonly GenericPosition2D<int> goLeft = new GenericPosition2D<int>(-1, 0);
+        public static readonly List<GenericPosition2D<int>> directions4 = new List<GenericPosition2D<int>>()
+        {
+            goUp, goRight, goDown, goLeft
+        };
+        public static readonly List<GenericPosition2D<int>> directions8 = new List<GenericPosition2D<int>>()
+        {
+            goUpLeft, goUp, goUpRight, goRight, goDownRight, goDown, goDownLeft, goLeft
+        };
+    }
+
+    public static class CoordsXY
+    {
+        public static readonly GenericPosition2D<int> goUpLeft = new GenericPosition2D<int>(-1, 1);
+        public static readonly GenericPosition2D<int> goUp = new GenericPosition2D<int>(0, 1);
+        public static readonly GenericPosition2D<int> goUpRight = new GenericPosition2D<int>(1, 1);
+        public static readonly GenericPosition2D<int> goRight = new GenericPosition2D<int>(1, 0);
+        public static readonly GenericPosition2D<int> goDownRight = new GenericPosition2D<int>(1, -1);
+        public static readonly GenericPosition2D<int> goDown = new GenericPosition2D<int>(0, -1);
+        public static readonly GenericPosition2D<int> goDownLeft = new GenericPosition2D<int>(-1, -1);
+        public static readonly GenericPosition2D<int> goLeft = new GenericPosition2D<int>(-1, 0);
+        public static readonly List<GenericPosition2D<int>> directions4 = new List<GenericPosition2D<int>>()
+        {
+            goUp, goRight, goDown, goLeft
+        };
+        public static readonly List<GenericPosition2D<int>> directions8 = new List<GenericPosition2D<int>>()
+        {
+            goUpLeft, goUp, goUpRight, goRight, goDownRight, goDown, goDownLeft, goLeft
+        };
+    }
+
+    public static class Utils
+    {
+        // Modulo i.e. mod (instead of the % operator)
+        public static int Modulo(int x, int m)
+        {
+            int r = x % m;
+            return r < 0 ? r + m : r;
+        }
+
+        // Createst Common Factor i.e. Createst Common Divisor (GCD)
+        public static long GCF(long a, long b)
+        {
+            while (b != 0)
+            {
+                long temp = b;
+                b = a % b;
+                a = temp;
+            }
+            return a;
+        }
+
+        // Least Common Multiple i.e. Lowest Common Denominator (LCD)
+        public static long LCM(long a, long b)
+        {
+            return (a / GCF(a, b)) * b;
         }
     }
 
@@ -511,9 +642,9 @@ namespace AdventOfCode
         };
     }
 
-    public static class ReadInputs
+    public static class ReadIndata
     {
-        public static List<int> ReadInts(string path)
+        public static List<int> Ints(string path)
         {
             StreamReader reader = File.OpenText(path);
             List<int> list = new List<int>();
@@ -525,7 +656,7 @@ namespace AdventOfCode
             return list;
         }
 
-        public static List<long> ReadLongs(string path)
+        public static List<long> Longs(string path)
         {
             StreamReader reader = File.OpenText(path);
             List<long> list = new List<long>();
@@ -537,7 +668,7 @@ namespace AdventOfCode
             return list;
         }
 
-        public static List<string> ReadStrings(string path)
+        public static List<string> Strings(string path)
         {
             StreamReader reader = File.OpenText(path);
             List<string> list = new List<string>();

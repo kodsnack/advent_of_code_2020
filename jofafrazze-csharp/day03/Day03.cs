@@ -14,7 +14,7 @@ namespace day03
 
         static Object PartA()
         {
-            List<string> input = ReadInputs.ReadStrings(inputPath);
+            List<string> input = ReadIndata.Strings(inputPath);
             int ans = 0;
             int c = 0;
             for (int r = 0; r < input.Count; r++)
@@ -42,7 +42,7 @@ namespace day03
 
         static Object PartB()
         {
-            List<string> input = ReadInputs.ReadStrings(inputPath);
+            List<string> input = ReadIndata.Strings(inputPath);
             int a = 0;
             long ans = calcTrees(input, 1, 1);
             ans *= calcTrees(input, 1, 3);

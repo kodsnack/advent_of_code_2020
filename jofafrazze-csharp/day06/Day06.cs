@@ -14,7 +14,7 @@ namespace day06
 
         static Object PartA()
         {
-            List<string> input = ReadInputs.ReadStrings(inputPath);
+            List<string> input = ReadIndata.Strings(inputPath);
             int ans = 0;
             HashSet<char> set = new HashSet<char>();
             foreach (string s in input)
@@ -36,7 +36,7 @@ namespace day06
 
         static Object PartB()
         {
-            List<string> input = ReadInputs.ReadStrings(inputPath);
+            List<string> input = ReadIndata.Strings(inputPath);
             int ans = 0;
             Dictionary<char, int> dict = new Dictionary<char, int>();
             int n = 0;

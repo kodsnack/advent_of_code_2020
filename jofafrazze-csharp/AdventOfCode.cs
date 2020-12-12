@@ -103,6 +103,29 @@ namespace AdventOfCode
                 Extensions.Abs(Extensions.Subtract(y, p.y))
                 );
         }
+        // Rotates pos n steps clock-wize around center
+        public static GenericPosition2D<T> Rotate4Steps(GenericPosition2D<T> pos, int n, GenericPosition2D<T> center = new GenericPosition2D<T>())
+        {
+            GenericPosition2D<T> p = new GenericPosition2D<T>(pos - center);
+            GenericPosition2D<T> r = new GenericPosition2D<T>(p);
+            n = Utils.Modulo(n, 4);
+            if (n == 1)
+            {
+                r.x = p.y;
+                r.y = Extensions.Subtract(default(T), p.x);
+            }
+            else if (n == 2)
+            {
+                r.x = Extensions.Subtract(default(T), p.x);
+                r.y = Extensions.Subtract(default(T), p.y);
+            }
+            else if (n == 3)
+            {
+                r.x = Extensions.Subtract(default(T), p.y);
+                r.y = p.x;
+            }
+            return r + center;
+        }
     }
 
     public struct GenericPosition3D<T> : IComparable<GenericPosition3D<T>>

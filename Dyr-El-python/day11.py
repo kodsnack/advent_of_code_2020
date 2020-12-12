@@ -24,25 +24,25 @@ def fileParse(inp, lineparser=lineParse,
 class Seating:
    def parseInput(self, inpStr):
       d = dict()
+      self._minLine, self._minColumn = 0, 0
       for lineIdx, line in enumerate(inpStr):
          for columnIdx, c in enumerate(line):
             if c in "L#":
                d[(lineIdx, columnIdx)] = c
+         self._maxColumn = columnIdx
+      self._maxLine = lineIdx
       return d
    def __init__(self, inpStr):
       self._d = self.parseInput(inpStr)
-      self._minLine = min(line for line, col in self._d)
-      self._maxLine = max(line for line, col in self._d)
-      self._minColumn = min(col for line, col in self._d)
-      self._maxColumn = max(col for line, col in self._d)
       self._neighbourCache = dict()
+      self._dmask = dict()
    def newSeating(self):
       return self
    def __enter__(self):
-      self._dmask = dict()
+      self._dmask.clear()
       return self
    def __exit__(self, etype, eval, etraceback):
-      self._lastResating = len(self._dmask)
+      self._lastReseating = len(self._dmask)
       self._d.update(self._dmask)
       return False
    def seats(self):
@@ -83,7 +83,7 @@ class Seating:
       self[seat] = "L"
    @property
    def lastReseatingChanged(self):
-      return self._lastResating > 0
+      return self._lastReseating > 0
    def totalOccupied(self):
       return sum(self.occupied(seat) for seat in self.seats())
    def step(self, dist=1, crowded=4):

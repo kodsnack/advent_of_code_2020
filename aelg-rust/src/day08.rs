@@ -33,7 +33,6 @@ fn until_loop(vm: &mut VM) {
 fn solve1(program: &Data) -> Option<String> {
   let mut vm = VM::new(program);
   until_loop(&mut vm);
-
   Some(format!("{}", vm.get_acc()))
 }
 
@@ -43,9 +42,9 @@ fn solve2(program: &Data) -> Option<String> {
     let old_instr;
     if let Some(instr) = modified_program.get_mut(i) {
       old_instr = *instr;
-      match instr.op {
-        Nop => instr.op = Jmp,
-        Jmp => instr.op = Nop,
+      match instr {
+        Nop(a) => *instr = Jmp(*a),
+        Jmp(a) => *instr = Nop(*a),
         _ => continue,
       }
     } else {

@@ -44,8 +44,7 @@ std::tuple<std::string, std::string> p11(const std::string & input) {
                                 if (!dc && !dr) continue;
 
                                 int d = 1;
-                                while (c + dc * d >= 0 && r + dr * d >= 0 && c + dc * d < v[r].size() &&
-                                       r + dr * d < v.size()) {
+                                while (c + dc * d < v[r].size() && r + dr * d < v.size()) {
                                     cnt += (v[r + dr * d][c + dc * d] == '#') ? 1 : 0;
                                     if(v[r + dr * d][c + dc * d] != '.' || p == 1) break;
                                     d++;
@@ -53,18 +52,19 @@ std::tuple<std::string, std::string> p11(const std::string & input) {
 
                             }
                         }
-
-
+                        
                         if (v[r][c] == 'L' && cnt == 0) next[r][c] = '#';
                         if (v[r][c] == '#' && cnt >= 3+p) next[r][c] = 'L';
                     } else std::cout << "err" << std::endl;
                 }
             }
-            v = next;
+            v.swap(next);
         }
 
         for (auto &&s : v) {
-            for (auto c : s) if (c == '#') p == 1 ? ans1++ : ans2++;
+            auto cnt = std::count(s.begin(), s.end(), '#');
+            if(p == 1) ans1 += cnt;
+            else ans2 += cnt;
         }
     }
 

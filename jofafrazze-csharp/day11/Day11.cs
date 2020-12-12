@@ -12,17 +12,6 @@ namespace day11
         readonly static string nsname = typeof(Day11).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
-        static Map BuildMap(List<string> list)
-        {
-            int w = list[0].Length;
-            int h = list.Count;
-            Map m = new Map(w, h, new Position(0, 0));
-            for (int y = 0; y < h; y++)
-                for (int x = 0; x < w; x++)
-                    m.data[x, y] = list[y][x];
-            return m;
-        }
-
         static Map StepMap(Map m)
         {
             int w = m.width;
@@ -36,7 +25,7 @@ namespace day11
                     var c = m[p];
                     if (c != '.')
                     {
-                        int n = Utils.directions8.Where(d => m.HasPosition(p + d) && m[p + d] == '#').Count();
+                        int n = CoordsRC.directions8.Where(d => m.HasPosition(p + d) && m[p + d] == '#').Count();
                         if (n == 0 && c == 'L')
                             mNext[p] = '#';
                         if (n >= 4 && c == '#')
@@ -50,7 +39,7 @@ namespace day11
         static Object PartA()
         {
             var input = ReadIndata.Strings(inputPath);
-            Map m = BuildMap(input);
+            Map m = Map.Build(input);
             Map m2 = new Map(m);
             //m.Print();
             int n = 0;
@@ -81,7 +70,7 @@ namespace day11
                     if (c != '.')
                     {
                         int n = 0;
-                        foreach (var d in Utils.directions8)
+                        foreach (var d in CoordsRC.directions8)
                         {
                             bool done = false;
                             int k = 1;
@@ -107,7 +96,7 @@ namespace day11
         static Object PartB()
         {
             var input = ReadIndata.Strings(inputPath);
-            Map m = BuildMap(input);
+            Map m = Map.Build(input);
             Map m2 = new Map(m);
             int n = 0;
             do

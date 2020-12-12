@@ -82,3 +82,6 @@
 [submodule "dtrng-fsharp"]
 	path = dtrng-fsharp
 	url = git@github.com:dtrng/aoc-2020-fsharp.git
+[submodule "einarssons-python"]
+	path = einarssons-python
+	url = https://github.com/einarssons/adventofcode2020

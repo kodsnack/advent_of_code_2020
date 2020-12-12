@@ -29,3 +29,20 @@ fn decimal(input: &str) -> IResult<&str, &str> {
 pub fn integer<T: std::str::FromStr>(input: &str) -> IResult<&str, T> {
   map_res(decimal, |s| s.parse::<T>())(input)
 }
+
+pub fn run_parser<T, F>(parser: F, input: &[&str]) -> Result<Vec<T>, crate::error::AOCError>
+where
+  F: Fn(&str) -> IResult<&str, T>,
+{
+  input
+    .iter()
+    .map(|l| {
+      parser(l).map_err(|e| {
+        format!("Couldn't parse {}\nerror: {}", l, e)
+          .as_str()
+          .into()
+      })
+    })
+    .map(|r| r.map(|(_, x)| x))
+    .collect()
+}

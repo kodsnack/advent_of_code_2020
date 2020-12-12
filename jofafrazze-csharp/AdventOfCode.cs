@@ -250,6 +250,17 @@ namespace AdventOfCode
                     data[x, y] = m.data[x, y];
         }
 
+        public static Map Build(List<string> list)
+        {
+            int w = list[0].Length;
+            int h = list.Count;
+            Map m = new Map(w, h, new GenericPosition2D<int>(0, 0));
+            for (int y = 0; y < h; y++)
+                for (int x = 0; x < w; x++)
+                    m.data[x, y] = list[y][x];
+            return m;
+        }
+
         public char this[GenericPosition2D<int> p]
         {
             get
@@ -333,7 +344,7 @@ namespace AdventOfCode
         }
     }
 
-    public static class Utils
+    public static class CoordsRC
     {
         public static readonly GenericPosition2D<int> goUpLeft = new GenericPosition2D<int>(-1, -1);
         public static readonly GenericPosition2D<int> goUp = new GenericPosition2D<int>(0, -1);
@@ -351,6 +362,54 @@ namespace AdventOfCode
         {
             goUpLeft, goUp, goUpRight, goRight, goDownRight, goDown, goDownLeft, goLeft
         };
+    }
+
+    public static class CoordsXY
+    {
+        public static readonly GenericPosition2D<int> goUpLeft = new GenericPosition2D<int>(-1, 1);
+        public static readonly GenericPosition2D<int> goUp = new GenericPosition2D<int>(0, 1);
+        public static readonly GenericPosition2D<int> goUpRight = new GenericPosition2D<int>(1, 1);
+        public static readonly GenericPosition2D<int> goRight = new GenericPosition2D<int>(1, 0);
+        public static readonly GenericPosition2D<int> goDownRight = new GenericPosition2D<int>(1, -1);
+        public static readonly GenericPosition2D<int> goDown = new GenericPosition2D<int>(0, -1);
+        public static readonly GenericPosition2D<int> goDownLeft = new GenericPosition2D<int>(-1, -1);
+        public static readonly GenericPosition2D<int> goLeft = new GenericPosition2D<int>(-1, 0);
+        public static readonly List<GenericPosition2D<int>> directions4 = new List<GenericPosition2D<int>>()
+        {
+            goUp, goRight, goDown, goLeft
+        };
+        public static readonly List<GenericPosition2D<int>> directions8 = new List<GenericPosition2D<int>>()
+        {
+            goUpLeft, goUp, goUpRight, goRight, goDownRight, goDown, goDownLeft, goLeft
+        };
+    }
+
+    public static class Utils
+    {
+        // Modulo i.e. mod (instead of the % operator)
+        public static int Modulo(int x, int m)
+        {
+            int r = x % m;
+            return r < 0 ? r + m : r;
+        }
+
+        // Createst Common Factor i.e. Createst Common Divisor (GCD)
+        public static long GCF(long a, long b)
+        {
+            while (b != 0)
+            {
+                long temp = b;
+                b = a % b;
+                a = temp;
+            }
+            return a;
+        }
+
+        // Least Common Multiple i.e. Lowest Common Denominator (LCD)
+        public static long LCM(long a, long b)
+        {
+            return (a / GCF(a, b)) * b;
+        }
     }
 
     public static class Algorithms

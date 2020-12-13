@@ -2,19 +2,19 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
-#include <set>
-std::tuple<std::string, std::string> p11(const std::string & input) {
+
+std::tuple<std::string, std::string> p11(const std::string &input) {
     int64_t ans1 = 0;
     int64_t ans2 = 0;
     std::vector<std::string> start;
 
     {
         std::string str;
-        for(const auto c : input) {
-            if(c == 'L' || c == '.' || c == '#') {
+        for (const auto c : input) {
+            if (c == 'L' || c == '.' || c == '#') {
                 str.push_back(c);
-            } else if (c == '\n'){
-                if(!str.empty()) {
+            } else if (c == '\n') {
+                if (!str.empty()) {
                     start.push_back(str);
                 }
                 str.clear();
@@ -23,15 +23,9 @@ std::tuple<std::string, std::string> p11(const std::string & input) {
         }
     }
 
-    for(auto p : {1, 2}) {
-
+    for (auto p : {1, 2}) {
         auto v = start;
-        std::set<decltype(v)> seen;
         while (true) {
-            if (seen.count(v)) {
-                break;
-            }
-            seen.insert(v);
             auto next = v;
             for (size_t r = 0; r < v.size(); r++) {
                 for (size_t c = 0; c < v[r].size(); c++) {
@@ -46,24 +40,25 @@ std::tuple<std::string, std::string> p11(const std::string & input) {
                                 int d = 1;
                                 while (c + dc * d < v[r].size() && r + dr * d < v.size()) {
                                     cnt += (v[r + dr * d][c + dc * d] == '#') ? 1 : 0;
-                                    if(v[r + dr * d][c + dc * d] != '.' || p == 1) break;
+                                    if (v[r + dr * d][c + dc * d] != '.' || p == 1) break;
                                     d++;
                                 }
 
                             }
                         }
-                        
+
                         if (v[r][c] == 'L' && cnt == 0) next[r][c] = '#';
-                        if (v[r][c] == '#' && cnt >= 3+p) next[r][c] = 'L';
+                        else if (v[r][c] == '#' && cnt >= 3 + p) next[r][c] = 'L';
                     } else std::cout << "err" << std::endl;
                 }
             }
+            if (next == v) break;
             v.swap(next);
         }
 
         for (auto &&s : v) {
             auto cnt = std::count(s.begin(), s.end(), '#');
-            if(p == 1) ans1 += cnt;
+            if (p == 1) ans1 += cnt;
             else ans2 += cnt;
         }
     }

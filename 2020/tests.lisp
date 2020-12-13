@@ -46,6 +46,10 @@
   (is (= 2359 (aoc2020.day11::part1 (input-for 2020 11))))
   (is (= 2131 (aoc2020.day11::part2 (input-for 2020 11)))))
 
+(deftest day12 ()
+  (is (= 439 (aoc2020.day12::part1 (input-for 2020 12))))
+  (is (= 12385 (aoc2020.day12::part2 (input-for 2020 12)))))
+
 (deftest day13 ()
   (is (= 246 (aoc2020.day13::part1 (input-for 2020 13))))
   (is (= 939490236001473 (aoc2020.day13::part2 (input-for 2020 13)))))

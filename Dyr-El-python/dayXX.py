@@ -1,6 +1,6 @@
 ## Start of header boilerplate #################################################
 
-from aocbase import readInput
+from aocbase import readInput, measure
 import re
 
 oneLinePattern = re.compile(r"^.*$")
@@ -21,9 +21,11 @@ def fileParse(inp, lineparser=lineParse,
 
 ## End of header boilerplate ###################################################
 
+@measure
 def part1(pinp):
    return "<solution1>"
 
+@measure
 def part2(pinp):
    return "<solution2>"
 

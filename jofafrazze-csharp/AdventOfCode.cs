@@ -433,6 +433,26 @@ namespace AdventOfCode
         {
             return (a / GCF(a, b)) * b;
         }
+
+        // g = ax + by = gcd(a, b)
+        public static (long g, long x, long y) EGCD(long a, long b)
+        {
+            if (a == 0)
+                return (b, 0, 1);
+            else
+            {
+                (long g, long y, long x) = EGCD(b % a, a);
+                return (g, x - (b / a) * y, y);
+            }
+        }
+
+        public static long ModInverse(long a, long m)
+        {
+            (long g, long x, long y) = EGCD(a, m);
+            if (g != 1)
+                throw new ArgumentOutOfRangeException();
+            return x % m;
+        }
     }
 
     public static class Algorithms

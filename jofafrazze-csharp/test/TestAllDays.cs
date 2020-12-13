@@ -111,23 +111,23 @@ namespace test
         }
     }
 
-    //public class TestDay13
-    //{
-    //    [Fact]
-    //    public void Test()
-    //    {
-    //        Assert.True(day13.Day13.MainTest());
-    //    }
-    //}
+    public class TestDay13
+    {
+        [Fact]
+        public void Test()
+        {
+            Assert.True(day13.Day13.MainTest());
+        }
+    }
 
-    //public class TestDay14
-    //{
-    //    [Fact]
-    //    public void Test()
-    //    {
-    //        Assert.True(day14.Day14.MainTest());
-    //    }
-    //}
+    public class TestDay14
+    {
+        [Fact]
+        public void Test()
+        {
+            Assert.True(day14.Day14.MainTest());
+        }
+    }
 
     //public class TestDay15
     //{

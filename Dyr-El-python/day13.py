@@ -1,6 +1,6 @@
 ## Start of header boilerplate #################################################
 
-from aocbase import readInput
+from aocbase import readInput, measure
 import re
 
 oneLinePattern = re.compile(r"^.*$")
@@ -21,6 +21,7 @@ def fileParse(inp, lineparser=lineParse,
 
 ## End of header boilerplate ###################################################
 
+@measure
 def part1(pinp):
    time = int(pinp[0])
    bussIds = [int(i) for i in pinp[1].split(",") if i!="x"]
@@ -35,6 +36,7 @@ def part1(pinp):
 
 from math import gcd
 
+@measure
 def part2(pinp):
    bussIds = [(offset, int(ids))
               for offset, ids in enumerate(pinp[1].split(",")) 
@@ -66,7 +68,7 @@ if __name__ == "__main__":
 
    print("Input is '" + str(parseInp[:10])[:160] + 
          ('...' if len(parseInp)>10 or len(str(parseInp[:10]))>160 else '') + "'")
-   print("Solution to part 1: {}".format(part1(parseInp)))
+   print(f"Solution to part 1: {part1(parseInp)}")
    print("Solution to part 2: {}".format(part2(parseInp)))
 
 ## End of footer boilerplate ###################################################

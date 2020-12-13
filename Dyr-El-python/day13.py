@@ -22,16 +22,44 @@ def fileParse(inp, lineparser=lineParse,
 ## End of header boilerplate ###################################################
 
 def part1(pinp):
-   return "<solution1>"
+   time = int(pinp[0])
+   bussIds = [int(i) for i in pinp[1].split(",") if i!="x"]
+   departureTimes = list()
+   for buss in bussIds:
+      if time % buss == 0:
+         return 0
+      else:
+         departureTimes.append((buss - time%buss, buss))
+   departureTimes.sort()
+   return departureTimes[0][0]*departureTimes[0][1]
+
+from math import gcd
 
 def part2(pinp):
-   return "<solution2>"
+   bussIds = [(offset, int(ids))
+              for offset, ids in enumerate(pinp[1].split(",")) 
+              if ids != "x"]
+   time, currentStep, usedSteps = 0, 1, set()
+   found = False
+   while not found:
+      time += currentStep
+      found = True
+      for offset, bussId in bussIds:
+         if (time+offset) % bussId != 0:
+            found = False
+            break
+         else:
+            if bussId not in usedSteps:
+               usedSteps.add(bussId)
+               currentStep = bussId * currentStep // gcd(bussId, currentStep)
+   return time
 
 ## Start of footer boilerplate #################################################
 
 if __name__ == "__main__":
    inp = readInput()
-   # inp = """"""
+   inp2 = """939
+7,13,x,x,59,x,31,19"""
     
    ## Update for input specifics ##############################################
    parseInp = fileParse(inp, tokenPattern=wsTokenPattern)

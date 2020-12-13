@@ -36,7 +36,7 @@ def rotate(vector, angle):
 
 def part1(pinp):
    pos, heading = 0, 1
-   movements = {"N":0+1j, "S":0-1j, "E":1, "W":-1}
+   movements = {"N":1j, "S":-1j, "E":1, "W":-1}
    headings = {"L":pi/180, "R":-pi/180}
    for cmd, arg in directions(pinp):
       if cmd in movements:
@@ -49,7 +49,7 @@ def part1(pinp):
 
 def part2(pinp):
    wp, pos = 10+1j, 0
-   movements = {"N":0+1j, "S":0-1j, "E":1, "W":-1}
+   movements = {"N":1j, "S":-1j, "E":1, "W":-1}
    headings = {"L":pi/180, "R":-pi/180}
    for cmd, arg in directions(pinp):
       if cmd in movements:

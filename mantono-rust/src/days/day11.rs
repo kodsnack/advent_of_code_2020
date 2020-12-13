@@ -21,6 +21,7 @@ pub fn first(input: String) -> String {
 }
 
 const WIDTH: usize = 97;
+const HEIGHT: usize = 91;
 
 fn update(grid: Vec<Pos>, occupied: usize) -> usize {
     let grid_now = grid
@@ -38,12 +39,10 @@ fn update(grid: Vec<Pos>, occupied: usize) -> usize {
 
     let occupied_now: usize = count_occupied(&grid_now);
 
-    println!("\n");
-
     if occupied == occupied_now {
         occupied_now
     } else {
-        //println!("Occupied seats: {}", occupied_now);
+        println!("Occupied seats: {}\n", occupied_now);
         update(grid_now, occupied_now)
     }
 }
@@ -53,8 +52,6 @@ fn update_pos(grid: &Vec<Pos>, i: usize, pos: &Pos) -> Pos {
         return *pos;
     }
 
-    std::thread::sleep(std::time::Duration::from_millis(8));
-
     let neighbours: Vec<usize> = neighbours(i);
     let adj_occ = neighbours
         .iter()
@@ -62,10 +59,9 @@ fn update_pos(grid: &Vec<Pos>, i: usize, pos: &Pos) -> Pos {
         .filter(|p: &&Pos| p.is_occupied())
         .count();
 
-    let new = pos.update(adj_occ);
-    //println!("{:?} [{}] => {} => {:?}", pos, i, adj_occ, new);
-    new
+    pos.update(adj_occ)
 }
+
 ///    C1   C2    C3
 /// |-----------------|
 /// | -98 | -97 | -96 | R1
@@ -73,36 +69,129 @@ fn update_pos(grid: &Vec<Pos>, i: usize, pos: &Pos) -> Pos {
 /// | +96 | +97 | +98 | R3
 /// |-----------------|
 fn neighbours(i: usize) -> Vec<usize> {
-    let (x, y) = coord(i);
-    let x_range = (x.max(1) - 1)..=(x + 1);
-    let y_range = (y.max(1) - 1)..=(y + 1);
-
-    //print!("\n{} => ", i);
+    let coord = Coord::from(i);
 
     vec![
-        i.checked_sub(WIDTH + 1),
-        i.checked_sub(WIDTH),
-        i.checked_sub(WIDTH - 1),
-        i.checked_sub(1),
-        Some(i + 1),
-        Some(i + WIDTH - 1),
-        Some(i + WIDTH),
-        Some(i + WIDTH + 1),
+        coord.up().left(),
+        coord.up(),
+        coord.up().right(),
+        coord.left(),
+        coord.right(),
+        coord.down().left(),
+        coord.down(),
+        coord.down().right(),
     ]
     .iter()
-    .filter_map(|x| *x)
-    .filter(|idx| {
-        let (x_i, y_i) = coord(*idx);
-        x_range.contains(&x_i) && y_range.contains(&y_i)
-    })
-    //.inspect(|n| print!("{} ", n))
+    .filter_map(|c| *c)
+    .map(|c| c.index())
     .collect::<Vec<usize>>()
 }
 
-fn coord(i: usize) -> (usize, usize) {
-    let x = i % WIDTH;
-    let y = i / WIDTH;
-    (x, y)
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+struct Coord {
+    x: usize,
+    y: usize,
+}
+
+trait Navigable {
+    type Item;
+
+    fn left(&self) -> Option<Self::Item>;
+    fn right(&self) -> Option<Self::Item>;
+    fn up(&self) -> Option<Self::Item>;
+    fn down(&self) -> Option<Self::Item>;
+}
+
+impl Navigable for Coord {
+    type Item = Coord;
+
+    fn up(&self) -> Option<Coord> {
+        if self.y == 0 {
+            None
+        } else {
+            Some(Coord {
+                x: self.x,
+                y: self.y - 1,
+            })
+        }
+    }
+
+    fn down(&self) -> Option<Coord> {
+        if self.y == HEIGHT - 1 {
+            None
+        } else {
+            Some(Coord {
+                x: self.x,
+                y: self.y + 1,
+            })
+        }
+    }
+
+    fn left(&self) -> Option<Coord> {
+        if self.x % WIDTH == 0 {
+            None
+        } else {
+            Some(Coord {
+                x: self.x - 1,
+                y: self.y,
+            })
+        }
+    }
+
+    fn right(&self) -> Option<Coord> {
+        if self.x % WIDTH == WIDTH - 1 {
+            None
+        } else {
+            Some(Coord {
+                x: self.x + 1,
+                y: self.y,
+            })
+        }
+    }
+}
+
+impl Coord {
+    pub fn from(i: usize) -> Coord {
+        let x = i % WIDTH;
+        let y = i / WIDTH;
+        Coord { x, y }
+    }
+
+    fn index(&self) -> usize {
+        self.x + self.y * WIDTH
+    }
+}
+
+impl Navigable for Option<Coord> {
+    type Item = Coord;
+
+    fn left(&self) -> Option<Self::Item> {
+        match self {
+            None => None,
+            Some(c) => c.left(),
+        }
+    }
+
+    fn right(&self) -> Option<Self::Item> {
+        match self {
+            None => None,
+            Some(c) => c.right(),
+        }
+    }
+
+    fn up(&self) -> Option<Self::Item> {
+        match self {
+            None => None,
+            Some(c) => c.up(),
+        }
+    }
+
+    fn down(&self) -> Option<Self::Item> {
+        match self {
+            None => None,
+            Some(c) => c.down(),
+        }
+    }
 }
 
 fn count_occupied(grid: &Vec<Pos>) -> usize {

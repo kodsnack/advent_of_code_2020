@@ -31,18 +31,6 @@ namespace day13
             return ans;
         }
 
-        static long ChineseRemainder(List<int> num, List<int> rem)
-        {
-            long prod = num.Aggregate((long)1, (a, b) =>  a * b);
-            long sum = 0;
-            for (int i = 0; i < num.Count; i++)
-            {
-                long p = prod / num[i];
-                sum += rem[i] * Utils.ModInverse(p, num[i]) * p;
-            }
-            return sum % prod;
-        }
-
         static Object PartB()
         {
             var input = ReadIndata.Strings(inputPath);
@@ -59,7 +47,7 @@ namespace day13
                 }
                 i++;
             }
-            long ans = ChineseRemainder(ids, offs);
+            long ans = Utils.CRT(ids, offs);
             Console.WriteLine("Part B: Result is {0}", ans);
             return ans;
         }

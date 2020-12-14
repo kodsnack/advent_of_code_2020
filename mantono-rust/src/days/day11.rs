@@ -10,31 +10,113 @@ use std::fmt::Display;
 ///
 /// Floor (.) never changes; seats don't move, and nobody sits on the floor.
 pub fn first(input: String) -> String {
+    let (grid, bounds) = transform(input);
+    update(grid, 0, 4, bounds).to_string()
+}
+
+/// People don't just care about adjacent seats - they care about the first seat they can see in
+/// each of those eight directions!
+//  Now, instead of considering just the eight immediately adjacent seats,
+/// consider the first seat in each of those eight directions.
+pub fn second(input: String) -> String {
+    let (grid, bounds) = transform(input);
+    update(grid, 0, 5, bounds).to_string()
+}
+
+fn transform(input: String) -> (Vec<Pos>, Bounds) {
+    let mut width: usize = 97;
     let grid: Vec<Pos> = input
         .lines()
+        .map(|line| line.trim())
+        .filter(|line| !line.is_empty())
+        .inspect(|line| width = line.len())
         .map(|line| line.chars())
         .flatten()
         .map(Pos::from)
         .collect::<Vec<Pos>>();
 
-    update(grid, 0).to_string()
+    let height: usize = grid.len() / width;
+    let bounds = Bounds { width, height };
+    (grid, bounds)
 }
 
-const WIDTH: usize = 97;
-const HEIGHT: usize = 91;
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+struct Bounds {
+    pub width: usize,
+    pub height: usize,
+}
 
-fn update(grid: Vec<Pos>, occupied: usize) -> usize {
+impl Bounds {
+    pub fn contains(&self, coord: &Coord) -> bool {
+        coord.x() < self.width && coord.y() < self.height
+    }
+
+    pub fn mov(&self, coord: &Coord, dir: Direction) -> Option<Coord> {
+        let x: Option<usize> = match dir {
+            Direction::NorthEast => coord.x().checked_add(1),
+            Direction::East => coord.x().checked_add(1),
+            Direction::SouthEast => coord.x().checked_add(1),
+            Direction::SouthWest => coord.x().checked_sub(1),
+            Direction::West => coord.x().checked_sub(1),
+            Direction::NorthWest => coord.x().checked_sub(1),
+            _ => Some(coord.x),
+        };
+
+        let y: Option<usize> = match dir {
+            Direction::NorthWest => coord.y().checked_sub(1),
+            Direction::North => coord.y().checked_sub(1),
+            Direction::NorthEast => coord.y().checked_sub(1),
+            Direction::SouthWest => coord.y().checked_add(1),
+            Direction::South => coord.y().checked_add(1),
+            Direction::SouthEast => coord.y().checked_add(1),
+            _ => Some(coord.y()),
+        };
+
+        match (x, y) {
+            (Some(x), Some(y)) => Some(Coord::from(x, y)),
+            _ => None,
+        }
+    }
+}
+
+enum Direction {
+    North,
+    NorthWest,
+    West,
+    SouthWest,
+    South,
+    SouthEast,
+    East,
+    NorthEast,
+}
+
+/* impl Direction {
+    fn delta(&self) -> (i8, i8) {
+        match self {
+            North => (0, -1),
+            NorthWest => (-1, -1),
+            West => (-1, 0),
+            SouthWest => (-1, 1),
+            South => (0, 1),
+            SouthEast => (1, 1),
+            East => (1, 0),
+            NorthEast => (1, -1),
+        }
+    }
+} */
+
+fn update(grid: Vec<Pos>, occupied: usize, occ_threshold: usize, bounds: Bounds) -> usize {
     let grid_now = grid
         .iter()
         .enumerate()
         .inspect(|(i, pos)| {
-            if i % WIDTH == WIDTH - 1 {
+            if i % bounds.width == bounds.width - 1 {
                 print!("{}\n", pos)
             } else {
                 print!("{}", pos)
             }
         })
-        .map(|(i, pos)| update_pos(&grid, i, pos))
+        .map(|(i, pos)| update_pos(&grid, i, occ_threshold, pos, &bounds))
         .collect::<Vec<Pos>>();
 
     let occupied_now: usize = count_occupied(&grid_now);
@@ -43,23 +125,23 @@ fn update(grid: Vec<Pos>, occupied: usize) -> usize {
         occupied_now
     } else {
         println!("Occupied seats: {}\n", occupied_now);
-        update(grid_now, occupied_now)
+        update(grid_now, occupied_now, occ_threshold, bounds)
     }
 }
 
-fn update_pos(grid: &Vec<Pos>, i: usize, pos: &Pos) -> Pos {
+fn update_pos(grid: &Vec<Pos>, i: usize, occ_threshold: usize, pos: &Pos, bounds: &Bounds) -> Pos {
     if let Pos::Floor = pos {
         return *pos;
     }
 
-    let neighbours: Vec<usize> = neighbours(i);
+    let neighbours: Vec<usize> = neighbours(i, bounds);
     let adj_occ = neighbours
         .iter()
         .map(|index: &usize| grid.get(*index).unwrap())
         .filter(|p: &&Pos| p.is_occupied())
         .count();
 
-    pos.update(adj_occ)
+    pos.update(adj_occ, occ_threshold)
 }
 
 ///    C1   C2    C3
@@ -68,22 +150,23 @@ fn update_pos(grid: &Vec<Pos>, i: usize, pos: &Pos) -> Pos {
 /// | -1  |  X  | +1  | R2
 /// | +96 | +97 | +98 | R3
 /// |-----------------|
-fn neighbours(i: usize) -> Vec<usize> {
-    let coord = Coord::from(i);
+fn neighbours(i: usize, bounds: &Bounds) -> Vec<usize> {
+    let coord = Coord::from_bounds(i, bounds);
 
     vec![
-        coord.up().left(),
-        coord.up(),
-        coord.up().right(),
-        coord.left(),
-        coord.right(),
-        coord.down().left(),
-        coord.down(),
-        coord.down().right(),
+        bounds.mov(&coord, Direction::North),
+        bounds.mov(&coord, Direction::NorthEast),
+        bounds.mov(&coord, Direction::East),
+        bounds.mov(&coord, Direction::SouthEast),
+        bounds.mov(&coord, Direction::South),
+        bounds.mov(&coord, Direction::SouthWest),
+        bounds.mov(&coord, Direction::West),
+        bounds.mov(&coord, Direction::NorthWest),
     ]
     .iter()
     .filter_map(|c| *c)
-    .map(|c| c.index())
+    .filter(|c| bounds.contains(&c))
+    .map(|c| c.index(bounds))
     .collect::<Vec<usize>>()
 }
 
@@ -93,104 +176,26 @@ struct Coord {
     y: usize,
 }
 
-trait Navigable {
-    type Item;
-
-    fn left(&self) -> Option<Self::Item>;
-    fn right(&self) -> Option<Self::Item>;
-    fn up(&self) -> Option<Self::Item>;
-    fn down(&self) -> Option<Self::Item>;
-}
-
-impl Navigable for Coord {
-    type Item = Coord;
-
-    fn up(&self) -> Option<Coord> {
-        if self.y == 0 {
-            None
-        } else {
-            Some(Coord {
-                x: self.x,
-                y: self.y - 1,
-            })
-        }
-    }
-
-    fn down(&self) -> Option<Coord> {
-        if self.y == HEIGHT - 1 {
-            None
-        } else {
-            Some(Coord {
-                x: self.x,
-                y: self.y + 1,
-            })
-        }
-    }
-
-    fn left(&self) -> Option<Coord> {
-        if self.x % WIDTH == 0 {
-            None
-        } else {
-            Some(Coord {
-                x: self.x - 1,
-                y: self.y,
-            })
-        }
-    }
-
-    fn right(&self) -> Option<Coord> {
-        if self.x % WIDTH == WIDTH - 1 {
-            None
-        } else {
-            Some(Coord {
-                x: self.x + 1,
-                y: self.y,
-            })
-        }
-    }
-}
-
 impl Coord {
-    pub fn from(i: usize) -> Coord {
-        let x = i % WIDTH;
-        let y = i / WIDTH;
+    pub fn from_bounds(i: usize, bounds: &Bounds) -> Coord {
+        let x = i % bounds.width;
+        let y = i / bounds.width;
         Coord { x, y }
     }
 
-    fn index(&self) -> usize {
-        self.x + self.y * WIDTH
-    }
-}
-
-impl Navigable for Option<Coord> {
-    type Item = Coord;
-
-    fn left(&self) -> Option<Self::Item> {
-        match self {
-            None => None,
-            Some(c) => c.left(),
-        }
+    pub fn from(x: usize, y: usize) -> Coord {
+        Coord { x, y }
     }
 
-    fn right(&self) -> Option<Self::Item> {
-        match self {
-            None => None,
-            Some(c) => c.right(),
-        }
+    fn index(&self, bounds: &Bounds) -> usize {
+        self.x + self.y * bounds.width
     }
 
-    fn up(&self) -> Option<Self::Item> {
-        match self {
-            None => None,
-            Some(c) => c.up(),
-        }
+    fn x(&self) -> usize {
+        self.x
     }
-
-    fn down(&self) -> Option<Self::Item> {
-        match self {
-            None => None,
-            Some(c) => c.down(),
-        }
+    fn y(&self) -> usize {
+        self.y
     }
 }
 
@@ -226,9 +231,9 @@ impl Pos {
         }
     }
 
-    pub fn update(&self, adj_occ: usize) -> Self {
+    pub fn update(&self, adj_occ: usize, threshold: usize) -> Self {
         match self {
-            Pos::Occupied if adj_occ >= 4 => Pos::Empty,
+            Pos::Occupied if adj_occ >= threshold => Pos::Empty,
             Pos::Empty if adj_occ == 0 => Pos::Occupied,
             _ => self.clone(),
         }
@@ -242,6 +247,25 @@ impl Pos {
     }
 }
 
-pub fn second(input: String) -> String {
-    input
+#[cfg(test)]
+mod tests {
+    use super::second;
+
+    #[test]
+    fn test_part2() {
+        let input = r"
+        L.LL.LL.LL
+        LLLLLLL.LL
+        L.L.L..L..
+        LLLL.LL.LL
+        L.LL.LL.LL
+        L.LLLLL.LL
+        ..L.L.....
+        LLLLLLLLLL
+        L.LLLLLL.L
+        L.LLLLL.LL
+        ";
+
+        second(input.to_string());
+    }
 }

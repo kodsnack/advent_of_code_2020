@@ -1,6 +1,6 @@
 ## Start of header boilerplate #################################################
 
-from aocbase import readInput
+from aocbase import readInput, measure
 import re
 
 oneLinePattern = re.compile(r"^.*$")
@@ -103,6 +103,7 @@ class Seating:
          lines.append(''.join(columns))
       return '\n'.join(lines)
 
+@measure
 def part1(pinp):
    seating = Seating(pinp)
    steps = 0
@@ -111,7 +112,8 @@ def part1(pinp):
       # print(seating)
       # print(steps, seating.totalOccupied())
    return seating.totalOccupied()
-   
+
+@measure
 def part2(pinp):
    seating = Seating(pinp)
    steps = 0

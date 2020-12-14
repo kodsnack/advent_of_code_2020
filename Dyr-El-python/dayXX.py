@@ -1,6 +1,6 @@
 ## Start of header boilerplate #################################################
 
-from aocbase import readInput
+from aocbase import readInput, measure
 import re
 
 oneLinePattern = re.compile(r"^.*$")
@@ -21,9 +21,11 @@ def fileParse(inp, lineparser=lineParse,
 
 ## End of header boilerplate ###################################################
 
+@measure
 def part1(pinp):
    return "<solution1>"
 
+@measure
 def part2(pinp):
    return "<solution2>"
 
@@ -38,7 +40,7 @@ if __name__ == "__main__":
 
    print("Input is '" + str(parseInp[:10])[:160] + 
          ('...' if len(parseInp)>10 or len(str(parseInp[:10]))>160 else '') + "'")
-   print("Solution to part 1: {}".format(part1(parseInp)))
-   print("Solution to part 2: {}".format(part2(parseInp)))
+   print(f"Solution to part 1: {part1(parseInp)}")
+   print(f"Solution to part 2: {part2(parseInp)}")
 
 ## End of footer boilerplate ###################################################

@@ -21,47 +21,52 @@ def fileParse(inp, lineparser=lineParse,
 
 ## End of header boilerplate ###################################################
 
+def parser(pinp):
+   for s in pinp:
+      if s[0] == "mask":
+         mask = s[2]
+      else:
+         address = int(s[0][4:-1])
+         value = int(s[2])
+         yield (mask, address, value)
+
 @measure
 def part1(pinp):
-   time = int(pinp[0])
-   bussIds = [int(i) for i in pinp[1].split(",") if i!="x"]
-   departureTimes = list()
-   for buss in bussIds:
-      if time % buss == 0:
-         return 0
-      else:
-         departureTimes.append((buss - time%buss, buss))
-   departureTimes.sort()
-   return departureTimes[0][0]*departureTimes[0][1]
-
-from math import gcd
+   mem = dict()
+   for mask, address, value in parser(pinp):
+      bitMask = int(mask.replace("1", "0").replace("X", "1"), 2)
+      mem[address] = (value & bitMask) | int(mask.replace("X", "0"), 2)
+   return sum(mem.values())
 
 @measure
 def part2(pinp):
-   bussIds = [(offset, int(ids))
-              for offset, ids in enumerate(pinp[1].split(",")) 
-              if ids != "x"]
-   time, currentStep, usedSteps = 0, 1, set()
-   found = False
-   while not found:
-      time += currentStep
-      found = True
-      for offset, bussId in bussIds:
-         if (time+offset) % bussId != 0:
-            found = False
-            break
-         else:
-            if bussId not in usedSteps:
-               usedSteps.add(bussId)
-               currentStep = bussId * currentStep // gcd(bussId, currentStep)
-   return time
+   mem = dict()
+   for mask, address, value in parser(pinp):
+      for bitPattern in range(2**mask.count("X")):
+         bitList = list()
+         addressBitPattern = address
+         for c in reversed(mask):
+            if c == '0':
+               bitList.append(str(addressBitPattern & 1))
+            elif c == '1':
+               bitList.append(c)
+            else:
+               bitList.append(str(bitPattern & 1))
+               bitPattern >>= 1
+            addressBitPattern >>= 1
+         newAddress = int(''.join(reversed(bitList)),2)
+         mem[newAddress] = value
+   return sum(mem.values())
 
 ## Start of footer boilerplate #################################################
 
 if __name__ == "__main__":
    inp = readInput()
-   inp2 = """939
-7,13,x,x,59,x,31,19"""
+   inp2 = """mask = XXXX
+mem[0] = 1
+mask = XX11
+mem[1] = 0
+"""
     
    ## Update for input specifics ##############################################
    parseInp = fileParse(inp, tokenPattern=wsTokenPattern)
@@ -69,6 +74,6 @@ if __name__ == "__main__":
    print("Input is '" + str(parseInp[:10])[:160] + 
          ('...' if len(parseInp)>10 or len(str(parseInp[:10]))>160 else '') + "'")
    print(f"Solution to part 1: {part1(parseInp)}")
-   print("Solution to part 2: {}".format(part2(parseInp)))
+   print(f"Solution to part 2: {part2(parseInp)}")
 
 ## End of footer boilerplate ###################################################

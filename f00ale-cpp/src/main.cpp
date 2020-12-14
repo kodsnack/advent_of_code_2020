@@ -8,7 +8,8 @@
 
 int main() {
     std::vector<std::function<std::tuple<std::string,std::string>(const std::string&)>> problems
-            { p01, p02, p03, p04, p05, p06, p07, p08, p09, p10, p11, p12, p13 };
+            { p01, p02, p03, p04, p05, p06, p07, p08, p09, p10, p11, p12, p13,
+              p14 };
 
     std::chrono::microseconds total_time{0};
 

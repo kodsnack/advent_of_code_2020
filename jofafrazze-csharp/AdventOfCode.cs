@@ -273,7 +273,7 @@ namespace AdventOfCode
                     data[x, y] = m.data[x, y];
         }
 
-        public static Map Build(List<string> list)
+        public static Map Build(IList<string> list)
         {
             int w = list[0].Length;
             int h = list.Count;
@@ -453,11 +453,24 @@ namespace AdventOfCode
                 throw new ArgumentOutOfRangeException();
             return x % m;
         }
+
+        // Chinese Remainder Theorem (CRT)
+        public static long CRT(IList<int> num, IList<int> rem)
+        {
+            long prod = num.Aggregate(1L, (a, b) => a * b);
+            long sum = 0;
+            for (int i = 0; i < num.Count; i++)
+            {
+                long p = prod / num[i];
+                sum += rem[i] * Utils.ModInverse(p, num[i]) * p;
+            }
+            return sum % prod;
+        }
     }
 
     public static class Algorithms
     {
-        public static List<List<T>> HeapPermutation<T>(List<T> a)
+        public static List<List<T>> HeapPermutation<T>(IList<T> a)
         {
             List<List<T>> result = new List<List<T>>();
             void Swap(ref List<T> b, int i1, int i2)
@@ -487,11 +500,11 @@ namespace AdventOfCode
             return result;
         }
 
-        public static List<List<T>> GetCombinations<T>(List<T> input)
+        public static List<List<T>> GetCombinations<T>(IList<T> input)
         {
             return GetCombinations(input, input.Count);
         }
-        public static List<List<T>> GetCombinations<T>(List<T> input, int maxLength)
+        public static List<List<T>> GetCombinations<T>(IList<T> input, int maxLength)
         {
             List<List<T>> results = new List<List<T>>();
             for (int i = 0; i < input.Count; i++)

@@ -1,6 +1,6 @@
 ## Start of header boilerplate #################################################
 
-from aocbase import readInput
+from aocbase import readInput, measure
 import re
 
 oneLinePattern = re.compile(r"^.*$")
@@ -30,6 +30,7 @@ def findSum(d, goal):
             return True
    return False
 
+@measure
 def part1(pinp):
    l = map(int, pinp)
    d = deque(next(l) for i in range(25))
@@ -41,6 +42,7 @@ def part1(pinp):
       d.popleft()
    return "Not Found"
 
+@measure
 def part2(pinp, goal):
    l = list(map(int, pinp))
    a, b = 0, 1

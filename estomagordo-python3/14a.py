@@ -12,19 +12,19 @@ def solve(instructions):
     mask = ''
 
     for ins in instructions:
-        if 'mask' in ins:
-            mask = ins.split()[-1]
+        if len(ins) == 1:
+            mask = ins[0]
             continue
 
         addr, val = ins
-        binary = bin(val)[2:]
-        binary = '0' * (len(mask) - len(binary)) + binary
-        binlen = len(binary)
+        valbin = bin(val)[2:]
+        valbin = '0' * (len(mask) - len(valbin)) + valbin
+        binlen = len(valbin)
         final = []
 
         for binpos in range(-1, -binlen-1, -1):
             if mask[binpos] == 'X':
-                final.append(binary[binpos])
+                final.append(valbin[binpos])
             else:
                 final.append(mask[binpos])
 
@@ -40,7 +40,7 @@ if __name__ == '__main__':
     with open('14.txt') as f:
         for line in f.readlines():
             if 'mask' in line:
-                instructions.append(line.rstrip())
+                instructions.append([line.split()[-1]])
             else:
                 instructions.append(ints(line))
 

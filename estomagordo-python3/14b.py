@@ -8,15 +8,15 @@ from helpers import distance, distance_sq, eight_neighs, eight_neighs_bounded, g
 
 
 def get_addresses(addr, mask):
-    binary = bin(addr)[2:]
-    binary = list('0' * (len(mask) - len(binary)) + binary)
+    addrbin = bin(addr)[2:]
+    addrbin = list('0' * (len(mask) - len(addrbin)) + addrbin)
 
     addresses = []
     wildcards = {}
 
     for pos, bit in enumerate(mask):
         if bit == '1':
-            binary[pos] = '1'
+            addrbin[pos] = '1'
         elif bit == 'X':
             wildcards[pos] = len(wildcards)
 
@@ -25,11 +25,11 @@ def get_addresses(addr, mask):
         posbin = '0' * (len(wildcards) - len(posbin)) + posbin
         variant = []
 
-        for pos, bit in enumerate(binary):
+        for pos, bit in enumerate(addrbin):
             if pos in wildcards:
                 variant.append(posbin[wildcards[pos]])
             else:
-                variant.append(binary[pos])
+                variant.append(addrbin[pos])
 
         addresses.append(int(''.join(variant), 2))
 
@@ -41,23 +41,11 @@ def solve(instructions):
     mask = ''
 
     for ins in instructions:
-        if 'mask' in ins:
-            mask = ins.split()[-1]
+        if len(ins) == 1:
+            mask = ins[0]
             continue
 
         addr, val = ins
-        binary = bin(val)[2:]
-        binary = '0' * (len(mask) - len(binary)) + binary
-        binlen = len(binary)
-        final = []
-
-        for binpos in range(-1, -binlen-1, -1):
-            if mask[binpos] == 'X':
-                final.append(binary[binpos])
-            else:
-                final.append(mask[binpos])
-
-        rev = ''.join(list(final)[::-1])
 
         for address in get_addresses(addr, mask):
             memory[address] = val
@@ -70,7 +58,7 @@ if __name__ == '__main__':
     with open('14.txt') as f:
         for line in f.readlines():
             if 'mask' in line:
-                instructions.append(line.rstrip())
+                instructions.append([line.split()[-1]])
             else:
                 instructions.append(ints(line))
 

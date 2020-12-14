@@ -40,7 +40,7 @@ if __name__ == "__main__":
 
    print("Input is '" + str(parseInp[:10])[:160] + 
          ('...' if len(parseInp)>10 or len(str(parseInp[:10]))>160 else '') + "'")
-   print("Solution to part 1: {}".format(part1(parseInp)))
-   print("Solution to part 2: {}".format(part2(parseInp)))
+   print(f"Solution to part 1: {part1(parseInp)}")
+   print(f"Solution to part 2: {part2(parseInp)}")
 
 ## End of footer boilerplate ###################################################

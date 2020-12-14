@@ -53,3 +53,7 @@
 (deftest day13 ()
   (is (= 246 (aoc2020.day13::part1 (input-for 2020 13))))
   (is (= 939490236001473 (aoc2020.day13::part2 (input-for 2020 13)))))
+
+(deftest day14 ()
+  (is (= 10717676595607 (aoc2020.day14::part1 (input-for 2020 14))))
+  (is (= 3974538275659 (aoc2020.day14::part2 (input-for 2020 14)))))

@@ -8,7 +8,8 @@
 
 int main() {
     std::vector<std::function<std::tuple<std::string,std::string>(const std::string&)>> problems
-            { p01, p02, p03, p04, p05, p06, p07, p08, p09, p10, p11, p12 };
+            { p01, p02, p03, p04, p05, p06, p07, p08, p09, p10, p11, p12, p13,
+              p14, p15 };
 
     std::chrono::microseconds total_time{0};
 
@@ -32,11 +33,24 @@ int main() {
             auto ret = problems[i](str);
             auto end = std::chrono::high_resolution_clock::now();
 
+            std::string check = "unknown";
+            std::string answerfile = std::string("data/a") + (num < 10 ? "0" : "") + std::to_string(num) + ".txt";
+            std::ifstream answers(answerfile);
+            if(answers.good()) {
+                std::string a1, a2;
+                std::getline(answers, a1);
+                std::getline(answers, a2);
+                if(ret == std::tuple{a1, a2}) check = "OK";
+                else if(std::get<0>(ret) == a1) check = "2 wrong";
+                else if(std::get<1>(ret) == a2) check = "1 wrong";
+                else check = "both wrong";
+            }
+
             auto timeus = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
             total_time += timeus;
             std::cout << std::right << std::setw(2) << num << ": " << std::setw(15) << std::get<0>(ret) <<
                     " " << std::setw(15) << std::get<1>(ret)
-                    << " " << std::setw(10) << timeus.count() << "us" << std::endl;
+                    << " " << std::setw(10) << timeus.count() << "us " << check << std::endl;
 
         } else {
             std::cout << "Problem opening " << filename << std::endl;

@@ -36,7 +36,7 @@ std::tuple<std::string, std::string> p15(const std::string &input) {
         size_t num = 0;
         for (auto i : v) {
             num++;
-            map[i] = {0, num};
+            map[i] = {num, num};
             last = i;
         }
 
@@ -44,19 +44,11 @@ std::tuple<std::string, std::string> p15(const std::string &input) {
             num++;
 
             const auto[l1, l2] = map[last];
-            size_t speak;
-            if (!l1) {
-                speak = 0;
-            } else {
-                speak = l2 - l1;
-            }
+            size_t speak = l2-l1;
 
-            if (speak >= map.size()) {
-                // std::cout << "resize" << std::endl;
-                map.resize(speak + 1);
-            }
-            auto[f, b] = map[speak];
-            map[speak] = {b, num};
+            auto& [f, b] = map[speak];
+            f = b ? b : num;
+            b = num;
             last = speak;
         }
         if (ans1) ans2 = last;

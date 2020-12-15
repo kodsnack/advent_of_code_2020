@@ -41,3 +41,23 @@
 (deftest day10 ()
   (is (= 2760 (aoc2020.day10::part1 (input-for 2020 10))))
   (is (= 13816758796288 (aoc2020.day10::part2 (input-for 2020 10)))))
+
+(deftest day11 ()
+  (is (= 2359 (aoc2020.day11::part1 (input-for 2020 11))))
+  (is (= 2131 (aoc2020.day11::part2 (input-for 2020 11)))))
+
+(deftest day12 ()
+  (is (= 439 (aoc2020.day12::part1 (input-for 2020 12))))
+  (is (= 12385 (aoc2020.day12::part2 (input-for 2020 12)))))
+
+(deftest day13 ()
+  (is (= 246 (aoc2020.day13::part1 (input-for 2020 13))))
+  (is (= 939490236001473 (aoc2020.day13::part2 (input-for 2020 13)))))
+
+(deftest day14 ()
+  (is (= 10717676595607 (aoc2020.day14::part1 (input-for 2020 14))))
+  (is (= 3974538275659 (aoc2020.day14::part2 (input-for 2020 14)))))
+
+(deftest day15 ()
+  (is (= 1085 (aoc2020.day15::part1 (input-for 2020 15))))
+  (is (= 10652 (aoc2020.day15::part2 (input-for 2020 15)))))

@@ -1,4 +1,4 @@
-use std::fmt::Display;
+use std::{collections::HashMap, fmt::Display, slice::Iter};
 
 /// All decisions are based on the number of occupied seats adjacent to a given seat
 /// (one of the eight positions immediately up, down, left, right, or diagonal from the seat).
@@ -16,7 +16,7 @@ pub fn first(input: String) -> String {
 
 /// People don't just care about adjacent seats - they care about the first seat they can see in
 /// each of those eight directions!
-//  Now, instead of considering just the eight immediately adjacent seats,
+///  Now, instead of considering just the eight immediately adjacent seats,
 /// consider the first seat in each of those eight directions.
 pub fn second(input: String) -> String {
     let (grid, bounds) = transform(input);
@@ -77,8 +77,17 @@ impl Bounds {
             _ => None,
         }
     }
+
+    pub fn get_index(&self, coord: &Coord) -> Option<usize> {
+        if !self.contains(coord) {
+            None
+        } else {
+            Some(self.width * coord.y() + coord.x())
+        }
+    }
 }
 
+#[derive(Debug, Hash, Eq, PartialEq)]
 enum Direction {
     North,
     NorthWest,
@@ -90,20 +99,21 @@ enum Direction {
     NorthEast,
 }
 
-/* impl Direction {
-    fn delta(&self) -> (i8, i8) {
-        match self {
-            North => (0, -1),
-            NorthWest => (-1, -1),
-            West => (-1, 0),
-            SouthWest => (-1, 1),
-            South => (0, 1),
-            SouthEast => (1, 1),
-            East => (1, 0),
-            NorthEast => (1, -1),
-        }
+impl Direction {
+    pub fn iterator() -> Iter<'static, Direction> {
+        static DIRECTIONS: [Direction; 8] = [
+            Direction::North,
+            Direction::NorthWest,
+            Direction::West,
+            Direction::SouthWest,
+            Direction::South,
+            Direction::SouthEast,
+            Direction::East,
+            Direction::NorthEast,
+        ];
+        DIRECTIONS.iter()
     }
-} */
+}
 
 fn update(grid: Vec<Pos>, occupied: usize, occ_threshold: usize, bounds: Bounds) -> usize {
     let grid_now = grid
@@ -134,13 +144,7 @@ fn update_pos(grid: &Vec<Pos>, i: usize, occ_threshold: usize, pos: &Pos, bounds
         return *pos;
     }
 
-    let neighbours: Vec<usize> = neighbours(i, bounds);
-    let adj_occ = neighbours
-        .iter()
-        .map(|index: &usize| grid.get(*index).unwrap())
-        .filter(|p: &&Pos| p.is_occupied())
-        .count();
-
+    let adj_occ = neighbours(grid, i, bounds);
     pos.update(adj_occ, occ_threshold)
 }
 
@@ -150,24 +154,31 @@ fn update_pos(grid: &Vec<Pos>, i: usize, occ_threshold: usize, pos: &Pos, bounds
 /// | -1  |  X  | +1  | R2
 /// | +96 | +97 | +98 | R3
 /// |-----------------|
-fn neighbours(i: usize, bounds: &Bounds) -> Vec<usize> {
+fn neighbours(grid: &Vec<Pos>, i: usize, bounds: &Bounds) -> usize {
     let coord = Coord::from_bounds(i, bounds);
 
-    vec![
-        bounds.mov(&coord, Direction::North),
-        bounds.mov(&coord, Direction::NorthEast),
-        bounds.mov(&coord, Direction::East),
-        bounds.mov(&coord, Direction::SouthEast),
-        bounds.mov(&coord, Direction::South),
-        bounds.mov(&coord, Direction::SouthWest),
-        bounds.mov(&coord, Direction::West),
-        bounds.mov(&coord, Direction::NorthWest),
-    ]
-    .iter()
-    .filter_map(|c| *c)
-    .filter(|c| bounds.contains(&c))
-    .map(|c| c.index(bounds))
-    .collect::<Vec<usize>>()
+    Direction::iterator()
+        .map(|dir| is_occupied(grid, bounds, coord, *dir))
+        .count()
+}
+
+fn is_occupied(grid: &Vec<Pos>, bounds: &Bounds, coord: Coord, dir: Direction) -> bool {
+    let i: usize = bounds.get_index(&coord);
+    match grid.get(i) {
+        None => false,
+        Some(Pos::Occupied) => true,
+        _ => match bounds.mov(&coord, dir) {
+            None => false,
+            Some(c) => is_occupied(grid, bounds, c, dir),
+        },
+    }
+}
+
+fn is_completed(map: &Vec<Option<Pos>>) -> bool {
+    map.iter().all(|pos: &Option<Pos>| match pos {
+        None | Some(Pos::Occupied) => true,
+        Some(Pos::Floor) | Some(Pos::Empty) => false,
+    })
 }
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
@@ -266,6 +277,6 @@ mod tests {
         L.LLLLL.LL
         ";
 
-        second(input.to_string());
+        assert_eq!("26", &second(input.to_string()));
     }
 }

@@ -29,8 +29,13 @@ public class Main {
         Dec10a.run("files/dec10.txt");
         Dec10b.run("files/dec10.txt");
         Dec11a.run("files/dec11.txt");
-        Dec11b.run("files/dec11.txt");*/
+        Dec11b.run("files/dec11.txt");
         Dec12a.run("files/dec12.txt");
         Dec12b.run("files/dec12.txt");
+        Dec13a.run("files/dec13.txt");
+        Dec14a.run("files/dec14.txt");
+        Dec14b.run("files/dec14.txt");*/
+        Dec15a.run("files/dec15.txt");
+        Dec15b.run("files/dec15.txt");
     }
 }

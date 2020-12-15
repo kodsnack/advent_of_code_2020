@@ -12,6 +12,7 @@ fn print_part(n: i32, a: Option<String>) {
 
 fn run_for_day(day: u32) {
     let lines: lib::AOCResult<Vec<String>> = get_input_from_file(day);
+    let now = std::time::SystemTime::now();
     match lines {
         Ok(v) => {
             let w: Vec<&str> = v.iter().map(|l| l.as_str()).collect();
@@ -19,6 +20,9 @@ fn run_for_day(day: u32) {
                 Ok((a, b)) => {
                     print_part(1, a);
                     print_part(2, b);
+                    if let Ok(duration) = now.elapsed() {
+                        println!("Took {}ms", duration.as_millis());
+                    }
                 }
                 Err(e) => println!("Error: {}", e),
             }

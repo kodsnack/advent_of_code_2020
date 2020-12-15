@@ -57,7 +57,7 @@ fn solve1(v: &Data) -> Option<String> {
       }
     }
   }
-  let sum: u64 = mem.iter().map(|(k, v)| v).sum();
+  let sum: u64 = mem.iter().map(|(_, v)| v).sum();
   Some(format!("{}", sum))
 }
 
@@ -91,7 +91,7 @@ fn solve2(v: &Data) -> Option<String> {
       }
     }
   }
-  let sum: u64 = mem.iter().map(|(k, v)| v).sum();
+  let sum: u64 = mem.iter().map(|(_, v)| v).sum();
   Some(format!("{}", sum))
 }
 

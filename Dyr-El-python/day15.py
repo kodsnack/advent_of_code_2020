@@ -25,17 +25,16 @@ def fileParse(inp, lineparser=lineParse,
 def part1(pinp):
    start = list(map(int, pinp[0].split(",")))
    idx = 0
-   d = dict()
+   d = [0] * 2020
    while idx != 2020:
       idx += 1
       if idx <= len(start):
          number = start[idx-1]
       else:
-         if lastNumber in d:
+         if d[lastNumber]!=0:
             number = idx - d[lastNumber] - 1
          else:
             number = 0
-      print(idx, number)
       if idx > 1:
          d[lastNumber] = idx - 1
       lastNumber = number
@@ -45,13 +44,13 @@ def part1(pinp):
 def part2(pinp):
    start = list(map(int, pinp[0].split(",")))
    idx = 0
-   d = dict()
+   d = [0] * 30000000
    while idx != 30000000:
       idx += 1
       if idx <= len(start):
          number = start[idx-1]
       else:
-         if lastNumber in d:
+         if d[lastNumber]!=0:
             number = idx - d[lastNumber] - 1
          else:
             number = 0
@@ -64,7 +63,6 @@ def part2(pinp):
 
 if __name__ == "__main__":
    inp = readInput()
-   # inp = """3,1,2"""
     
    ## Update for input specifics ##############################################
    parseInp = fileParse(inp, tokenPattern=wsTokenPattern)

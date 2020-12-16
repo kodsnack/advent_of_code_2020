@@ -13,6 +13,7 @@ mod day12;
 mod day13;
 mod day14;
 mod day15;
+mod day16;
 pub mod error;
 pub mod parser;
 pub mod readinput;
@@ -86,6 +87,10 @@ pub fn solveday(
         15 => {
             let r = day15::parse(input);
             r.map(day15::solve)
+        }
+        16 => {
+            let r = day16::parse(input);
+            r.map(day16::solve)
         }
         _ => Ok((Some("No solution for this day yet.".into()), None)),
     }

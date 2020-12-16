@@ -12,7 +12,7 @@ pub use nom::branch::{alt, permutation};
 pub use nom::bytes::complete::{is_a, tag, take, take_till1, take_until};
 
 pub use nom::character::complete::{
-  alpha1, anychar, char, digit1, one_of, satisfy, space0, space1,
+  alpha1, anychar, char, digit1, newline, one_of, satisfy, space0, space1,
 };
 pub use nom::character::is_hex_digit;
 

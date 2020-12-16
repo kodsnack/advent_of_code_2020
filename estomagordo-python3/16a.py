@@ -7,15 +7,18 @@ from itertools import combinations, permutations, product
 from helpers import distance, distance_sq, eight_neighs, eight_neighs_bounded, grouped_lines, ints, manhattan, neighs, neighs_bounded
 
 
-def solve(fields, your, nearby):
+def solve(fields, other):
     tot = 0
 
-    for near in nearby:
-        for val in near:
+    for ticket in other:
+        for val in ticket:
             valid = False
+
             for field in fields:
                 if (field[0] <= val <= abs(field[1]) or field[2] <= val <= -field[3]):
                     valid = True
+                    break
+
             if not valid:
                 tot += val
 
@@ -25,7 +28,7 @@ if __name__ == '__main__':
     fields = []
     fieldsfound = False
     your = []
-    nearby = []
+    other = []
 
     with open('16.txt') as f:
         for line in f.readlines():
@@ -36,8 +39,6 @@ if __name__ == '__main__':
             elif not your:
                 your = ints(line)
             else:
-                nearby.append(ints(line))
+                other.append(ints(line))
 
-    print(solve(fields, your, nearby))
-
-# 2352859
+    print(solve(fields, other))

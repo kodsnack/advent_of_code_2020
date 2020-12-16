@@ -54,21 +54,13 @@ def solve(fields, your, other):
 
     decided = set()
 
-    for k, v in fieldnames.items():
-        if len(v[1]) == 1:
-            decided |= v[1]
-
     while any(len(v[1]) > 1 for v in fieldnames.values()):
         for k, v in fieldnames.items():
             if len(v[1] - decided) == 1:
                 fieldnames[k][1] -= decided
                 decided |= fieldnames[k][1]
 
-    departures = []
-
-    for k, v in fieldnames.items():
-        if 'departure' in k:
-            departures.append(list(v[1])[0])
+    departures = [position for k, v in fieldnames.items() for position in v[1] if 'departure' in k]
 
     val = 1
 

@@ -1,0 +1,10 @@
+#pragma once
+
+#include <string_view>
+
+namespace westerstrom
+{
+	static constexpr std::string_view dataDir = "@CMAKE_CURRENT_SOURCE_DIR@";
+	static constexpr std::string_view inputFile = "@CMAKE_CURRENT_SOURCE_DIR@/input.txt";
+	static constexpr std::string_view dayName = "@PROJECT_NAME@";
+}

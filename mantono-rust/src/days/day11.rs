@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fmt::Display, slice::Iter};
+use std::{fmt::Display, slice::Iter};
 
 /// All decisions are based on the number of occupied seats adjacent to a given seat
 /// (one of the eight positions immediately up, down, left, right, or diagonal from the seat).
@@ -11,7 +11,7 @@ use std::{collections::HashMap, fmt::Display, slice::Iter};
 /// Floor (.) never changes; seats don't move, and nobody sits on the floor.
 pub fn first(input: String) -> String {
     let (grid, bounds) = transform(input);
-    update(grid, 0, 4, bounds).to_string()
+    update(grid, 0, 4, bounds, false).to_string()
 }
 
 /// People don't just care about adjacent seats - they care about the first seat they can see in
@@ -20,7 +20,7 @@ pub fn first(input: String) -> String {
 /// consider the first seat in each of those eight directions.
 pub fn second(input: String) -> String {
     let (grid, bounds) = transform(input);
-    update(grid, 0, 5, bounds).to_string()
+    update(grid, 0, 5, bounds, true).to_string()
 }
 
 fn transform(input: String) -> (Vec<Pos>, Bounds) {
@@ -78,6 +78,11 @@ impl Bounds {
         }
     }
 
+    pub fn movi(&self, i: usize, dir: Direction) -> Option<usize> {
+        let coord = Coord::from_bounds(i, self);
+        self.mov(&coord, dir).map(|c| self.get_index(&c)).flatten()
+    }
+
     pub fn get_index(&self, coord: &Coord) -> Option<usize> {
         if !self.contains(coord) {
             None
@@ -87,7 +92,7 @@ impl Bounds {
     }
 }
 
-#[derive(Debug, Hash, Eq, PartialEq)]
+#[derive(Debug, Hash, Eq, PartialEq, Copy, Clone)]
 enum Direction {
     North,
     NorthWest,
@@ -115,7 +120,13 @@ impl Direction {
     }
 }
 
-fn update(grid: Vec<Pos>, occupied: usize, occ_threshold: usize, bounds: Bounds) -> usize {
+fn update(
+    grid: Vec<Pos>,
+    occupied: usize,
+    occ_threshold: usize,
+    bounds: Bounds,
+    recursive: bool,
+) -> usize {
     let grid_now = grid
         .iter()
         .enumerate()
@@ -126,7 +137,7 @@ fn update(grid: Vec<Pos>, occupied: usize, occ_threshold: usize, bounds: Bounds)
                 print!("{}", pos)
             }
         })
-        .map(|(i, pos)| update_pos(&grid, i, occ_threshold, pos, &bounds))
+        .map(|(i, pos)| update_pos(&grid, i, occ_threshold, pos, &bounds, recursive))
         .collect::<Vec<Pos>>();
 
     let occupied_now: usize = count_occupied(&grid_now);
@@ -135,50 +146,48 @@ fn update(grid: Vec<Pos>, occupied: usize, occ_threshold: usize, bounds: Bounds)
         occupied_now
     } else {
         println!("Occupied seats: {}\n", occupied_now);
-        update(grid_now, occupied_now, occ_threshold, bounds)
+        update(grid_now, occupied_now, occ_threshold, bounds, recursive)
     }
 }
 
-fn update_pos(grid: &Vec<Pos>, i: usize, occ_threshold: usize, pos: &Pos, bounds: &Bounds) -> Pos {
+fn update_pos(
+    grid: &Vec<Pos>,
+    i: usize,
+    occ_threshold: usize,
+    pos: &Pos,
+    bounds: &Bounds,
+    recursive: bool,
+) -> Pos {
     if let Pos::Floor = pos {
         return *pos;
     }
 
-    let adj_occ = neighbours(grid, i, bounds);
+    let adj_occ = neighbours(grid, i, bounds, recursive);
     pos.update(adj_occ, occ_threshold)
 }
 
-///    C1   C2    C3
-/// |-----------------|
-/// | -98 | -97 | -96 | R1
-/// | -1  |  X  | +1  | R2
-/// | +96 | +97 | +98 | R3
-/// |-----------------|
-fn neighbours(grid: &Vec<Pos>, i: usize, bounds: &Bounds) -> usize {
-    let coord = Coord::from_bounds(i, bounds);
-
+fn neighbours(grid: &Vec<Pos>, i: usize, bounds: &Bounds, recursive: bool) -> usize {
     Direction::iterator()
-        .map(|dir| is_occupied(grid, bounds, coord, *dir))
+        .filter(|dir| is_occupied(grid, bounds, i, **dir, recursive))
         .count()
 }
 
-fn is_occupied(grid: &Vec<Pos>, bounds: &Bounds, coord: Coord, dir: Direction) -> bool {
-    let i: usize = bounds.get_index(&coord);
-    match grid.get(i) {
+fn is_occupied(
+    grid: &Vec<Pos>,
+    bounds: &Bounds,
+    i: usize,
+    dir: Direction,
+    recursive: bool,
+) -> bool {
+    match bounds.movi(i, dir) {
         None => false,
-        Some(Pos::Occupied) => true,
-        _ => match bounds.mov(&coord, dir) {
+        Some(i) => match grid.get(i) {
             None => false,
-            Some(c) => is_occupied(grid, bounds, c, dir),
+            Some(Pos::Empty) => false,
+            Some(Pos::Occupied) => true,
+            Some(Pos::Floor) => recursive && is_occupied(grid, bounds, i, dir, recursive),
         },
     }
-}
-
-fn is_completed(map: &Vec<Option<Pos>>) -> bool {
-    map.iter().all(|pos: &Option<Pos>| match pos {
-        None | Some(Pos::Occupied) => true,
-        Some(Pos::Floor) | Some(Pos::Empty) => false,
-    })
 }
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
@@ -196,10 +205,6 @@ impl Coord {
 
     pub fn from(x: usize, y: usize) -> Coord {
         Coord { x, y }
-    }
-
-    fn index(&self, bounds: &Bounds) -> usize {
-        self.x + self.y * bounds.width
     }
 
     fn x(&self) -> usize {
@@ -260,7 +265,24 @@ impl Pos {
 
 #[cfg(test)]
 mod tests {
-    use super::second;
+    use super::{first, second};
+
+    #[test]
+    fn test_part1() {
+        let input = r"
+        L.LL.LL.LL
+        LLLLLLL.LL
+        L.L.L..L..
+        LLLL.LL.LL
+        L.LL.LL.LL
+        L.LLLLL.LL
+        ..L.L.....
+        LLLLLLLLLL
+        L.LLLLLL.L
+        L.LLLLL.LL
+        ";
+        assert_eq!("37", &first(input.to_string()));
+    }
 
     #[test]
     fn test_part2() {

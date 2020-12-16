@@ -1,0 +1,23 @@
+/* Advent of code 2020, day 15, part 1+2 in Open Object REXX */
+
+input = .stream~new('day15.txt')~linein~makearray(',')
+
+say count(2020)     -- Part 1
+say count(30000000) -- Part 2; Will take ~1 m on an i5 Macbook to calculate.
+exit
+
+count:
+spoken = .table~new
+loop i over input~allindexes
+	spoken[input[i]] = i
+end
+last = input~lastitem
+spoken~remove(last)
+loop turn = spoken~items + 1 for arg(1) - input~items
+	if spoken~hasindex(last) 
+		then next = turn - spoken[last] 
+		else next = 0
+	spoken[last] = turn
+	last = next
+end
+return last

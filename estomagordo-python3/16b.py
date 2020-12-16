@@ -7,21 +7,8 @@ from itertools import combinations, permutations, product
 from helpers import distance, distance_sq, eight_neighs, eight_neighs_bounded, grouped_lines, ints, manhattan, neighs, neighs_bounded
 
 
-def solve(fields, your, nearby):
+def solve(fields, your, other):
     valid_tickets = []
-
-    for near in nearby:
-        allvalid = True
-
-        for val in near:
-            valid = False
-            for field in fields:
-                if (field[1] <= val <= field[2] or field[3] <= val <= field[4]):
-                    valid = True
-            if not valid:
-                allvalid = False
-        if allvalid and near:
-            valid_tickets.append(near)
 
     fieldnames = {}
 
@@ -33,7 +20,25 @@ def solve(fields, your, nearby):
         for v in range(field[3], field[4]+1):
             s.add(v)
 
-        fieldnames[field[0]] = [s, {x for x in range(len(valid_tickets[0]))}]
+        fieldnames[field[0]] = [s]
+
+    for ticket in other:
+        allvalid = True
+
+        for val in ticket:
+            valid = False
+
+            for field in fieldnames.values():
+                if val in field[0]:
+                    valid = True
+
+            if not valid:
+                allvalid = False
+        if allvalid:
+            valid_tickets.append(ticket)
+
+    for k in fieldnames.keys():
+        fieldnames[k].append({x for x in range(len(valid_tickets[0]))})
 
     for fieldno in range(len(valid_tickets[0])):
         for k in fieldnames.keys():
@@ -76,13 +81,13 @@ if __name__ == '__main__':
     fields = []
     fieldsfound = False
     your = []
-    nearby = []
+    other = []
 
     with open('16.txt') as f:
         for line in f.readlines():
             if not line.strip():
                 fieldsfound = True
-            if not fieldsfound:
+            elif not fieldsfound:
                 fieldslist = line.split()
                 name = ''
 
@@ -98,9 +103,7 @@ if __name__ == '__main__':
 
             elif not your:
                 your = ints(line)
-            else:
-                nearby.append(ints(line))
+            elif ints(line):
+                other.append(ints(line))
 
-    print(solve(fields, your, nearby))
-
-# 2352859
+    print(solve(fields, your, other))

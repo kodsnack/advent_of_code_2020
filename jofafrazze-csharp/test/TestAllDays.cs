@@ -147,14 +147,14 @@ namespace test
         }
     }
 
-    //public class TestDay17
-    //{
-    //    [Fact]
-    //    public void Test()
-    //    {
-    //        Assert.True(day17.Day17.MainTest());
-    //    }
-    //}
+    public class TestDay17
+    {
+        [Fact]
+        public void Test()
+        {
+            Assert.True(day17.Day17.MainTest());
+        }
+    }
 
     //public class TestDay18
     //{

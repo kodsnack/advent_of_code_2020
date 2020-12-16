@@ -17,12 +17,10 @@ namespace day16
 
         static List<List<int>> ReadInput(string path)
         {
-            StreamReader reader = File.OpenText(path);
+            var strs = ReadIndata.Strings(path);
             var list = new List<List<int>>();
-            string line;
-            rules.Clear();
             int phase = 0;
-            while ((line = reader.ReadLine()) != null)
+            foreach (var line in strs)
             {
                 if (line == "")
                     phase++;
@@ -32,13 +30,9 @@ namespace day16
                     rules.Add((((int.Parse(v[0]), int.Parse(v[1]))), ((int.Parse(v[2]), int.Parse(v[3])))));
                 }
                 else if (phase == 1 && !line.Contains(':'))
-                {
                     myTicket = line.Split(',').Select(int.Parse).ToList();
-                }
                 else if (phase == 2 && !line.Contains(':'))
-                {
                     list.Add(line.Split(',').Select(int.Parse).ToList());
-                }
             }
             return list;
         }
@@ -54,15 +48,11 @@ namespace day16
                 {
                     bool ok = false;
                     foreach (var r in rules)
-                    {
                         if ((f >= r.Item1.Item1 && f <= r.Item1.Item2) || (f >= r.Item2.Item1 && f <= r.Item2.Item2))
                             ok = true;
-                    }
                     if (!ok)
-                    {
                         ans += f;
-                        tOk = false;
-                    }
+                    tOk &= ok;
                 }
                 if (tOk)
                     validTickets.Add(t);
@@ -74,36 +64,31 @@ namespace day16
         static Object PartB()
         {
             int n = rules.Count;
-            var ruleToField = new List<int>(Enumerable.Repeat(-1, n));
-            var possibleRulesForField = new List<List<int>>();
+            var rulesForField = new Dictionary<int, HashSet<int>>();
             for (int fi = 0; fi < n; fi++)
             {
-                var rulesOkForField = Enumerable.Range(0, n).ToHashSet();
-                int ti = 0;
-                foreach (var t in validTickets)
+                var rulesOk = Enumerable.Range(0, n).ToHashSet();
+                foreach (var ticket in validTickets)
                 {
-                    var f = validTickets[ti][fi];
+                    var f = ticket[fi];
                     int ri = 0;
                     foreach (var r in rules)
                     {
-                        bool currentOk = (f >= r.Item1.Item1 && f <= r.Item1.Item2) || (f >= r.Item2.Item1 && f <= r.Item2.Item2);
-                        if (!currentOk)
-                            rulesOkForField.Remove(ri);
+                        if (!((f >= r.Item1.Item1 && f <= r.Item1.Item2) || (f >= r.Item2.Item1 && f <= r.Item2.Item2)))
+                            rulesOk.Remove(ri);
                         ri++;
                     }
-                    ti++;
                 }
-                possibleRulesForField.Add(rulesOkForField.ToList());
+                rulesForField[fi] = rulesOk;
             }
-            for (int nRules = 1; nRules <= n; nRules++)
+            var ruleToField = new List<int>(Enumerable.Repeat(-1, n));
+            for (int i = 0; i < n; i++)
             {
-                for (int i = 0; i < n; i++)
-                    if (possibleRulesForField[i].Count == nRules)
-                    {
-                        for (int j = 0; j < nRules; j++)
-                            if (ruleToField[possibleRulesForField[i][j]] < 0)
-                                ruleToField[possibleRulesForField[i][j]] = i;
-                    }
+                (int field, var rules) = rulesForField.Where(x => x.Value.Count == 1).FirstOrDefault();
+                int rule = rules.FirstOrDefault();
+                ruleToField[rule] = field;
+                foreach ((var _, var r) in rulesForField)
+                    r.Remove(rule);
             }
             long ans = 1;
             for (int i = 0; i < 6; i++)

@@ -12,12 +12,23 @@ pub fn first(input: String) -> String {
 }
 
 pub fn second(input: String) -> String {
+    let mut wp = Waypoint { lat: 1, long: 10 };
+    let mut ship = Ship::new();
+
     input
+        .lines()
+        .filter_map(|line| Direction::from(&line.trim()))
+        .for_each(|d| match d {
+            Direction::Foward(n) => ship.mov_wp(&wp, n),
+            _ => wp.mov(&d),
+        });
+
+    (ship.lat.abs() + ship.long.abs()).to_string()
 }
 
 struct Ship {
-    pub long: isize,
     pub lat: isize,
+    pub long: isize,
     heading: isize,
 }
 
@@ -56,6 +67,51 @@ impl Ship {
             new_heading % 360
         };
     }
+
+    pub fn mov_wp(&mut self, wp: &Waypoint, n: isize) {
+        self.lat += wp.lat * n;
+        self.long += wp.long * n;
+    }
+}
+#[derive(Debug, Copy, Clone)]
+struct Waypoint {
+    pub lat: isize,
+    pub long: isize,
+}
+
+impl Waypoint {
+    pub fn mov(&mut self, dir: &Direction) {
+        match dir {
+            Direction::North(n) => self.lat += n,
+            Direction::South(n) => self.lat -= n,
+            Direction::East(n) => self.long += n,
+            Direction::West(n) => self.long -= n,
+            Direction::Port(n) => self.rotate(-n),
+            Direction::Starboard(n) => self.rotate(*n),
+            Direction::Foward(_) => {}
+        }
+    }
+
+    fn rotate(&mut self, degrees: isize) {
+        // N4, E10 => R90 => S10, E4
+        let prior = self.clone();
+        match degrees {
+            90 | -270 => {
+                self.lat = -prior.long;
+                self.long = prior.lat;
+            }
+            -90 | 270 => {
+                self.lat = prior.long;
+                self.long = -prior.lat;
+            }
+            180 | -180 => {
+                self.lat = -prior.lat;
+                self.long = -prior.long
+            }
+            0 | 360 | -360 => {}
+            _ => panic!("Unexpected degree {}", degrees),
+        }
+    }
 }
 
 #[derive(Debug, Copy, Clone, PartialEq)]
@@ -93,7 +149,7 @@ impl Direction {
 
 #[cfg(test)]
 mod tests {
-    use super::{first, Direction};
+    use super::{first, second, Direction};
 
     #[test]
     fn test_part1() {
@@ -112,5 +168,18 @@ mod tests {
     fn test_create_direction() {
         let dir = Direction::from("N30");
         assert_eq!(Some(Direction::North(30)), dir);
+    }
+
+    #[test]
+    fn test_part2() {
+        let input = r"
+        F10
+        N3
+        F7
+        R90
+        F11
+        ";
+
+        assert_eq!("286", second(input.to_string()));
     }
 }

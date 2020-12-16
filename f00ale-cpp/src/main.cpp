@@ -6,16 +6,21 @@
 
 #include "aoc.h"
 
-int main() {
+int main(int argc, char **argv) {
     std::vector<std::function<std::tuple<std::string,std::string>(const std::string&)>> problems
             { p01, p02, p03, p04, p05, p06, p07, p08, p09, p10, p11, p12, p13,
-              p14, p15 };
+              p14, p15, p16 };
 
     std::chrono::microseconds total_time{0};
+    long idx = 0;
+    if(argc > 1) idx = strtol(argv[1], nullptr, 10);
 
     for(size_t i = 0; i < problems.size(); i++)
     {
         auto num = i + 1;
+        if(idx > 0 && num != static_cast<size_t>(idx)) continue;
+        if(idx < 0 && num != problems.size()) continue;
+
         std::string filename = std::string("data/p") + (num < 10 ? "0" : "") + std::to_string(num) + ".txt";
         std::ifstream input(filename);
         if(input.good()) {

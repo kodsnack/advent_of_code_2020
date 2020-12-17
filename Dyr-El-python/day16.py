@@ -21,41 +21,72 @@ def fileParse(inp, lineparser=lineParse,
 
 ## End of header boilerplate ###################################################
 
+def fieldTypes(pinp):
+   for line in pinp:
+      if len(line) == 0:
+         break
+      fieldName, rest =  line.split(":")
+      s = set()
+      for token in rest.split(" "):
+         if token.count("-") == 1:
+            low, high = map(int, token.split("-"))
+            s.update(i for i in range(low, high + 1))
+      yield fieldName, s
+
+def myTicket(pinp):
+   nextLine = False
+   for line in pinp:
+      if nextLine:
+         return {fieldIdx:fieldContent 
+                 for fieldIdx, fieldContent in enumerate(map(int, line.split(",")))}
+      if line == "your ticket:":
+         nextLine = True
+
+def otherTickets(pinp):
+   inp = iter(pinp)
+   for line in inp:
+      if line == "nearby tickets:":
+         break
+   for line in inp:
+      yield {fieldIdx:fieldContent 
+             for fieldIdx, fieldContent in enumerate(map(int, line.split(",")))}
+
+def invalidFields(ticket, validNumbers):
+   return set(ticketField
+              for ticketField in ticket.values()
+              if ticketField not in validNumbers)
+
+def validTickets(ticketIterator, validNumbers):
+   for ticket in ticketIterator:
+      if len(invalidFields(ticket, validNumbers)) == 0:
+         yield ticket
+
 @measure
 def part1(pinp):
-   lines = iter(pinp)
-   fields = dict()
-   field = 0
-   for line in lines:
-      if len(line) == 0:
-         break
-      for token in line:
-         fields[field] = set()
-         s = fields[field]
-         field += 1
-         if token.count("-") > 0:
-            low, high = token.split("-")
-            for i in range(int(low), int(high)+1):
-               s.add(i)
-   for line in lines:
-      if len(line) == 0:
-         break
-   sm = 0
-   for line in lines:
-      if line[0] == "nearby":
-         continue
-      for token in line.split(","):
-         valid = False
-         t = int(token)
-         for s in fields.values():
-            if t in s:
-               valid = True
-         if not valid:
-            sm += t
-   return sm
+   s = set()
+   for fieldName, fieldSet in fieldTypes(pinp):
+      s.update(fieldSet)
+   totalSum = 0
+   for ticket in otherTickets(pinp):
+      totalSum += sum(invalidFields(ticket, s))
+   return totalSum
 
 @measure
 def part2(pinp):
+   s = set()
+   theFieldTypes = dict()
+   for fieldName, fieldSet in fieldTypes(pinp):
+      s.update(fieldSet)
+      theFieldTypes[fieldName] = fieldSet
+   positionValues = dict()
+   for ticket in validTickets(otherTickets(pinp), s):
+      for key, value in ticket.items():
+         if key not in positionValues:
+            positionValues[key] = set()
+         positionValues[key].add(value)
+   for fieldName, fieldSet in theFieldTypes.items():
+      for fieldNumber, fieldSet in positionValues.items():
+         if fie
    lines = iter(pinp)
    fields = dict()
    fieldNames = dict()
@@ -131,7 +162,7 @@ if __name__ == "__main__":
    # inp = """"""
     
    ## Update for input specifics ##############################################
-   parseInp = fileParse(inp, tokenPattern=wsTokenPattern)
+   parseInp = fileParse(inp, tokenPattern=oneLinePattern)
 
    print("Input is '" + str(parseInp[:10])[:160] + 
          ('...' if len(parseInp)>10 or len(str(parseInp[:10]))>160 else '') + "'")

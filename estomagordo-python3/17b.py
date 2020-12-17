@@ -6,12 +6,7 @@ from itertools import combinations, permutations, product
 
 from helpers import distance, distance_sq, eight_neighs, eight_neighs_bounded, grouped_lines, ints, manhattan, neighs, neighs_bounded
 
-def newlayer(height, width):
-    return [['' for x in range(width)] for y in range(height)]
-
-
-
-def solve(lines):
+def solve(lines, repeats):
     active = set()
 
     for y in range(len(lines)):
@@ -19,14 +14,9 @@ def solve(lines):
             if lines[y][x] == '#':
                 active.add((0, 0, y, x))
 
-    for _ in range(6):
-        minval = 10**10
-        maxval = 0
-
-        for act in active:
-            for coord in act:
-                minval = min(minval, coord)
-                maxval = max(maxval, coord)
+    for _ in range(repeats):
+        minval = min(min(val for val in act) for act in active)
+        maxval = max(max(val for val in act) for act in active)
 
         newact = set()
         
@@ -51,6 +41,8 @@ def solve(lines):
 
         active = newact
 
+    return len(active)
+
 if __name__ == '__main__':
     lines = []
 
@@ -58,4 +50,4 @@ if __name__ == '__main__':
         for line in f.readlines():
             lines.append(list(line.rstrip()))
 
-    print(solve(lines))
+    print(solve(lines, 6))

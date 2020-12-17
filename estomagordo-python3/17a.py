@@ -2,44 +2,17 @@
 from collections import Counter, defaultdict, deque
 from functools import reduce
 from heapq import heappop, heappush
-from itertools import combinations, permutations, product
+from itertools import combinations, permutations, product, chain
 
-from helpers import distance, distance_sq, eight_neighs, eight_neighs_bounded, grouped_lines, ints, manhattan, neighs, neighs_bounded
+from helpers import distance, distance_sq, eight_neighs, eight_neighs_bounded, grouped_lines, ints, n_neighs, manhattan, neighs, neighs_bounded
 
 def solve(lines, repeats):
-    active = set()
-
-    for y in range(len(lines)):
-        for x in range(len(lines[0])):
-            if lines[y][x] == '#':
-                active.add((0, y, x))
+    active = {(x, y, 0) for y, line in enumerate(lines) for x, c in enumerate(line) if c == '#'}
 
     for _ in range(repeats):
-        minval = min(min(val for val in act) for act in active)
-        maxval = max(max(val for val in act) for act in active)
-
-        newact = set()
-        
-        
-        for z in range(minval-1, maxval+2):
-            for y in range(minval-1, maxval+2):
-                for x in range(minval-1, maxval+2):
-                    actcount = 0
-                       
-                    for zdiff in range(-1, 2):
-                        for ydiff in range(-1, 2):
-                            for xdiff in range(-1, 2):
-                                if zdiff == 0 and ydiff == 0 and xdiff == 0:
-                                    continue
-
-                                if (z+zdiff, y+ydiff, x+xdiff) in active:
-                                    actcount += 1
-
-                    if actcount == 3 or (actcount == 2 and (z, y, x) in active):
-                        newact.add((z, y, x))
-
-        active = newact
-
+        counts = Counter(chain.from_iterable(n_neighs(a) for a in active))
+        active = {k for k,v in counts.items() if v == 3 or (k in active and v == 2)}
+    
     return len(active)
 
 if __name__ == '__main__':

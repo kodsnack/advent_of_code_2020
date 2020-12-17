@@ -21,68 +21,47 @@ def fileParse(inp, lineparser=lineParse,
 
 ## End of header boilerplate ###################################################
 
+_cache = dict()
 def generateDeltas(dim):
-   for i in range(3**dim):
-      l = list()
-      for j in range(dim):
-         l.append(i%3-1)
-         i //= 3
-      if l.count(0) != dim:
+   if dim in _cache:
+      for l in _cache[dim]:
          yield l
+   else:
+      theList = list()
+      for i in range(3**dim):
+         l = list()
+         for j in range(dim):
+            l.append(i%3-1)
+            i //= 3
+         if l.count(0) != dim:
+            yield l
+            theList.append(l)
+      _cache[dim] = theList
 
 def parse(pinp, dim):
-   d = set()
-   for y, line in enumerate(pinp):
-      for x, c in enumerate(line):
-         if c == "#":
-            d.add(tuple([x, y]+[0]*(dim-2)))
-   return d
+   return set(tuple([x, y]+[0]*(dim-2))
+              for y, line in enumerate(pinp)
+              for x, c in enumerate(line))
+
+from collections import Counter
+
+def runSimultation(pinp, steps, dimensions):
+   matrix = parse(pinp, dimensions)
+   for i in range(steps):
+      neighbours = Counter(tuple(x+d for x, d in zip(coord, delta)) 
+                           for delta in generateDeltas(dimensions)
+                           for coord in matrix)
+      matrix = set(coord for coord, value in neighbours.items()
+                   if (coord in matrix and value == 2) or value == 3)
+   return len(matrix)
 
 @measure
 def part1(pinp):
-   matrix = parse(pinp, 3)
-   for i in range(6):
-      s = set()
-      for (x, y, z) in matrix:
-         for (dx, dy, dz) in generateDeltas(3):
-            s.add((x+dx, y+dy, z+dz))
-      nextMatrix = set()
-      for (x, y, z) in s:
-         neighbours = 0
-         for (dx, dy, dz) in generateDeltas(3):
-            if (x+dx, y+dy, z+dz) in matrix:
-               neighbours += 1
-         if (x, y, z) in matrix:
-            if neighbours in (2,3):
-               nextMatrix.add((x, y, z))
-         else:
-            if neighbours == 3:
-               nextMatrix.add((x, y, z))
-      matrix = nextMatrix
-   return len(matrix)
+   return runSimultation(pinp, 6, 3)
 
 @measure
 def part2(pinp):
-   matrix = parse(pinp, 4)
-   for i in range(6):
-      s = set()
-      for (x, y, z, w) in matrix:
-         for (dx, dy, dz, dw) in generateDeltas(4):
-            s.add((x+dx, y+dy, z+dz, w+dw))
-      nextMatrix = set()
-      for (x, y, z, w) in s:
-         neighbours = 0
-         for (dx, dy, dz, dw) in generateDeltas(4):
-            if (x+dx, y+dy, z+dz, w+dw) in matrix:
-               neighbours += 1
-         if (x, y, z, w) in matrix:
-            if neighbours in (2,3):
-               nextMatrix.add((x, y, z, w))
-         else:
-            if neighbours == 3:
-               nextMatrix.add((x, y, z, w))
-      matrix = nextMatrix
-   return len(matrix)
+   return runSimultation(pinp, 6, 4)
 
 ## Start of footer boilerplate #################################################
 

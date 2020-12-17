@@ -84,75 +84,31 @@ def part2(pinp):
          if key not in positionValues:
             positionValues[key] = set()
          positionValues[key].add(value)
+   possibleMapping = dict()
    for fieldName, fieldSet in theFieldTypes.items():
-      for fieldNumber, fieldSet in positionValues.items():
-         if fie
-   lines = iter(pinp)
-   fields = dict()
-   fieldNames = dict()
-   for field, line in enumerate(lines):
-      if len(line) == 0:
-         break
-      for token in line:
-         if field not in fields:
-            fields[field] = set()
-         s = fields[field]
-         if token.count("-") > 0:
-            low, high = token.split("-")
-            for i in range(int(low), int(high)+1):
-               s.add(i)
-         else:
-            if field not in fieldNames:
-               fieldNames[field] = list()
-            fieldNames[field].append(token)
-   myTicket = dict()
-   for line in lines:
-      if len(line) == 0:
-         break
-      if line[0] == "your":
-         continue
-      for field, token in enumerate(line.split(",")):
-         myTicket[field] = int(token)
-   fieldLayout = list()
-   for field in fields.keys():
-      fieldLayout.append(set(fields.keys()))
-   print(fieldLayout)
-   for line in lines:
-      if line[0] == "nearby":
-         continue
-      tokens = [int(t) for t in line.split(",")]
-      validTicket = True
-      for token in tokens:
-         valid = False
-         t = int(token)
-         for s in fields.values():
-            if t in s:
-               valid = True
-         if not valid:
-            validTicket = False
-      if not validTicket:
-         continue
-      for fieldIdx, token in enumerate(tokens):
-         for possFieldIdx, field in fields.items():
-            if token not in field:
-               fieldLayout[possFieldIdx].remove(fieldIdx)
-   change = True
-   while change == True:
-      change = False
-      for fieldSet in fieldLayout:
-         if len(fieldSet) == 1:
-            for item in fieldSet:
-               for fs in fieldLayout:
-                  if fs != fieldSet and item in fs:
-                     fs.remove(item)
-                     change = True
-      print(fieldLayout)
+      if fieldName not in possibleMapping:
+         possibleMapping[fieldName] = set()
+      for fieldNumber, fieldSammples in positionValues.items():
+         if fieldSammples <= fieldSet:
+            possibleMapping[fieldName].add(fieldNumber)
+   reduced = True
+   while reduced:
+      reduced = False
+      for fieldName, mapping in possibleMapping.items():
+         if len(mapping) == 1:
+            for theItem in mapping:
+               for otherName, otherMapping in possibleMapping.items():
+                  if otherName == fieldName:
+                     continue
+                  if theItem in otherMapping:
+                     otherMapping.remove(theItem)
+                     reduced = True
+   ticket = myTicket(pinp)
    p = 1
-   for fieldNo, fieldSet in enumerate(fieldLayout):
-      if fieldNames[fieldNo][0] == "departure":
-         print(fieldSet)
-         for item in fieldSet:
-            p *= myTicket[item]
+   for fieldName, fieldSet in possibleMapping.items():
+      if fieldName.startswith("departure"):
+         for mapping in fieldSet:
+            p *= ticket[mapping]
    return p
 
 ## Start of footer boilerplate #################################################

@@ -11,7 +11,7 @@ namespace day16
         readonly static string nsname = typeof(Day16).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
-        static List<((int, int), (int, int))> rules = new List<((int, int), (int, int))>();
+        static List<((int lo, int hi) r1, (int lo, int hi) r2)> rules = new List<((int, int), (int, int))>();
         static List<int> myTicket = new List<int>();
         static List<List<int>> validTickets = new List<List<int>>();
 
@@ -47,8 +47,8 @@ namespace day16
                 foreach (var f in t)
                 {
                     bool ok = false;
-                    foreach (var r in rules)
-                        if ((f >= r.Item1.Item1 && f <= r.Item1.Item2) || (f >= r.Item2.Item1 && f <= r.Item2.Item2))
+                    foreach (var (r1, r2) in rules)
+                        if ((f >= r1.lo && f <= r1.hi) || (f >= r2.lo && f <= r2.hi))
                             ok = true;
                     if (!ok)
                         ans += f;
@@ -64,7 +64,7 @@ namespace day16
         static Object PartB()
         {
             int n = rules.Count;
-            var rulesForField = new Dictionary<int, HashSet<int>>();
+            var fieldRules = new Dictionary<int, HashSet<int>>();
             for (int fi = 0; fi < n; fi++)
             {
                 var rulesOk = Enumerable.Range(0, n).ToHashSet();
@@ -72,22 +72,22 @@ namespace day16
                 {
                     var f = ticket[fi];
                     int ri = 0;
-                    foreach (var r in rules)
+                    foreach (var (r1, r2) in rules)
                     {
-                        if (!((f >= r.Item1.Item1 && f <= r.Item1.Item2) || (f >= r.Item2.Item1 && f <= r.Item2.Item2)))
+                        if (!((f >= r1.lo && f <= r1.hi) || (f >= r2.lo && f <= r2.hi)))
                             rulesOk.Remove(ri);
                         ri++;
                     }
                 }
-                rulesForField[fi] = rulesOk;
+                fieldRules[fi] = rulesOk;
             }
             var ruleToField = new List<int>(Enumerable.Repeat(-1, n));
             for (int i = 0; i < n; i++)
             {
-                (int field, var rules) = rulesForField.Where(x => x.Value.Count == 1).FirstOrDefault();
+                (int field, var rules) = fieldRules.Where(x => x.Value.Count == 1).FirstOrDefault();
                 int rule = rules.FirstOrDefault();
                 ruleToField[rule] = field;
-                foreach ((var _, var r) in rulesForField)
+                foreach ((var _, var r) in fieldRules)
                     r.Remove(rule);
             }
             long ans = 1;

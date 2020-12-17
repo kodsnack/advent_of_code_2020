@@ -367,6 +367,140 @@ namespace AdventOfCode
         }
     }
 
+    public class Map3D : IEquatable<Map3D>
+    {
+        public int width;
+        public int height;
+        public int depth;
+        public GenericPosition3D<int> pos;
+        public char[,,] data;
+
+        public Map3D(int w, int h, int d, GenericPosition3D<int> p, char fill = '\0')
+        {
+            width = w;
+            height = h;
+            depth = d;
+            pos = p;
+            data = new char[w, h, d];
+            for (int i = 0; i < w; i++)
+                for (int j = 0; j < h; j++)
+                    for (int k = 0; k < d; k++)
+                        data[i, j, k] = fill;
+        }
+
+        public Map3D(Map3D m)
+        {
+            width = m.width;
+            height = m.height;
+            depth = m.depth;
+            pos = m.pos;
+            data = new char[width, height, depth];
+            for (int z = 0; z < depth; z++)
+                for (int y = 0; y < height; y++)
+                    for (int x = 0; x < width; x++)
+                        data[x, y, z] = m.data[x, y, z];
+        }
+
+        public static Map3D BuildZ0(int n, IList<string> list)
+        {
+            int w = list.Count;
+            int offs = (n - w) / 2;
+            Map3D m = new Map3D(n, n, n, new GenericPosition3D<int>(0, 0, 0));
+            for (int y = 0; y < w; y++)
+                for (int x = 0; x < w; x++)
+                    m.data[x + offs, y + offs, offs] = list[y][x];
+            return m;
+        }
+
+        public char this[GenericPosition3D<int> p]
+        {
+            get
+            {
+                return data[p.x, p.y, p.z];
+            }
+            set
+            {
+                data[p.x, p.y, p.z] = value;
+            }
+        }
+
+        public bool HasPosition(GenericPosition3D<int> p)
+        {
+            return p.x >= 0 && p.x < width && p.y >= 0 && p.y < height && p.z >= 0 && p.z < depth;
+        }
+
+        //public void Expand(int n, char fill) { Expand(n, n, n, n, fill); }
+        //public void Expand(int top, int right, int bottom, int left, char fill)
+        //{
+        //    int w = left + right + width;
+        //    int h = top + bottom + height;
+        //    GenericPosition2D<int> s = new GenericPosition2D<int>(pos.x + left, pos.y + top);
+        //    Map3D m = new Map3D(w, h, s, fill);
+        //    for (int y = 0; y < height; y++)
+        //        for (int x = 0; x < width; x++)
+        //            m.data[x + left, y + top] = data[x, y];
+        //    width = m.width;
+        //    height = m.height;
+        //    pos = m.pos;
+        //    data = m.data;
+        //}
+
+        public string PrintToString()
+        {
+            string s = "";
+            for (int z = 0; z < depth; z++)
+            {
+                s += z.ToString() + "\r\n";
+                for (int y = 0; y < height; y++)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    for (int x = 0; x < width; x++)
+                    {
+                        sb.Append(data[x, y, z]);
+                    }
+                    s += sb.ToString() + "\r\n";
+                }
+                s += "\r\n";
+            }
+            return s;
+        }
+
+        public void Print()
+        {
+            Console.WriteLine(PrintToString());
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Map3D);
+        }
+
+        public bool Equals(Map3D other)
+        {
+            return other != null &&
+                   width == other.width &&
+                   height == other.height &&
+                   depth == other.depth &&
+                   data.Cast<char>().SequenceEqual(other.data.Cast<char>());
+            //EqualityComparer<char[,]>.Default.Equals(data, other.data);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(width, height, depth, data);
+        }
+
+        public static bool operator ==(Map3D map1, Map3D map2)
+        {
+            return EqualityComparer<Map3D>.Default.Equals(map1, map2);
+        }
+
+        public static bool operator !=(Map3D map1, Map3D map2)
+        {
+            return !(map1 == map2);
+        }
+    }
+
     public static class CoordsRC
     {
         public static readonly GenericPosition2D<int> goUpLeft = new GenericPosition2D<int>(-1, -1);
@@ -384,6 +518,30 @@ namespace AdventOfCode
         public static readonly List<GenericPosition2D<int>> directions8 = new List<GenericPosition2D<int>>()
         {
             goUpLeft, goUp, goUpRight, goRight, goDownRight, goDown, goDownLeft, goLeft
+        };
+    }
+
+    public static class CoordsRCD
+    {
+        public static readonly GenericPosition3D<int> goUpLeft = new GenericPosition3D<int>(-1, -1, 0);
+        public static readonly GenericPosition3D<int> goUp = new GenericPosition3D<int>(0, -1, 0);
+        public static readonly GenericPosition3D<int> goUpRight = new GenericPosition3D<int>(1, -1, 0);
+        public static readonly GenericPosition3D<int> goRight = new GenericPosition3D<int>(1, 0, 0);
+        public static readonly GenericPosition3D<int> goDownRight = new GenericPosition3D<int>(1, 1, 0);
+        public static readonly GenericPosition3D<int> goDown = new GenericPosition3D<int>(0, 1, 0);
+        public static readonly GenericPosition3D<int> goDownLeft = new GenericPosition3D<int>(-1, 1, 0);
+        public static readonly GenericPosition3D<int> goLeft = new GenericPosition3D<int>(-1, 0, 0);
+
+        public static readonly GenericPosition3D<int> goZIn = new GenericPosition3D<int>(0, 0, -1);
+        public static readonly GenericPosition3D<int> goZ0 = new GenericPosition3D<int>(0, 0, 0);
+        public static readonly GenericPosition3D<int> goZOut = new GenericPosition3D<int>(0, 0, 1);
+
+        public static readonly List<GenericPosition3D<int>> directions26 = new List<GenericPosition3D<int>>()
+        {
+            goUpLeft + goZIn, goUp + goZIn, goUpRight + goZIn, goRight + goZIn, goDownRight + goZIn, goDown + goZIn, goDownLeft + goZIn, goLeft + goZIn,
+            goUpLeft + goZ0, goUp + goZ0, goUpRight + goZ0, goRight + goZ0, goDownRight + goZ0, goDown + goZ0, goDownLeft + goZ0, goLeft + goZ0,
+            goUpLeft + goZOut, goUp + goZOut, goUpRight + goZOut, goRight + goZOut, goDownRight + goZOut, goDown + goZOut, goDownLeft + goZOut, goLeft + goZOut,
+            goZIn, goZOut
         };
     }
 

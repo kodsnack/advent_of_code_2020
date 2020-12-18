@@ -22,6 +22,7 @@ def fileParse(inp, lineparser=lineParse,
 ## End of header boilerplate ###################################################
 
 from operator import add, mul
+from collections import deque
 
 def lexer(s):
    ops = {"+":add, "*":mul}
@@ -34,7 +35,7 @@ def lexer(s):
          yield c
 
 def simple(tokens):
-   memory = list()
+   memory = deque()
    for token in tokens:
       if token == "(":
          memory.append(simple(tokens))
@@ -43,11 +44,12 @@ def simple(tokens):
       else:
          memory.append(token)
       if len(memory) > 2:
-         memory = [memory[-2](memory[-3], memory[-1])]
-   return memory[0]
+         left, op, right = memory.popleft(), memory.popleft(), memory.popleft()
+         memory.append(op(left, right))
+   return memory.popleft()
 
 def advanced(tokens):
-   memory = list()
+   memory = deque()
    for token in tokens:
       if token == "(":
          memory.append(advanced(tokens))
@@ -57,51 +59,12 @@ def advanced(tokens):
          memory.append(token)
       if len(memory) > 2:
          if memory[-2] == add:
-            memory = memory[:-3] + [memory[-2](memory[-3], memory[-1])]
+            right, op, left = memory.pop(), memory.pop(), memory.pop()
+            memory.append(op(left, right))
    while len(memory) > 1:
-      memory = [memory[1](memory[0], memory[2])] + memory[3:]
-   return memory[0]
-
-# def advanced(s):
-#    level = 0
-#    sub = ""
-#    left = 0
-#    op = "+"
-#    stack = list()
-#    for c in s:
-#       if c == " ":
-#          continue
-#       if c == "(":
-#          if level > 0:
-#             sub += c
-#          level += 1
-#          continue
-#       if c == ")":
-#          level -= 1
-#          if level == 0:
-#             right = advanced(sub)
-#             sub = ""
-#          else:
-#             sub += c
-#             continue
-#       elif level > 0:
-#          sub = sub + c
-#          continue
-#       if c in "0123456789":
-#          right = int(c)
-#       if c in "+-*":
-#          op = c
-#          continue
-#       if op == "*":
-#          stack.append(left)
-#          left = right
-#       elif op == "+":
-#          left += right
-#    stack.append(left)
-#    p = 1
-#    for f in stack:
-#       p *= f
-#    return p
+      left, op, right = memory.popleft(), memory.popleft(), memory.popleft()
+      memory.appendleft(op(left, right))
+   return memory.pop()
 
 @measure
 def part1(pinp):

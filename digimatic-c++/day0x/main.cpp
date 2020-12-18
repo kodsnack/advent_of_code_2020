@@ -4,6 +4,7 @@
 #include "config.h"
 
 #include <common/common.h>
+#include <common/tuple_hash.h>
 
 #include <algorithm>
 #include <cassert>
@@ -20,6 +21,7 @@
 #include <type_traits>
 #include <unordered_map>
 #include <unordered_set>
+#include <set>
 #include <utility>
 #include <vector>
 
@@ -35,7 +37,7 @@ int parseLine(const string& line)
 {
 	auto remaining = line;
 	size_t taken = 0;
-	auto n = std::stoi(remaining, &taken);
+	auto n = stoi(remaining, &taken);
 	return n;
 
 	/*

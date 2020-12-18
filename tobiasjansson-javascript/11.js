@@ -1,5 +1,4 @@
 // Testar med ett eget utilbibliotek
-const { platform } = require('os');
 const util = require('./util.js');
 
 let data = util.getInputTrim();

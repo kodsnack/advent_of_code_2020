@@ -111,68 +111,68 @@ namespace test
         }
     }
 
-    //public class TestDay13
-    //{
-    //    [Fact]
-    //    public void Test()
-    //    {
-    //        Assert.True(day13.Day13.MainTest());
-    //    }
-    //}
+    public class TestDay13
+    {
+        [Fact]
+        public void Test()
+        {
+            Assert.True(day13.Day13.MainTest());
+        }
+    }
 
-    //public class TestDay14
-    //{
-    //    [Fact]
-    //    public void Test()
-    //    {
-    //        Assert.True(day14.Day14.MainTest());
-    //    }
-    //}
+    public class TestDay14
+    {
+        [Fact]
+        public void Test()
+        {
+            Assert.True(day14.Day14.MainTest());
+        }
+    }
 
-    //public class TestDay15
-    //{
-    //    [Fact]
-    //    public void Test()
-    //    {
-    //        Assert.True(day15.Day15.MainTest());
-    //    }
-    //}
+    public class TestDay15
+    {
+        [Fact]
+        public void Test()
+        {
+            Assert.True(day15.Day15.MainTest());
+        }
+    }
 
-    //public class TestDay16
-    //{
-    //    [Fact]
-    //    public void Test()
-    //    {
-    //        Assert.True(day16.Day16.MainTest());
-    //    }
-    //}
+    public class TestDay16
+    {
+        [Fact]
+        public void Test()
+        {
+            Assert.True(day16.Day16.MainTest());
+        }
+    }
 
-    //public class TestDay17
-    //{
-    //    [Fact]
-    //    public void Test()
-    //    {
-    //        Assert.True(day17.Day17.MainTest());
-    //    }
-    //}
+    public class TestDay17
+    {
+        [Fact]
+        public void Test()
+        {
+            Assert.True(day17.Day17.MainTest());
+        }
+    }
 
-    //public class TestDay18
-    //{
-    //    [Fact]
-    //    public void Test()
-    //    {
-    //        Assert.True(day18.Day18.MainTest());
-    //    }
-    //}
+    public class TestDay18
+    {
+        [Fact]
+        public void Test()
+        {
+            Assert.True(day18.Day18.MainTest());
+        }
+    }
 
-    //public class TestDay19
-    //{
-    //    [Fact]
-    //    public void Test()
-    //    {
-    //        Assert.True(day19.Day19.MainTest());
-    //    }
-    //}
+    public class TestDay19
+    {
+        [Fact]
+        public void Test()
+        {
+            Assert.True(day19.Day19.MainTest());
+        }
+    }
 
     //public class TestDay20
     //{

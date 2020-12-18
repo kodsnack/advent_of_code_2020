@@ -18,9 +18,9 @@ pub use nom::character::is_hex_digit;
 
 pub use nom::combinator::{complete, map, map_parser, map_res, opt, recognize};
 
-pub use nom::multi::{many0, many1, many_m_n, many_till, separated_list1};
+pub use nom::multi::{fold_many1, many0, many1, many_m_n, many_till, separated_list1};
 
-pub use nom::sequence::{pair, preceded, terminated, tuple};
+pub use nom::sequence::{delimited, pair, preceded, terminated, tuple};
 
 fn decimal(input: &str) -> IResult<&str, &str> {
   recognize(many1(terminated(one_of("0123456789"), many0(char('_')))))(input)

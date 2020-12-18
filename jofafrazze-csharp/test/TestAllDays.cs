@@ -165,14 +165,14 @@ namespace test
         }
     }
 
-    //public class TestDay19
-    //{
-    //    [Fact]
-    //    public void Test()
-    //    {
-    //        Assert.True(day19.Day19.MainTest());
-    //    }
-    //}
+    public class TestDay19
+    {
+        [Fact]
+        public void Test()
+        {
+            Assert.True(day19.Day19.MainTest());
+        }
+    }
 
     //public class TestDay20
     //{

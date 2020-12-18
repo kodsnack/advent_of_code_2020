@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
 using AdventOfCode;
-//using Position = AdventOfCode.GenericPosition2D<int>;
 
 namespace day18
 {
@@ -16,36 +9,60 @@ namespace day18
         readonly static string nsname = typeof(Day18).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
-        static long Calc(string s, int p1, int p2)
+        static int ClosingParenthesisIdx(string s, int idx)
         {
-            int n = p1;
+            int d = 0;
+            int i = idx;
+            for (; i < s.Length; i++)
+            {
+                if (s[i] == '(')
+                    d++;
+                else if (s[i] == ')')
+                    d--;
+                else if (d == 0)
+                    break;
+            }
+            return i - 1;
+        }
+
+        static long Calc(string s, bool advanced)
+        {
+            // Skip outmost parenthesise
+            while (s[0] == '(' && ClosingParenthesisIdx(s, 0) == s.Length - 1)
+                s = s.Substring(1, s.Length - 2);
+            // Any * on our level?
+            int d = 0;
+            for (int i = 0; advanced && i < s.Length; i++)
+            {
+                if (s[i] == '(')
+                    d++;
+                else if (s[i] == ')')
+                    d--;
+                else if (s[i] == '*' && d == 0)
+                {
+                    string s1 = s.Substring(0, i - 1);
+                    string s2 = s.Substring(i + 2);
+                    return Calc(s1, advanced) * Calc(s2, advanced);
+                }
+            }
+            // No * on our level
             long acc = 0;
             char op = ' ';
-            while (n < p2)
+            for (int i = 0; i < s.Length; i++)
             {
-                char c = s[n];
-                bool dig = Char.IsDigit(c);
-                if (dig || (c == '('))
+                long a = 0;
+                char c = s[i];
+                if (c == ' ')
+                    continue;
+                if (Char.IsDigit(c) || (c == '('))
                 {
-                    long a = 0;
-                    if (dig)
+                    if (Char.IsDigit(c))
                         a = c - '0';
                     else
                     {
-                        int depth = 0;
-                        bool done = false;
-                        int i = n;
-                        for (; i < p2 && !done; i++)
-                        {
-                            if (s[i] == '(')
-                                depth++;
-                            else if (s[i] == ')')
-                                depth--;
-                            if (depth == 0)
-                                done = true;
-                        }
-                        a = Calc(s, n + 1, i - 1);
-                        n = i;
+                        int j = ClosingParenthesisIdx(s, i);
+                        a = Calc(s.Substring(i + 1, j - (i + 1)), advanced);
+                        i = j;
                     }
                     if (op == '+')
                         acc += a;
@@ -54,16 +71,8 @@ namespace day18
                     else
                         acc = a;
                 }
-                else if (c == '+')
+                else if (c == '+' || c == '*')
                     op = c;
-                else if (c == '*')
-                    op = c;
-                else if (c == ' ')
-                    ;
-                else
-                    throw new InvalidProgramException();
-                n++;
-
             }
             return acc;
         }
@@ -73,81 +82,9 @@ namespace day18
             var input = ReadIndata.Strings(inputPath);
             long ans = 0;
             foreach (string s in input)
-            {
-                ans += Calc(s, 0, s.Length);
-            }
+                ans += Calc(s, false);
             Console.WriteLine("Part A: Result is {0}", ans);
             return ans;
-        }
-
-        static long CalcB(string s, int p1, int p2)
-        {
-            // Any * on our level?
-            int depth2 = 0;
-            bool done2 = false;
-            int w = p1;
-            for (; w < p2 && !done2; w++)
-            {
-                if (s[w] == '(')
-                    depth2++;
-                else if (s[w] == ')')
-                    depth2--;
-                if (depth2 == 0 && s[w] == '*')
-                    done2 = true;
-            }
-            if (done2)
-            {
-                return CalcB(s, p1, w - 1) * CalcB(s, w, p2);
-            }
-            // No * on our level
-            int n = p1;
-            long acc = 0;
-            char op = ' ';
-            while (n < p2)
-            {
-                char c = s[n];
-                bool dig = Char.IsDigit(c);
-                if (dig || (c == '('))
-                {
-                    long a = 0;
-                    if (dig)
-                        a = c - '0';
-                    else
-                    {
-                        int depth = 0;
-                        bool done = false;
-                        int i = n;
-                        for (; i < p2 && !done; i++)
-                        {
-                            if (s[i] == '(')
-                                depth++;
-                            else if (s[i] == ')')
-                                depth--;
-                            if (depth == 0)
-                                done = true;
-                        }
-                        a = CalcB(s, n + 1, i - 1);
-                        n = i;
-                    }
-                    if (op == '+')
-                        acc += a;
-                    else if (op == '*')
-                        acc *= a;
-                    else
-                        acc = a;
-                }
-                else if (c == '+')
-                    op = c;
-                else if (c == '*')
-                    op = c;
-                else if (c == ' ')
-                    ;
-                else
-                    throw new InvalidProgramException();
-                n++;
-
-            }
-            return acc;
         }
 
         static Object PartB()
@@ -155,9 +92,7 @@ namespace day18
             var input = ReadIndata.Strings(inputPath);
             long ans = 0;
             foreach (string s in input)
-            {
-                ans += CalcB(s, 0, s.Length);
-            }
+                ans += Calc(s, true);
             Console.WriteLine("Part B: Result is {0}", ans);
             return ans;
         }

@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
 using AdventOfCode;
-//using Position = AdventOfCode.GenericPosition2D<int>;
 
 namespace day18
 {
@@ -16,17 +9,90 @@ namespace day18
         readonly static string nsname = typeof(Day18).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
+        static int ClosingParenthesisIdx(string s, int idx)
+        {
+            int d = 0;
+            int i = idx;
+            for (; i < s.Length; i++)
+            {
+                if (s[i] == '(')
+                    d++;
+                else if (s[i] == ')')
+                    d--;
+                else if (d == 0)
+                    break;
+            }
+            return i - 1;
+        }
+
+        static long Calc(string s, bool advanced)
+        {
+            // Skip outmost parenthesise
+            while (s[0] == '(' && ClosingParenthesisIdx(s, 0) == s.Length - 1)
+                s = s.Substring(1, s.Length - 2);
+            // Any * on our level?
+            int d = 0;
+            for (int i = 0; advanced && i < s.Length; i++)
+            {
+                if (s[i] == '(')
+                    d++;
+                else if (s[i] == ')')
+                    d--;
+                else if (s[i] == '*' && d == 0)
+                {
+                    string s1 = s.Substring(0, i - 1);
+                    string s2 = s.Substring(i + 2);
+                    return Calc(s1, advanced) * Calc(s2, advanced);
+                }
+            }
+            // No * on our level
+            long acc = 0;
+            char op = ' ';
+            for (int i = 0; i < s.Length; i++)
+            {
+                long a = 0;
+                char c = s[i];
+                if (c == ' ')
+                    continue;
+                if (Char.IsDigit(c) || (c == '('))
+                {
+                    if (Char.IsDigit(c))
+                        a = c - '0';
+                    else
+                    {
+                        int j = ClosingParenthesisIdx(s, i);
+                        a = Calc(s.Substring(i + 1, j - (i + 1)), advanced);
+                        i = j;
+                    }
+                    if (op == '+')
+                        acc += a;
+                    else if (op == '*')
+                        acc *= a;
+                    else
+                        acc = a;
+                }
+                else if (c == '+' || c == '*')
+                    op = c;
+            }
+            return acc;
+        }
+
         static Object PartA()
         {
-            var input = ReadIndata.Ints(inputPath);
-            int ans = 0;
+            var input = ReadIndata.Strings(inputPath);
+            long ans = 0;
+            foreach (string s in input)
+                ans += Calc(s, false);
             Console.WriteLine("Part A: Result is {0}", ans);
             return ans;
         }
 
         static Object PartB()
         {
-            int ans = 0;
+            var input = ReadIndata.Strings(inputPath);
+            long ans = 0;
+            foreach (string s in input)
+                ans += Calc(s, true);
             Console.WriteLine("Part B: Result is {0}", ans);
             return ans;
         }
@@ -40,8 +106,8 @@ namespace day18
 
         public static bool MainTest()
         {
-            int a = 42;
-            int b = 4711;
+            long a = 7293529867931;
+            long b = 60807587180737;
             return (PartA().Equals(a)) && (PartB().Equals(b));
         }
     }

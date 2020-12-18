@@ -10,28 +10,28 @@ namespace day17
         readonly static string nsname = typeof(Day17).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
-        static HashSet<(int, int, int)> GetNeighbours3D((int x, int y, int z) p)
+        static HashSet<(int, int, int)> GetNeighbours((int x, int y, int z) p)
         {
             var m = new HashSet<(int, int, int)>();
             int[] offs = new int[] { -1, 0, 1 };
-            foreach (int i in offs)
-                foreach (int j in offs)
-                    foreach (int k in offs)
-                        if (i != 0 || j != 0 || k != 0)
-                            m.Add((p.x + i, p.y + j, p.z + k));
+            foreach (int x in offs)
+                foreach (int y in offs)
+                    foreach (int z in offs)
+                        if (x != 0 || y != 0 || z != 0)
+                            m.Add((p.x + x, p.y + y, p.z + z));
             return m;
         }
 
-        static HashSet<(int, int, int)> StepMap3D(HashSet<(int x, int y, int z)> m)
+        static HashSet<(int, int, int)> StepMap(HashSet<(int x, int y, int z)> m)
         {
             var mNext = new HashSet<(int, int, int)>(m);
-            HashSet<(int x, int y, int z)> mNeigh = new HashSet<(int x, int y, int z)>(m);
+            var mNeigh = new HashSet<(int, int, int)>(m);
             foreach (var p in m)
-                mNeigh.UnionWith(GetNeighbours3D(p));
+                mNeigh.UnionWith(GetNeighbours(p));
             foreach (var p in mNeigh)
             {
                 int n = 0;
-                foreach (var q in GetNeighbours3D(p))
+                foreach (var q in GetNeighbours(p))
                     if (m.Contains(q))
                         n++;
                 if (m.Contains(p) && (n < 2 || n > 3))
@@ -52,35 +52,35 @@ namespace day17
                     if (input[y][x] == '#')
                         m.Add((x, y, 0));
             for (int i = 0; i < 6; i++)
-                m = StepMap3D(m);
+                m = StepMap(m);
             int ans = m.Count;
             Console.WriteLine("Part A: Result is {0}", ans);
             return ans;
         }
 
-        static HashSet<(int, int, int, int)> GetNeighbours4D((int x, int y, int z, int w) p)
+        static HashSet<(int, int, int, int)> GetNeighbours((int x, int y, int z, int w) p)
         {
             var m = new HashSet<(int, int, int, int)>();
             int[] offs = new int[] { -1, 0, 1 };
-            foreach (int i in offs)
-                foreach (int j in offs)
-                    foreach (int k in offs)
-                        foreach (int l in offs)
-                            if (i != 0 || j != 0 || k != 0 || l != 0)
-                                m.Add((p.x + i, p.y + j, p.z + k, p.w + l));
+            foreach (int x in offs)
+                foreach (int y in offs)
+                    foreach (int z in offs)
+                        foreach (int w in offs)
+                            if (x != 0 || y != 0 || z != 0 || w != 0)
+                                m.Add((p.x + x, p.y + y, p.z + z, p.w + w));
             return m;
         }
 
-        static HashSet<(int, int, int, int)> StepMap4D(HashSet<(int x, int y, int z, int w)> m)
+        static HashSet<(int, int, int, int)> StepMap(HashSet<(int x, int y, int z, int w)> m)
         {
             var mNext = new HashSet<(int, int, int, int)>(m);
-            HashSet<(int x, int y, int z, int w)> mNeigh = new HashSet<(int x, int y, int z, int w)>(m);
+            var mNeigh = new HashSet<(int, int, int, int)>(m);
             foreach (var p in m)
-                mNeigh.UnionWith(GetNeighbours4D(p));
+                mNeigh.UnionWith(GetNeighbours(p));
             foreach (var p in mNeigh)
             {
                 int n = 0;
-                foreach (var q in GetNeighbours4D(p))
+                foreach (var q in GetNeighbours(p))
                     if (m.Contains(q))
                         n++;
                 if (m.Contains(p) && (n < 2 || n > 3))
@@ -101,7 +101,7 @@ namespace day17
                     if (input[y][x] == '#')
                         m.Add((x, y, 0, 0));
             for (int i = 0; i < 6; i++)
-                m = StepMap4D(m);
+                m = StepMap(m);
             int ans = m.Count;
             Console.WriteLine("Part B: Result is {0}", ans);
             return ans;

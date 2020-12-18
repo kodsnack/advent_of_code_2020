@@ -1,5 +1,7 @@
 import re
 
+from itertools import product
+
 
 def distance(a, b):
     return sum([(a[x]-b[x])**2 for x in range(len(a))])**0.5
@@ -88,3 +90,11 @@ def grouped_lines(lines):
         groups.append(group)
 
     return groups
+
+
+def n_neighs(point):
+    n = len(point)
+
+    for delta in product(range(-1, 2), repeat=n):
+        if any(val != 0 for val in delta):
+            yield tuple([point[i] + delta[i] for i in range(n)])

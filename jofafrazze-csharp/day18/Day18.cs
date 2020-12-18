@@ -39,11 +39,7 @@ namespace day18
                 else if (s[i] == ')')
                     d--;
                 else if (s[i] == '*' && d == 0)
-                {
-                    string s1 = s.Substring(0, i - 1);
-                    string s2 = s.Substring(i + 2);
-                    return Calc(s1, advanced) * Calc(s2, advanced);
-                }
+                    return Calc(s.Substring(0, i - 1), advanced) * Calc(s.Substring(i + 2), advanced);
             }
             // No * on our level
             long acc = 0;

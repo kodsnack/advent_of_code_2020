@@ -21,92 +21,95 @@ def fileParse(inp, lineparser=lineParse,
 
 ## End of header boilerplate ###################################################
 
-def evaluate(s):
-   level = 0
-   sub = ""
-   op = "+"
-   left = 0
-   for c in s:
-      if c == " ":
-         continue
-      if c == "(":
-         if level > 0:
-            sub += c
-         level += 1
-         continue
-      if c == ")":
-         level -= 1
-         if level == 0:
-            right = evaluate(sub)
-            sub = ""
-         else:
-            sub += c
-            continue
-      elif level > 0:
-         sub = sub + c
-         continue
-      if c in "0123456789":
-         right = int(c)
-      if c in "+-*":
-         op = c
-         continue
-      if op == "+":
-         left += right
-      if op == "*":
-         left *= right
-   return left
+from operator import add, mul
 
-def advanced(s):
-   print("advanced", s)
-   level = 0
-   sub = ""
-   left = 0
-   op = "+"
-   stack = list()
+def lexer(s):
+   ops = {"+":add, "*":mul}
    for c in s:
-      if c == " ":
-         continue
-      if c == "(":
-         if level > 0:
-            sub += c
-         level += 1
-         continue
-      if c == ")":
-         level -= 1
-         if level == 0:
-            right = advanced(sub)
-            sub = ""
-         else:
-            sub += c
-            continue
-      elif level > 0:
-         sub = sub + c
-         continue
       if c in "0123456789":
-         right = int(c)
-      if c in "+-*":
-         op = c
-         continue
-      if op == "*":
-         stack.append(left)
-         left = right
-      elif op == "+":
-         left += right
-   stack.append(left)
-   print(stack)
-   p = 1
-   for f in stack:
-      p *= f
-   print("return", p)
-   return p
+         yield int(c)
+      elif c in ops:
+         yield ops[c]
+      elif c in "()":
+         yield c
+
+def simple(tokens):
+   memory = list()
+   for token in tokens:
+      if token == "(":
+         memory.append(simple(tokens))
+      elif token == ")":
+         break
+      else:
+         memory.append(token)
+      if len(memory) > 2:
+         memory = [memory[-2](memory[-3], memory[-1])]
+   return memory[0]
+
+def advanced(tokens):
+   memory = list()
+   for token in tokens:
+      if token == "(":
+         memory.append(advanced(tokens))
+      elif token == ")":
+         break
+      else:
+         memory.append(token)
+      if len(memory) > 2:
+         if memory[-2] == add:
+            memory = memory[:-3] + [memory[-2](memory[-3], memory[-1])]
+   while len(memory) > 1:
+      memory = [memory[1](memory[0], memory[2])] + memory[3:]
+   return memory[0]
+
+# def advanced(s):
+#    level = 0
+#    sub = ""
+#    left = 0
+#    op = "+"
+#    stack = list()
+#    for c in s:
+#       if c == " ":
+#          continue
+#       if c == "(":
+#          if level > 0:
+#             sub += c
+#          level += 1
+#          continue
+#       if c == ")":
+#          level -= 1
+#          if level == 0:
+#             right = advanced(sub)
+#             sub = ""
+#          else:
+#             sub += c
+#             continue
+#       elif level > 0:
+#          sub = sub + c
+#          continue
+#       if c in "0123456789":
+#          right = int(c)
+#       if c in "+-*":
+#          op = c
+#          continue
+#       if op == "*":
+#          stack.append(left)
+#          left = right
+#       elif op == "+":
+#          left += right
+#    stack.append(left)
+#    p = 1
+#    for f in stack:
+#       p *= f
+#    return p
 
 @measure
 def part1(pinp):
-   return sum(evaluate(s) for s in pinp)
+   return sum(simple(lexer(s)) for s in pinp)
 
 @measure
 def part2(pinp):
-   return sum(advanced(s) for s in pinp)
+   return sum(advanced(lexer(s)) for s in pinp)
 
 ## Start of footer boilerplate #################################################
 

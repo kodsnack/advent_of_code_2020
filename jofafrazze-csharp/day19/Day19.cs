@@ -52,28 +52,27 @@ namespace day19
         }
         static Pos Match(string s, int r, int x)
         {
+            List<Pos> DoMatch(List<int> rs)
+            {
+                var m = new List<Pos>();
+                Pos p = new Pos(false, x);
+                foreach (int a in rs)
+                {
+                    p = Match(s, a, p.x);
+                    m.Add(p);
+                }
+                return m;
+            }
             if (r < 0 || x >= s.Length)
                 return new Pos(false, x);
             var (r1, r2) = rules[r];
-            var matches1 = new List<Pos>();
-            Pos pos = new Pos(false, x);
-            foreach (int a in r1)
-            {
-                pos = Match(s, a, pos.x);
-                matches1.Add(pos);
-            }
-            var matches2 = new List<Pos>();
-            pos = new Pos(false, x);
-            foreach (int a in r2)
-            {
-                pos = Match(s, a, pos.x);
-                matches2.Add(pos);
-            }
+            var m1 = DoMatch(r1);
+            var m2 = DoMatch(r2);
             bool ok = s[x] == -r1[0];
             if (r2.Count == 0)
-                return (r1[0] < 0) ? new Pos(ok, ok ? x + 1 : x) : Comb(matches1);
+                return (r1[0] < 0) ? new Pos(ok, ok ? x + 1 : x) : Comb(m1);
             else
-                return Select(Comb(matches1), Comb(matches2));
+                return Select(Comb(m1), Comb(m2));
         }
 
         static Object PartA()

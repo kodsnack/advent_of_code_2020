@@ -2,12 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
 using AdventOfCode;
-//using Position = AdventOfCode.GenericPosition2D<int>;
 
 namespace day19
 {
@@ -16,7 +11,7 @@ namespace day19
         readonly static string nsname = typeof(Day19).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
-        static Dictionary<int, ((int a, int b) r1, (int a, int b, int c) r2)> rules = new Dictionary<int, ((int, int), (int, int, int))>();
+        static Dictionary<int, ((int a, int b) r1, (int a, int b) r2)> rules = new Dictionary<int, ((int, int), (int, int))>();
 
         static List<string> ReadInput(string path)
         {
@@ -34,20 +29,17 @@ namespace day19
                     var m1 = m[0].Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                     int n1 = m1.Count();
                     if (m1[0][0] == '"')
-                    {
-                        int a = -m1[0][1];
-                        rules[int.Parse(v[0])] = ((a, 255), (255, 255, 255));
-                    }
+                        rules[int.Parse(v[0])] = ((-m1[0][1], -1), (-1, -1));
                     else
                     {
                         bool second = m.Count() > 1;
                         var m2 = second ? m[1].Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries) : null;
                         int n2 = second ? m2.Count() : 0;
-                        int b1 = (int)int.Parse(m1[0]);
-                        int b2 = (int)(n1 > 1 ? int.Parse(m1[1]) : 255);
-                        int b3 = (int)(n2 > 0 ? int.Parse(m2[0]) : 255);
-                        int b4 = (int)(n2 > 1 ? int.Parse(m2[1]) : 255);
-                        rules[int.Parse(v[0])] = ((b1, b2), (b3, b4, 255));
+                        int a = int.Parse(m1[0]);
+                        int b = n1 > 1 ? int.Parse(m1[1]) : -1;
+                        int c = n2 > 0 ? int.Parse(m2[0]) : -1;
+                        int d = n2 > 1 ? int.Parse(m2[1]) : -1;
+                        rules[int.Parse(v[0])] = ((a, b), (c, d));
                     }
                 }
                 else if (phase == 1)
@@ -56,141 +48,86 @@ namespace day19
             return list;
         }
 
-        static (bool ok, int x) Match(string s, int rule1, int x)
+        static (bool ok, int x) Comb((bool ok, int x) a, (bool ok, int x) b)
         {
-            int a1 = rules[rule1].r1.a;
-            int a2 = rules[rule1].r1.b;
-            int b1 = rules[rule1].r2.a;
-            int b2 = rules[rule1].r2.b;
-            int b3 = rules[rule1].r2.c;
-            if (x >= s.Length)
+            return (a.ok && b.ok, b.x);
+        }
+        static (bool ok, int x) Select((bool ok, int x) a, (bool ok, int x) b)
+        {
+            return a.ok ? a : b;
+        }
+        static (bool ok, int x) Match(string s, int r, int x)
+        {
+            if (r < 0 || x >= s.Length)
                 return (false, x);
-            else if (b1 == 255)
+            int a1 = rules[r].r1.a;
+            int a2 = rules[r].r1.b;
+            int b1 = rules[r].r2.a;
+            int b2 = rules[r].r2.b;
+            var m1 = Match(s, a1, x);
+            var m2 = Match(s, a2, m1.x);
+            var n1 = Match(s, b1, x);
+            var n2 = Match(s, b2, n1.x);
+            if (b1 < 0)
             {
-                if (a1 < 0 && a2 == 255)
+                if (a1 < 0 && a2 < 0)
                     return (s[x] == -a1, s[x] == -a1 ? x + 1 : x);
-                else if (a2 == 255)
-                    return Match(s, a1, x);
+                else if (a2 < 0)
+                    return m1;
                 else
-                {
-                    var m1 = Match(s, a1, x);
-                    var m2 = Match(s, a2, m1.x);
-                    return (m1.ok && m2.ok, m2.x);
-                }
+                    return Comb(m1, m2);
             }
             else
             {
-                if (a2 == 255 && b2 == 255)
-                {
-                    var m1 = Match(s, a1, x);
-                    var n2 = Match(s, b1, x);
-                    return m1.ok ? m1 : n2;
-                }
-                else if (b2 == 255)
-                {
-                    var m1 = Match(s, a1, x);
-                    var m2 = Match(s, a2, m1.x);
-                    bool d = m1.ok && m2.ok;
-                    return d ? (d, m2.x) : Match(s, b1, x);
-                }
-                else if (a2 == 255)
-                {
-                    var m1 = Match(s, a1, x);
-                    if (!m1.ok)
-                    {
-                        var n1 = Match(s, b1, x);
-                        var n2 = Match(s, b2, n1.x);
-                        return (n1.ok && n2.ok, n2.x);
-                    }
-                    else
-                        return m1;
-                }
-                else if (b3 == 255)
-                {
-                    var m1 = Match(s, a1, x);
-                    var m2 = Match(s, a2, m1.x);
-                    if (m1.ok && m2.ok)
-                        return (m1.ok && m2.ok, m2.x);
-                    else
-                    {
-                        var n1 = Match(s, b1, x);
-                        var n2 = Match(s, b2, n1.x);
-                        return (n1.ok && n2.ok, n2.x);
-                    }
-                }
+                if (a2 < 0 && b2 < 0)
+                    return Select(m1, n1);
+                else if (b2 < 0)
+                    return Select(n1, Comb(m1, m2));
+                else if (a2 < 0)
+                    return Select(m1, Comb(n1, n2));
                 else
-                {
-                    var m1 = Match(s, a1, x);
-                    var m2 = Match(s, a2, m1.x);
-                    if (m1.ok && m2.ok)
-                        return (m1.ok && m2.ok, m2.x);
-                    else
-                    {
-                        var n1 = Match(s, b1, x);
-                        var n2 = Match(s, b2, n1.x);
-                        var n3 = Match(s, b3, n2.x);
-                        return (n1.ok && n2.ok && n3.ok, n3.x);
-                    }
-                }
+                    return Select(Comb(m1, m2), Comb(n1, n2));
             }
         }
 
         static Object PartA()
         {
             var input = ReadInput(inputPath);
-            int ans = 0;
-            foreach (var s in input)
-            {
-                var m = Match(s, 0, 0);
-                if (m.ok && m.x == s.Length)
-                    ans++;
-            }
+            int ans = input.Select(s => (s, m: Match(s, 0, 0)))
+                .Where(b => b.m.ok && b.m.x == b.s.Length).Count();
             Console.WriteLine("Part A: Result is {0}", ans);
             return ans;
         }
 
-        static (int n, bool ok) CountMatches(string s, ref int x, int rule)
+        static List<int> CountMatches(string s, int rule, int x)
         {
-            int n = 0;
+            var pos = new List<int>();
             (bool ok, int x) p = (true, x);
             while (p.ok && p.x < s.Length)
             {
                 p = Match(s, rule, p.x);
                 if (p.ok)
-                    n++;
+                    pos.Add(p.x);
             }
-            x = p.x;
-            return (n, p.x == s.Length);
+            return pos;
         }
 
         static Object PartB()
         {
             var input = ReadInput(inputPath);
-            //rules[8] = ((42, 255), (42, 8, 255));
+            //rules[8] = ((42, -1), (42, 8));
             //rules[11] = ((42, 31), (42, 11, 31));
             int ans = 0;
             foreach (var s in input)
             {
                 bool good = false;
-                int x = 0;
-                var (n42, b42) = CountMatches(s, ref x, 42);
-                int n31 = 0;
-                if (!b42)
+                var pos1 = CountMatches(s, 42, 0);
+                for (int i = 1; !good && pos1.Count > 0 && (i <= pos1.Count); i++)
                 {
-                    for (int i = 1; (i <= n42) && !good; i++)
-                    {
-                        (bool ok, int x) p = (true, 0);
-                        for (int d = 0; d < i; d++)
-                            p = Match(s, 42, p.x);
-                        int w = p.x;
-                        var (n, ok) = CountMatches(s, ref w, 31);
-                        n31 = n;
-                        if (ok && n42 > n31)
-                            good = true;
-                    }
+                    var pos2 = CountMatches(s, 31, pos1[i - 1]);
+                    good = pos2.LastOrDefault() == s.Length && pos1.Count > pos2.Count;
                 }
-                if (good)
-                    ans++;
+                ans += good ? 1 : 0;
             }
             Console.WriteLine("Part B: Result is {0}", ans);
             return ans;

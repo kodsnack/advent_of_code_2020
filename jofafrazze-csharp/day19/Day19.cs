@@ -149,16 +149,47 @@ namespace day19
             return ans;
         }
 
+        static (int n, bool ok) CountMatches(string s, ref int x, int rule)
+        {
+            int n = 0;
+            (bool ok, int x) p = (true, x);
+            while (p.ok && p.x < s.Length)
+            {
+                p = Match(s, rule, p.x);
+                if (p.ok)
+                    n++;
+            }
+            x = p.x;
+            return (n, p.x == s.Length);
+        }
+
         static Object PartB()
         {
             var input = ReadInput(inputPath);
-            rules[8] = ((42, 255), (42, 8, 255));
-            rules[11] = ((42, 31), (42, 11, 31));
+            //rules[8] = ((42, 255), (42, 8, 255));
+            //rules[11] = ((42, 31), (42, 11, 31));
             int ans = 0;
             foreach (var s in input)
             {
-                var m = Match(s, 0, 0);
-                if (m.ok && m.x == s.Length)
+                bool good = false;
+                int x = 0;
+                var (n42, b42) = CountMatches(s, ref x, 42);
+                int n31 = 0;
+                if (!b42)
+                {
+                    for (int i = 1; (i <= n42) && !good; i++)
+                    {
+                        (bool ok, int x) p = (true, 0);
+                        for (int d = 0; d < i; d++)
+                            p = Match(s, 42, p.x);
+                        int w = p.x;
+                        var (n, ok) = CountMatches(s, ref w, 31);
+                        n31 = n;
+                        if (ok && n42 > n31)
+                            good = true;
+                    }
+                }
+                if (good)
                     ans++;
             }
             Console.WriteLine("Part B: Result is {0}", ans);
@@ -174,8 +205,8 @@ namespace day19
 
         public static bool MainTest()
         {
-            int a = 42;
-            int b = 4711;
+            int a = 226;
+            int b = 355;
             return (PartA().Equals(a)) && (PartB().Equals(b));
         }
     }

@@ -43,6 +43,13 @@ where
           .into()
       })
     })
-    .map(|r| r.map(|(_, x)| x))
+    .map(|r| {
+      r.map(|(i, x)| {
+        if i != "" {
+          println!("Warning unparsed {}", i);
+        }
+        x
+      })
+    })
     .collect()
 }

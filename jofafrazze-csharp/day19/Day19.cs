@@ -40,28 +40,30 @@ namespace day19
             return list;
         }
 
-        static (bool ok, int x) Comb(List<(bool ok, int x)> m)
+        struct Pos { public bool ok; public int x; public Pos(bool ok_, int x_) { ok = ok_; x = x_; } }
+
+        static Pos Comb(List<Pos> m)
         {
-            return (m.Aggregate((a, b) => (a.ok && b.ok, b.x)));
+            return (m.Aggregate((a, b) => new Pos(a.ok && b.ok, b.x)));
         }
-        static (bool ok, int x) Select((bool ok, int x) a, (bool ok, int x) b)
+        static Pos Select(Pos a, Pos b)
         {
             return a.ok ? a : b;
         }
-        static (bool ok, int x) Match(string s, int r, int x)
+        static Pos Match(string s, int r, int x)
         {
             if (r < 0 || x >= s.Length)
-                return (false, x);
+                return new Pos(false, x);
             var (r1, r2) = rules[r];
-            var matches1 = new List<(bool ok, int x)>();
-            (bool ok, int x) pos = (false, x);
+            var matches1 = new List<Pos>();
+            Pos pos = new Pos(false, x);
             foreach (int a in r1)
             {
                 pos = Match(s, a, pos.x);
                 matches1.Add(pos);
             }
-            var matches2 = new List<(bool ok, int x)>();
-            pos = (false, x);
+            var matches2 = new List<Pos>();
+            pos = new Pos(false, x);
             foreach (int a in r2)
             {
                 pos = Match(s, a, pos.x);
@@ -69,7 +71,7 @@ namespace day19
             }
             bool ok = s[x] == -r1[0];
             if (r2.Count == 0)
-                return (r1[0] < 0) ? (ok, ok ? x + 1 : x) : Comb(matches1);
+                return (r1[0] < 0) ? new Pos(ok, ok ? x + 1 : x) : Comb(matches1);
             else
                 return Select(Comb(matches1), Comb(matches2));
         }
@@ -86,7 +88,7 @@ namespace day19
         static List<int> CountMatches(string s, int rule, int x)
         {
             var pos = new List<int>();
-            (bool ok, int x) p = (true, x);
+            Pos p = new Pos(true, x);
             while (p.ok && p.x < s.Length)
             {
                 p = Match(s, rule, p.x);

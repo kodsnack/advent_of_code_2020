@@ -28,11 +28,9 @@ namespace day19
                     var m = v[1].Split("|".ToCharArray());
                     var m1 = m[0].Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                     var m2 = m.Count() > 1 ? m[1].Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries) : new string[] { };
-                    if (m1[0][0] == '"')
-                        rules[int.Parse(v[0])] = (new List<int> { -m1[0][1] }, new List<int>());
-                    else
-                        rules[int.Parse(v[0])] = 
-                            (m1.Select(int.Parse).ToList(), m2.Select(int.Parse).ToList());
+                    rules[int.Parse(v[0])] = (m1[0][0] == '"') 
+                        ? (new List<int> { -m1[0][1] }, new List<int>())
+                        : (m1.Select(int.Parse).ToList(), m2.Select(int.Parse).ToList());
                 }
                 else if (phase == 1)
                     list.Add(line);
@@ -40,37 +38,31 @@ namespace day19
             return list;
         }
 
-        struct Pos { public bool ok; public int x; public Pos(bool ok_, int x_) { ok = ok_; x = x_; } }
+        struct Pos { public bool ok; public int n; public Pos(bool b, int i) { ok = b; n = i; } }
 
         static Pos Comb(List<Pos> m)
         {
-            return (m.Aggregate((a, b) => new Pos(a.ok && b.ok, b.x)));
+            return (m.Aggregate((a, b) => new Pos(a.ok && b.ok, b.n)));
         }
         static Pos Select(Pos a, Pos b)
         {
             return a.ok ? a : b;
         }
-        static Pos Match(string s, int r, int x)
+        static Pos Match(string s, int r, int n)
         {
             List<Pos> DoMatch(List<int> rs)
             {
-                var m = new List<Pos>();
-                Pos p = new Pos(false, x);
-                foreach (int a in rs)
-                {
-                    p = Match(s, a, p.x);
-                    m.Add(p);
-                }
-                return m;
+                Pos p = new Pos(false, n);
+                return rs.Select(a => p = Match(s, a, p.n)).ToList();
             }
-            if (r < 0 || x >= s.Length)
-                return new Pos(false, x);
+            if (r < 0 || n >= s.Length)
+                return new Pos(false, n);
             var (r1, r2) = rules[r];
             var m1 = DoMatch(r1);
             var m2 = DoMatch(r2);
-            bool ok = s[x] == -r1[0];
+            bool ok = s[n] == -r1[0];
             if (r2.Count == 0)
-                return (r1[0] < 0) ? new Pos(ok, ok ? x + 1 : x) : Comb(m1);
+                return (r1[0] < 0) ? new Pos(ok, ok ? n + 1 : n) : Comb(m1);
             else
                 return Select(Comb(m1), Comb(m2));
         }
@@ -79,20 +71,20 @@ namespace day19
         {
             var input = ReadInput(inputPath);
             int ans = input.Select(s => (s, m: Match(s, 0, 0)))
-                .Where(b => b.m.ok && b.m.x == b.s.Length).Count();
+                .Where(z => z.m.ok && z.m.n == z.s.Length).Count();
             Console.WriteLine("Part A: Result is {0}", ans);
             return ans;
         }
 
-        static List<int> CountMatches(string s, int rule, int x)
+        static List<int> CountMatches(string s, int rule, int n)
         {
             var pos = new List<int>();
-            Pos p = new Pos(true, x);
-            while (p.ok && p.x < s.Length)
+            Pos p = new Pos(true, n);
+            while (p.ok && p.n < s.Length)
             {
-                p = Match(s, rule, p.x);
+                p = Match(s, rule, p.n);
                 if (p.ok)
-                    pos.Add(p.x);
+                    pos.Add(p.n);
             }
             return pos;
         }

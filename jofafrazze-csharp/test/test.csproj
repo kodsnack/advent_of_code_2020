@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,6 +34,7 @@
     <ProjectReference Include="..\day17\day17.csproj" />
     <ProjectReference Include="..\day18\day18.csproj" />
     <ProjectReference Include="..\day19\day19.csproj" />
+    <ProjectReference Include="..\day20\day20.csproj" />
     <ProjectReference Include="..\dayXX\dayXX.csproj" />
   </ItemGroup>
 

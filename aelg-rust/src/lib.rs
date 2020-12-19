@@ -16,6 +16,7 @@ mod day15;
 mod day16;
 mod day17;
 mod day18;
+mod day19;
 pub mod error;
 pub mod parser;
 pub mod readinput;
@@ -30,78 +31,25 @@ pub fn solveday(
     input: &[&str],
 ) -> Result<(Option<String>, Option<String>), error::AOCError> {
     match day {
-        1 => {
-            let r = day01::parse(input);
-            r.map(day01::solve)
-        }
-        2 => {
-            let r = day02::parse(input);
-            r.map(day02::solve)
-        }
-        3 => {
-            let r = day03::parse(input);
-            r.map(day03::solve)
-        }
-        4 => {
-            let r = day04::parse(input);
-            r.map(day04::solve)
-        }
-        5 => {
-            let r = day05::parse(input);
-            r.map(day05::solve)
-        }
-        6 => {
-            let r = day06::parse(input);
-            r.map(day06::solve)
-        }
-        7 => {
-            let r = day07::parse(input);
-            r.map(day07::solve)
-        }
-        8 => {
-            let r = day08::parse(input);
-            r.map(day08::solve)
-        }
-        9 => {
-            let r = day09::parse(input);
-            r.map(day09::solve)
-        }
-        10 => {
-            let r = day10::parse(input);
-            r.map(day10::solve)
-        }
-        11 => {
-            let r = day11::parse(input);
-            r.map(day11::solve)
-        }
-        12 => {
-            let r = day12::parse(input);
-            r.map(day12::solve)
-        }
-        13 => {
-            let r = day13::parse(input);
-            r.map(day13::solve)
-        }
-        14 => {
-            let r = day14::parse(input);
-            r.map(day14::solve)
-        }
-        15 => {
-            let r = day15::parse(input);
-            r.map(day15::solve)
-        }
-        16 => {
-            let r = day16::parse(input);
-            r.map(day16::solve)
-        }
-        17 => {
-            let r = day17::parse(input);
-            r.map(day17::solve)
-        }
-        18 => {
-            let r = day18::parse(input);
-            r.map(day18::solve)
-        }
+        1 => day01::parse(input).map(day01::solve),
+        2 => day02::parse(input).map(day02::solve),
+        3 => day03::parse(input).map(day03::solve),
+        4 => day04::parse(input).map(day04::solve),
+        5 => day05::parse(input).map(day05::solve),
+        6 => day06::parse(input).map(day06::solve),
+        7 => day07::parse(input).map(day07::solve),
+        8 => day08::parse(input).map(day08::solve),
+        9 => day09::parse(input).map(day09::solve),
+        10 => day10::parse(input).map(day10::solve),
+        11 => day11::parse(input).map(day11::solve),
+        12 => day12::parse(input).map(day12::solve),
+        13 => day13::parse(input).map(day13::solve),
+        14 => day14::parse(input).map(day14::solve),
+        15 => day15::parse(input).map(day15::solve),
+        16 => day16::parse(input).map(day16::solve),
+        17 => day17::parse(input).map(day17::solve),
+        18 => day18::parse(input).map(day18::solve),
+        19 => day19::parse(input).map(day19::solve),
         _ => Ok((Some("No solution for this day yet.".into()), None)),
     }
 }

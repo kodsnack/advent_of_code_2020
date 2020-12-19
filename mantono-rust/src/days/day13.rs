@@ -23,7 +23,7 @@ pub fn first(input: String) -> String {
 }
 
 pub fn second(input: String) -> String {
-    let mut bus_lines: Vec<BusLine> = input
+    let bus_lines: Vec<BusLine> = input
         .lines()
         .find(|line| line.contains(","))
         .unwrap()
@@ -32,33 +32,26 @@ pub fn second(input: String) -> String {
         .filter_map(|(index, id)| BusLine::from(index, id).ok())
         .collect::<Vec<BusLine>>();
 
-    let last_bus: &BusLine = bus_lines.iter().max_by(|b0, b1| b0.id.cmp(&b1.id)).unwrap();
-    let max_id: u64 = last_bus.id;
     let mut timestamp: u64 = 0;
     let mut inc: u64 = 1;
     let mut size: usize = 2;
 
     loop {
         let lines = &bus_lines[0..size];
-        timestamp = next_timestamp(lines, timestamp, inc);
+
+        while !lines.iter().all(|b| b.time_fits(timestamp)) {
+            timestamp += inc;
+        }
+
         inc = lines.iter().map(|b| b.id).product();
+        size += 1;
 
         if lines.len() == bus_lines.len() {
             break;
         }
-
-        size += 1;
     }
 
     timestamp.to_string()
-}
-
-fn next_timestamp(busses: &[BusLine], timestamp: u64, increment: u64) -> u64 {
-    if busses.iter().all(|b| b.time_fits(timestamp)) {
-        timestamp
-    } else {
-        next_timestamp(busses, timestamp + increment, increment)
-    }
 }
 
 #[derive(Debug)]

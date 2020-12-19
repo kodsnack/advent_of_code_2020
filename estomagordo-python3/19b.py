@@ -122,7 +122,7 @@ def solve(rulelist, messages):
             for s2 in rules[42]:
                 u = s1+s2
 
-                if u not in ses and len(u) <= longest and u in startsforlen[len(u)]:
+                if u not in ses and len(u) < longest and u in startsforlen[len(u)]:
                     newses.add(u)
 
         if not newses:
@@ -139,20 +139,28 @@ def solve(rulelist, messages):
 
         for s1 in ts:
             for s2 in rules[31]:
-                u = s1+s2
+                u = s2+s1
 
-                if u not in ts and len(u) <= longest and u in endsforlen[len(u)]:
+                if u not in ts and len(u) < longest and u in endsforlen[len(u)]:
                     newts.add(u)
 
         if not newts:
             break
 
         ts |= newts
-
+        
+    print(Counter(len(r) for r in rules[42]))
+    print(Counter(len(r) for r in rules[31]))
+    print(Counter(len(s) for s in ses))
+    print(Counter(len(s) for s in ts))
+    print(len(messages))
+    print(Counter(len(m) for m in messages))
+    print(len(ses))
     print(len(ts))
-    print(endsforlen[10])
-    print({m[-10:] for m in messages})
-    print(endsforlen[10] - {m[-10:] for m in messages})
+    print(longest)
+    # print(endsforlen[10])
+    # print({m[-20:] for m in messages})
+    # print(endsforlen[20] - {m[-20:] for m in messages})
     rules[0] = [p[0] + p[1] for p in product(ses, ts)]
 
     # for p in product(ses, ts):
@@ -257,40 +265,40 @@ def solve(rulelist, messages):
     # for r in rules[31]:
     #     print(r)
 
-    print('sesmatch')
-    print('aaabbbbbbaaaabaababaabababbabaaabbababababaaa' in ses)
-    print('aaabbbbbbaaaabaababaabababbabaaabbababab' in ses)
-    print('aaabbbbbbaaaabaababaabababbabaaabba' in ses)
-    print('aaabbbbbbaaaabaababaabababbaba' in ses)
-    print('aaabbbbbbaaaabaababaababa' in ses)
-    print('aaabbbbbbaaaabaababa' in ses)
-    print('aaabbbbbbaaaaba' in ses)
-    print('aaabbbbbba' in ses)
-    print('aaabb' in ses)
-    print('tsmatch')
-    print('aaabbbbbbaaaabaababaabababbabaaabbababababaaa' in ts)
-    print('bbbbaaaabaababaabababbabaaabbababababaaa' in ts)
-    print('aaabaababaabababbabaaabbababababaaa' in ts)
-    print('aaabaababaabababbabaaabbababababaaa' in ts)
-    print('ababaabababbabaaabbababababaaa' in ts)
-    print('abababbabaaabbababababaaa' in ts)
-    print('bbabaaabbababababaaa' in ts)
-    print('aabbababababaaa' in ts)
-    print('babababaaa' in ts)
-    print('abaaa' in ts)
+    # print('sesmatch')
+    # print('aaabbbbbbaaaabaababaabababbabaaabbababababaaa' in ses)
+    # print('aaabbbbbbaaaabaababaabababbabaaabbababab' in ses)
+    # print('aaabbbbbbaaaabaababaabababbabaaabba' in ses)
+    # print('aaabbbbbbaaaabaababaabababbaba' in ses)
+    # print('aaabbbbbbaaaabaababaababa' in ses)
+    # print('aaabbbbbbaaaabaababa' in ses)
+    # print('aaabbbbbbaaaaba' in ses)
+    # print('aaabbbbbba' in ses)
+    # print('aaabb' in ses)
+    # print('tsmatch')
+    # print('aaabbbbbbaaaabaababaabababbabaaabbababababaaa' in ts)
+    # print('bbbbaaaabaababaabababbabaaabbababababaaa' in ts)
+    # print('aaabaababaabababbabaaabbababababaaa' in ts)
+    # print('aaabaababaabababbabaaabbababababaaa' in ts)
+    # print('ababaabababbabaaabbababababaaa' in ts)
+    # print('abababbabaaabbababababaaa' in ts)
+    # print('bbabaaabbababababaaa' in ts)
+    # print('aabbababababaaa' in ts)
+    # print('babababaaa' in ts)
+    # print('abaaa' in ts)
 
-    print('42 31 match check')
-    print('bbaba' in rules[42])
-    print('bbaba' in rules[31])
-    print('aabba' in rules[42])
-    print('aabba' in rules[31])
-    print('babab' in rules[42])
-    print('babab' in rules[31])
-    print('abaaa' in rules[42])
-    print('abaaa' in rules[31])
+    # print('42 31 match check')
+    # print('bbaba' in rules[42])
+    # print('bbaba' in rules[31])
+    # print('aabba' in rules[42])
+    # print('aabba' in rules[31])
+    # print('babab' in rules[42])
+    # print('babab' in rules[31])
+    # print('abaaa' in rules[42])
+    # print('abaaa' in rules[31])
 
-    print('matches')
-    print('\n'.join(m for m in messages if m in rules[0]))    
+    # print('matches')
+    # print('\n'.join(m for m in messages if m in rules[0]))    
     return sum(m in rules[0] for m in messages)
 
 if __name__ == '__main__':
@@ -311,3 +319,5 @@ if __name__ == '__main__':
     print(solve(rules, messages))
 
 # 360 too high
+# 322 too low
+# 341 too low someone elses

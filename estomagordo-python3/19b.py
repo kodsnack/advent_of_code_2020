@@ -113,42 +113,44 @@ def solve(rulelist, messages):
     #             if l <= longest:
     #                 rules[0].append(u)
 
-    ses = set(rules[42])
+    ses = {r: 1 for r in rules[42]}
 
     while True:
-        newses = set()
+        newses = {}
 
-        for s1 in ses:
+        for s1, count in ses.items():
             for s2 in rules[42]:
                 u = s1+s2
 
                 if u not in ses and len(u) < longest and u in startsforlen[len(u)]:
-                    newses.add(u)
+                    newses[u] = count+1
 
         if not newses:
             break
 
-        ses |= newses
+        for k, v in newses.items():
+            ses[k] = v
 
     # print(len(ses))
 
-    ts = set(rules[31])
+    ts = {r: 1 for r in rules[31]}
 
     while True:
-        newts = set()
+        newts = {}
 
-        for s1 in ts:
+        for s1, count in ts.items():
             for s2 in rules[31]:
                 u = s2+s1
 
                 if u not in ts and len(u) < longest and u in endsforlen[len(u)]:
-                    newts.add(u)
+                    newts[u] = count+1
 
         if not newts:
             break
 
-        ts |= newts
-        
+        for k, v in newts.items():
+            ts[k] = v
+
     print(Counter(len(r) for r in rules[42]))
     print(Counter(len(r) for r in rules[31]))
     print(Counter(len(s) for s in ses))
@@ -161,8 +163,13 @@ def solve(rulelist, messages):
     # print(endsforlen[10])
     # print({m[-20:] for m in messages})
     # print(endsforlen[20] - {m[-20:] for m in messages})
-    rules[0] = [p[0] + p[1] for p in product(ses, ts)]
+    # rules[0] = [p[0] + p[1] for p in product(ses, ts)]
+    rules[0] = []
 
+    for s, scount in ses.items():
+        for t, tcount in ts.items():
+            if scount > tcount:
+                rules[0].append(s+t)
     # for p in product(ses, ts):
     #     a = 22
 

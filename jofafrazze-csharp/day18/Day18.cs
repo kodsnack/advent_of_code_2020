@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using AdventOfCode;
 
 namespace day18
@@ -9,6 +10,7 @@ namespace day18
         readonly static string nsname = typeof(Day18).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
+        // Initial version
         static int ClosingParenthesisIdx(string s, int idx)
         {
             int d = 0;
@@ -73,12 +75,47 @@ namespace day18
             return acc;
         }
 
+        // Alternate regex version
+        static string EvaluateA(string s)
+        {
+            var re = new Regex(@"(\d+) (\+|\*) (\d+)");
+            while (re.IsMatch(s))
+            {
+                var m = re.Match(s);
+                var a = long.Parse(m.Groups[1].Value);
+                var b = long.Parse(m.Groups[3].Value);
+                s = re.Replace(s, (m.Groups[2].Value == "+" ? a + b : a * b).ToString(), 1);
+            }
+            return s;
+        }
+
+        static string EvaluateB(string s)
+        {
+            var re1 = new Regex(@"(\d+) \+ (\d+)");
+            var re2 = new Regex(@"(\d+) \* (\d+)");
+            while (re1.IsMatch(s))
+                s = re1.Replace(s, m => (long.Parse(m.Groups[1].Value) + long.Parse(m.Groups[2].Value)).ToString(), 1);
+            while (re2.IsMatch(s))
+                s = re2.Replace(s, m => (long.Parse(m.Groups[1].Value) * long.Parse(m.Groups[2].Value)).ToString(), 1);
+            return s;
+        }
+
+        static long Calc(string s, Func<string, string> eval)
+        {
+            var re = new Regex(@"\(([^()]+)\)");
+            while (re.IsMatch(s))
+                s = re.Replace(s, m => eval(m.Groups[1].Value));
+            return long.Parse(eval(s));
+        }
+
         static Object PartA()
         {
             var input = ReadIndata.Strings(inputPath);
             long ans = 0;
             foreach (string s in input)
                 ans += Calc(s, false);
+            //foreach (string s in input)
+            //    ans += Calc(s, EvaluateA);
             Console.WriteLine("Part A: Result is {0}", ans);
             return ans;
         }
@@ -89,6 +126,8 @@ namespace day18
             long ans = 0;
             foreach (string s in input)
                 ans += Calc(s, true);
+            //foreach (string s in input)
+            //    ans += Calc(s, EvaluateB);
             Console.WriteLine("Part B: Result is {0}", ans);
             return ans;
         }

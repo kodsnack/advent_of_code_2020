@@ -105,11 +105,11 @@ std::tuple<std::string, std::string> p17(const std::string &input) {
 
                 next4.push_back(empty4);
 
-                for(auto & l3 : levels) {
+                for (auto &l3 : levels) {
                     next4.emplace_back();
-                    auto & next3 = next4.back();
+                    auto &next3 = next4.back();
                     next3.push_back(empty3);
-                    for(auto & v : l3) {
+                    for (auto &v : l3) {
                         next3.emplace_back();
                         next3.back().emplace_back(l3[0][0].length() + 2, '.');
                         for (auto &s : v) {
@@ -135,17 +135,17 @@ std::tuple<std::string, std::string> p17(const std::string &input) {
                             for (int dw = -1; dw <= 1; dw++) {
                                 if (w + dw >= levels.size()) continue;
                                 for (int dz = -1; dz <= 1; dz++) {
-                                if (z + dz >= levels[w+dw].size()) continue;
-                                for (int dy = -1; dy <= 1; dy++) {
-                                    if (y + dy >= levels[w+dw][z + dz].size()) continue;
-                                    for (int dx = -1; dx <= 1; dx++) {
-                                        if (!(dw || dz || dy || dx)) continue;
-                                        if (x + dx >= levels[w+dw][z + dz][y + dy].length()) continue;
+                                    if (z + dz >= levels[w + dw].size()) continue;
+                                    for (int dy = -1; dy <= 1; dy++) {
+                                        if (y + dy >= levels[w + dw][z + dz].size()) continue;
+                                        for (int dx = -1; dx <= 1; dx++) {
+                                            if (!(dw || dz || dy || dx)) continue;
+                                            if (x + dx >= levels[w + dw][z + dz][y + dy].length()) continue;
 
-                                        cnt += levels[w + dw][z + dz][y + dy][x + dx] == '#';
+                                            cnt += levels[w + dw][z + dz][y + dy][x + dx] == '#';
+                                        }
                                     }
                                 }
-                            }
 
                             }
 
@@ -161,7 +161,7 @@ std::tuple<std::string, std::string> p17(const std::string &input) {
 
         }
 
-        for (auto &v : levels) for (auto &s : v) for (auto &s1 : s) for( auto c : s1) ans2 += c == '#';
+        for (auto &v : levels) for (auto &s : v) for (auto &s1 : s) for (auto c : s1) ans2 += c == '#';
     }
 
 

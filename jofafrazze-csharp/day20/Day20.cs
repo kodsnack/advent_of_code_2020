@@ -2,12 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
 using AdventOfCode;
-//using Position = AdventOfCode.GenericPosition2D<int>;
 
 namespace day20
 {
@@ -15,6 +10,13 @@ namespace day20
     {
         readonly static string nsname = typeof(Day20).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
+
+        // Day 20: Jurassic Jigsaw - Rotate tiles, match edges, find patterns etc
+
+        enum Edge { Top, Left };
+        static Dictionary<int, List<List<string>>> allTiles;
+        static List<(int id, int idx)> tilesMatched = new List<(int, int)>();
+        static int side = 0;
 
         static Dictionary<int, List<string>> GetTiles(List<string> list)
         {
@@ -38,18 +40,10 @@ namespace day20
             return dict;
         }
 
-        static List<string> FlipHz(List<string> list)
-        {
-            var a = new List<string>();
-            foreach (string s in list)
-            {
-                string b = new string(s.Reverse().ToArray());
-                a.Add(b);
-            }
-            return a;
-        }
+        // For future needs: To reverse a string when Linq is enabled: 
+        // string b = new string(s.Reverse().ToArray());
 
-        static List<string> FlipVc(List<string> list)
+        static List<string> FlipVertical(List<string> list)
         {
             var a = new List<string>(list);
             a.Reverse();
@@ -60,13 +54,10 @@ namespace day20
         {
             int k = list.Count;
             char[][] arr = list.Select(l => l.ToArray()).ToArray();
-            for (int y = 0; y < k; y++)
-                for (int x = 0; x < k; x++)
-                    arr[y][x] = list[x][k - y - 1];
-            var a = new List<string>();
-            for (int y = 0; y < k; y++)
-                a.Add(new string(arr[y]));
-            return a;
+            for (int r = 0; r < k; r++)
+                for (int c = 0; c < k; c++)
+                    arr[r][c] = list[c][k - r - 1];
+            return arr.Select(a => new string(a)).ToList();
         }
 
         static Dictionary<int, List<List<string>>> GetAllVariants(Dictionary<int, List<string>> tiles)
@@ -75,101 +66,81 @@ namespace day20
             foreach (var (k, v) in tiles)
             {
                 var a = tiles[k];
-                var hz = FlipHz(tiles[k]);
-                var vc = FlipVc(tiles[k]);
-                List<List<string>> w = new List<List<string>>() { a, vc };
+                var vc = FlipVertical(tiles[k]);
+                var w = new List<List<string>>() { a, vc };
                 var all = new List<List<string>>(w);
                 foreach (var t in w)
                 {
                     var r1 = Rot(t);
                     var r2 = Rot(r1);
                     var r3 = Rot(r2);
-                    var q = new List<List<string>>() { r1, r2, r3 };
-                    foreach (var h in q)
-                    {
-                        bool unique = true;
-                        foreach (var g in all)
-                            if (g.SequenceEqual(h))
-                                unique = false;
-                        if (unique)
-                            all.Add(h);
-                    }
+                    all.AddRange(new List<List<string>>() { r1, r2, r3 });
                 }
-                dict[k] = new List<List<string>>(all);
+                dict[k] = all;
             }
             return dict;
         }
 
-        //  0 1 2  A B C
-        //  3 4 5  D E F
-        //  6 7 8  G H I
-
-        enum Edge { Top, Right, Bottom, Left };
-
-        // A's left to B's right
+        // A's left matched against B's right
         static bool CanTilesMatchLeft(List<string> a, List<string> b)
         {
-            int z = a[0].Length - 1;
             for (int r = 0; r < a.Count; r++)
-                if (a[r][0] != b[r][z])
+                if (a[r][0] != b[r][9])
                     return false;
             return true;
         }
 
-        // A's top to B's bottom
+        // A's top matched against B's bottom
         static bool CanTilesMatchTop(List<string> a, List<string> b)
         {
             return a[0] == b.Last();
         }
 
-        static (bool match, int idx) CanTilesMatch(int id, List<(int pos, Edge edge)> edgesToCheck)
+        static bool CanTilesMatch(int id, List<(int pos, Edge edge)> edgesToCheck, out int idx)
         {
-            for (int idx = 0; idx < 8; idx++)
+            for (idx = 0; idx < 8; idx++)
             {
                 bool match = true;
                 foreach (var (pos, edge) in edgesToCheck)
                 {
-                    (int id, int idx) other = tilesUsed[pos];
+                    (int id, int idx) other = tilesMatched[pos];
                     match &= (edge == Edge.Left) ?
                         CanTilesMatchLeft(allTiles[id][idx], allTiles[other.id][other.idx]) :
                         CanTilesMatchTop(allTiles[id][idx], allTiles[other.id][other.idx]);
                 }
                 if (match)
-                    return (true, idx);
+                    return true;
             }
-            return (false, -1);
+            return false;
         }
 
-        static List<(int id, int idx)> tilesUsed = new List<(int, int)>();
-
-        static bool TilesMatch(int topLeftId, List<int> ids)
+        static bool MatchTilesTopLeft(int tlId, List<int> ids)
         {
             int nTiles = allTiles.Count;
-            var atry = allTiles[topLeftId];
+            var atry = allTiles[tlId];
             for (int a = 0; a < atry.Count; a++)
             {
-                tilesUsed = new List<(int, int)>() { (topLeftId, a) };
-                List<int> idsLeft = new List<int>(ids);
-                for (int ourPos = 1; (ourPos < nTiles) && tilesUsed.Count == ourPos; ourPos++)
+                tilesMatched = new List<(int, int)>() { (tlId, a) };
+                var idsRemaining = new List<int>(ids);
+                for (int p = 1; (p < nTiles) && tilesMatched.Count == p; p++)
                 {
-                    for (int i = 0; i < idsLeft.Count; i++)
+                    for (int i = 0; i < idsRemaining.Count; i++)
                     {
-                        int nextId = idsLeft[i];
-                        List<(int pos, Edge edge)> edgesToCheck = new List<(int, Edge)>();
-                        if (ourPos % imageSide != 0)
-                            edgesToCheck.Add((ourPos - 1, Edge.Left));
-                        if (ourPos >= imageSide)
-                            edgesToCheck.Add((ourPos - imageSide, Edge.Top));
-                        var (match, idx) = CanTilesMatch(nextId, edgesToCheck);
-                        if (match)
+                        int nextId = idsRemaining[i];
+                        var edgesToCheck = new List<(int, Edge)>();
+                        if (p % side != 0)
+                            edgesToCheck.Add((p - 1, Edge.Left));
+                        if (p >= side)
+                            edgesToCheck.Add((p - side, Edge.Top));
+                        if (CanTilesMatch(nextId, edgesToCheck, out int idx))
                         {
-                            tilesUsed.Add((nextId, idx));
-                            idsLeft.Remove(nextId);
+                            tilesMatched.Add((nextId, idx));
+                            idsRemaining.Remove(nextId);
                             break;
                         }
                     }
                 }
-                if (tilesUsed.Count == nTiles)
+                if (tilesMatched.Count == nTiles)
                     return true;
             }
             return false;
@@ -177,28 +148,26 @@ namespace day20
 
         static void MatchTiles()
         {
-            List<int> ids = allTiles.Keys.ToList();
+            var ids = allTiles.Keys.ToList();
             foreach (int id in ids)
             {
-                Console.Write('.');
-                List<int> idsLeft = new List<int>(ids);
-                idsLeft.Remove(id);
-                if (TilesMatch(id, idsLeft))
+                var idsRemaining = new List<int>(ids);
+                idsRemaining.Remove(id);
+                if (MatchTilesTopLeft(id, idsRemaining))
                     return;
             }
-            throw new Exception();
+            throw new InvalidProgramException();
         }
 
-        static void PrintTiles()
+        static void PrintTiles3x3()
         {
             for (int r = 0; r < 3; r++)
             {
-                for (int i = -1; i < allTiles.First().Value[0].Count; i++)
+                for (int i = -1; i < 10; i++)
                 {
                     for (int c = 0; c < 3; c++)
                     {
-                        int n = r * 3 + c;
-                        var (id, idx) = tilesUsed[n];
+                        var (id, idx) = tilesMatched[r * 3 + c];
                         List<string> strs = allTiles[id][idx];
                         if (i == -1)
                             Console.Write("{0,-10} ", id);
@@ -211,136 +180,89 @@ namespace day20
             }
         }
 
-        static Dictionary<int, List<List<string>>> allTiles;
-        static int imageSide = 0;
-
         static Object PartA()
         {
             var input = ReadIndata.Strings(inputPath);
-            var tiles = GetTiles(input);
-            allTiles = GetAllVariants(tiles);
-            imageSide = (int) Math.Sqrt(allTiles.Count);
+            allTiles = GetAllVariants(GetTiles(input));
+            side = (int) Math.Sqrt(allTiles.Count);
             MatchTiles();
-            //PrintTiles();
-            List<long> config = tilesUsed.Select(x => (long)x.id).ToList();
-            long a = config[0];
-            long b = config[imageSide - 1];
-            long c = config[imageSide * (imageSide - 1)];
-            long d = config.Last();
-            long ans = a * b * c * d;
-            Console.WriteLine("Part A: Result is {1} * {2} * {3} * {4} = {0}", ans, a, b, c, d);
+            //PrintTiles3x3();
+            var ids = tilesMatched.Select(x => (long)x.id).ToList();
+            long ans = ids[0] * ids[side - 1] * ids[side * (side - 1)] * ids.Last();
+            Console.WriteLine("Part A: Result is {0}", ans);
             return ans;
         }
 
+        // Part 2 below
+
         static List<string> image = new List<string>();
         static List<List<string>> images = new List<List<string>>();
-
-        static void CreateImages()
-        {
-            for (int r = 0; r < imageSide; r++)
-            {
-                for (int i = 1; i < 9; i++)
-                {
-                    string s = "";
-                    for (int c = 0; c < imageSide; c++)
-                    {
-                        var (id, idx) = tilesUsed[r * imageSide + c];
-                        s += allTiles[id][idx][i].Substring(1, 8);
-                    }
-                    image.Add(s);
-                }
-            }
-            var vc = FlipVc(image);
-            List<List<string>> w = new List<List<string>>() { image, vc };
-            images = new List<List<string>>(w);
-            foreach (var t in w)
-            {
-                var r1 = Rot(t);
-                var r2 = Rot(r1);
-                var r3 = Rot(r2);
-                images.Add(r1);
-                images.Add(r2);
-                images.Add(r3);
-            }
-        }
-
         static readonly List<string> seaMonster = new List<string>()
         {
             "                  # ",
             "#    ##    ##    ###",
             " #  #  #  #  #  #   "
         };
-
-        static void CreateSeaMonsterOffs()
-        {
-            for (int r = 0; r < seaMonster.Count; r++)
-            {
-                for (int c = 0; c < seaMonster[0].Length; c++)
-                {
-                    if (seaMonster[r][c] == '#')
-                        seaMonsterOffs.Add((r, c));
-                }
-            }
-        }
-
         static readonly List<(int pr, int pc)> seaMonsterOffs = new List<(int, int)>();
-
         static readonly HashSet<(int pr, int pc)> imageOffs = new HashSet<(int, int)>();
 
+        static void CreateImages()
+        {
+            for (int r = 0; r < side; r++)
+                for (int i = 1; i < 9; i++)
+                {
+                    string s = "";
+                    for (int c = 0; c < side; c++)
+                    {
+                        var (id, idx) = tilesMatched[r * side + c];
+                        s += allTiles[id][idx][i].Substring(1, 8);
+                    }
+                    image.Add(s);
+                }
+            var vc = FlipVertical(image);
+            var w = new List<List<string>>() { image, vc };
+            images = new List<List<string>>(w);
+            foreach (var t in w)
+            {
+                var r1 = Rot(t);
+                var r2 = Rot(r1);
+                var r3 = Rot(r2);
+                images.AddRange(new List<List<string>>() { r1, r2, r3 });
+            }
+        }
+
+        static void CreateOffs(IList<string> list, ICollection<(int,int)> offs)
+        {
+            for (int r = 0; r < list.Count; r++)
+                for (int c = 0; c < list[0].Length; c++)
+                    if (list[r][c] == '#')
+                        offs.Add((r, c));
+        }
+        static void CreateSeaMonsterOffs()
+        {
+            CreateOffs(seaMonster, seaMonsterOffs);
+        }
         static void CreateImageOffs(List<string> img)
         {
-            for (int r = 0; r < img.Count; r++)
-            {
-                for (int c = 0; c < img[0].Length; c++)
-                {
-                    if (img[r][c] == '#')
-                        imageOffs.Add((r, c));
-                }
-            }
+            imageOffs.Clear();
+            CreateOffs(img, imageOffs);
         }
 
-        static bool ContainSeaMonster(List<string> img)
+        static bool ClearAllSeaMonsterOffs(List<string> img)
         {
+            bool anyFound = false;
             for (int r = 0; r < img.Count - seaMonster.Count; r++)
-            {
                 for (int c = 0; c < img[0].Length - seaMonster[0].Length; c++)
                 {
                     bool found = true;
                     foreach (var (pr, pc) in seaMonsterOffs)
-                    {
-                        found &= img[r + pr][c + pc] == '#';
-                        if (!found)
-                            break;
-                    }
+                        found &= imageOffs.Contains((r + pr, c + pc));
+                    anyFound |= found;
                     if (found)
-                        return true;
-                }
-            }
-            return false;
-        }
-
-        static void ClearAllSeaMonsterOffs(List<string> img)
-        {
-            for (int r = 0; r < img.Count - seaMonster.Count; r++)
-            {
-                for (int c = 0; c < img[0].Length - seaMonster[0].Length; c++)
-                {
-                    bool found = true;
-                    foreach (var (pr, pc) in seaMonsterOffs)
-                    {
-                        found &= img[r + pr][c + pc] == '#';
-                        if (!found)
-                            break;
-                    }
-                    if (found)
-                    {
                         foreach (var (pr, pc) in seaMonsterOffs)
-                        {
                             imageOffs.Remove((r + pr, c + pc));
-                        }
-                    }
                 }
-            }
+            return anyFound;
         }
 
         static Object PartB()
@@ -350,10 +272,9 @@ namespace day20
             int ans = 0;
             foreach (var img in images)
             {
-                if (ContainSeaMonster(img))
+                CreateImageOffs(img);
+                if (ClearAllSeaMonsterOffs(img))
                 {
-                    CreateImageOffs(img);
-                    ClearAllSeaMonsterOffs(img);
                     ans = imageOffs.Count;
                     break;
                 }

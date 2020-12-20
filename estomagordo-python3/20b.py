@@ -229,128 +229,168 @@ def solve(tiles):
         if len(graph[idlist[i]]) == 2:
             corners.append(idlist[i])
 
-    image = {corners[0] : (0, 0, edges(tiles[corners[0]]), 0, False, False)} #should work to not turn or flip this?
-    directions = [[1, 0], [-1, 0], [0, -1], [0, 1]]
+    image = {corners[0] : (0, 0)}
+    node = corners[0]
+    y = 0
+    x = 1
+    corners = 1
 
-    frontier = list(graph[corners[0]])
+    while any(n not in image and len(graph[n]) < 4 for n in graph[node]):
+        for neighbour in graph[node]:
+            if neighbour not in image and len(graph[neighbour]) < 4:
+                image[neighbour] = (y, x)
+                node = neighbour
 
-    for id in frontier:
-        if id in image:
-            continue
+                if len(graph[node]) == 2:
+                    corners += 1
 
-        # rotations = flipturns(tiles[id])
+                if corners == 1:
+                    x += 1
+                elif corners == 2:
+                    y += 1
+                elif corners == 3:
+                    x -= 1
+                elif corners == 4:
+                    y -= 1
 
-        up, down, left, right = edges(tiles[id])
-        entry = None
+                break    
 
-        for tileid, tile in image.items():
-            if tileid not in graph[id]:
-                continue
+    height = max(val[0] for val in image.values()) + 1
+    width = max(val[1] for val in image.values()) + 1
 
-            y, x, dedges, _, _, _ = tile
-            dup, ddown, dleft, dright = dedges
+    for x in range(1, width-1):
+        for y in range(1, height-1):
+            left = [k for k,v in image.items() if v == (y, x-1)][0]
+            up = [k for k,v in image.items() if v == (y-1, x)][0]
+            
+            intersection = [id for id in graph.keys() if id in graph[left] and id in graph[up] and id not in image][0]
 
-            # rot = -1
+            image[intersection] = (y, x)
 
-            if matches(up, dup):
-                if up == dup:
-                    entry = (y-1, x, (down, up, left, right), 2, False, True)
-                else:
-                    entry = (y-1, x, (down, up, right, left), 2, False, False)
-            if matches(up, ddown):
-                if up == ddown:
-                    entry = (y+1, x, (up, down, left, right), 0, False, False)
-                else:
-                    entry = (y+1, x, (up, down, right, left), 0, False, True)
-            if matches(up, dleft):
-                if up == dleft:
-                    entry = (y, x-1, (left, right, down, up), 1, False, False)
-                else:
-                    entry = (y, x-1, (right, left, down, up), 1, True, False)
-            if matches(up, dright):
-                if up == dright:
-                    entry = (y, x+1, (right, left, up, down), 3, True, False)
-                else:
-                    entry = (y, x+1, (left, right, up, down), 3, False, False)
+    return height, width, len(image), image
 
-            if matches(down, dup):
-                if down == dup:
-                    entry = (y-1, x, (up, down, left, right), 0, False, False)
-                else:
-                    entry = (y-1, x, (up, down, right, left), 0, True, False)
-            if matches(down, ddown):
-                if down == ddown:
-                    entry = (y+1, x, (down, up, left, right), 2, True, False)
-                else:
-                    entry = (y+1, x, (down, up, right, left), 2, False, False)
-            if matches(down, dleft):
-                if down == dleft:
-                    entry = (y, x-1, (left, right, up, down), 3, True, False)
-                else:
-                    entry = (y, x-1, (right, left, up, down), 3, False, False)
-            if matches(down, dright):
-                if down == dright:
-                    entry = (y, x+1, (left, right, down, up), 1, False, False)
-                else:
-                    entry = (y, x+1, (right, left, down, up), 1, True, False)
+    # image = {corners[0] : (0, 0, edges(tiles[corners[0]]), 0, False, False)} #should work to not turn or flip this?
+    # directions = [[1, 0], [-1, 0], [0, -1], [0, 1]]
 
-            if matches(left, dup):
-                if left == dup:
-                    entry = (y-1, x, (right, left, down, up), 3, False, False)
-                else:
-                    entry = (y-1, x, (right, left, up, down), 3, False, True)
-            if matches(left, ddown):
-                if left == ddown:
-                    entry = (y+1, x, (left, right, down, up), 1, False, True)
-                else:
-                    entry = (y+1, x, (left, right, up, down), 1, False, False)
-            if matches(left, dleft):
-                if left == dleft:
-                    entry = (y, x-1, (up, down, right, left), 2, True, False)
-                else:
-                    entry = (y, x-1, (down, up, right, left), 2, False, False)
-            if matches(left, dright):
-                if left == dright:                   
-                    entry = (y, x+1, (up, down, left, right), 0, False, False)
-                else:
-                    entry = (y, x+1, (down, up, left, right), 0, True, False)
+    # frontier = list(graph[corners[0]])
 
-            if matches(right, dup):
-                if right == dup:
-                    entry = (y-1, x, (left, right, up, down), 1, False, True)
-                else:
-                    entry = (y-1, x, (left, right, down, up), 1, False, False)
-            if matches(right, ddown):
-                if right == ddown:
-                    entry = (y+1, x, (right, left, up, down), 3, False, False)
-                else:
-                    entry = (y+1, x, (right, left, down, up), 3, False, True)
-            if matches(right, dleft):
-                if right == dleft:
-                    entry = (y, x-1, (up, down, left, right), 0, False, False)
-                else:
-                    entry = (y, x-1, (down, up, left, right), 0, True, False)
-            if matches(right, dright):
-                if right == dright:
-                    entry = (y, x+1, (up, down, right, left), 2, True, False)
-                else:
-                    entry = (y, x+1, (down, up, right, left), 2, False, False)
+    # for id in frontier:
+    #     if id in image:
+    #         continue
 
-        image[id] = entry
+    #     # rotations = flipturns(tiles[id])
 
-        frontier += graph[id]
+    #     up, down, left, right = edges(tiles[id])
+    #     entry = None
 
-    partheight = len(tiles[corners[0]])-2
-    partwidth = len(tiles[corners[0]][0])-2
-    assembled = assemble(image, partheight, partwidth, tiles)
-    # stripped = strip(assembled)
-    ys = Counter(i[0] for i in image.values())
-    xes = Counter(i[1] for i in image.values())
+    #     for tileid, tile in image.items():
+    #         if tileid not in graph[id]:
+    #             continue
 
-    print(ys)
-    print(xes)
+    #         y, x, dedges, _, _, _ = tile
+    #         dup, ddown, dleft, dright = dedges
 
-    return count_monsters(assembled)
+    #         # rot = -1
+
+    #         if matches(up, dup):
+    #             if up == dup:
+    #                 entry = (y-1, x, (down, up, left, right), 2, False, True)
+    #             else:
+    #                 entry = (y-1, x, (down, up, right, left), 2, False, False)
+    #         if matches(up, ddown):
+    #             if up == ddown:
+    #                 entry = (y+1, x, (up, down, left, right), 0, False, False)
+    #             else:
+    #                 entry = (y+1, x, (up, down, right, left), 0, False, True)
+    #         if matches(up, dleft):
+    #             if up == dleft:
+    #                 entry = (y, x-1, (left, right, down, up), 1, False, False)
+    #             else:
+    #                 entry = (y, x-1, (right, left, down, up), 1, True, False)
+    #         if matches(up, dright):
+    #             if up == dright:
+    #                 entry = (y, x+1, (right, left, up, down), 3, True, False)
+    #             else:
+    #                 entry = (y, x+1, (left, right, up, down), 3, False, False)
+
+    #         if matches(down, dup):
+    #             if down == dup:
+    #                 entry = (y-1, x, (up, down, left, right), 0, False, False)
+    #             else:
+    #                 entry = (y-1, x, (up, down, right, left), 0, True, False)
+    #         if matches(down, ddown):
+    #             if down == ddown:
+    #                 entry = (y+1, x, (down, up, left, right), 2, True, False)
+    #             else:
+    #                 entry = (y+1, x, (down, up, right, left), 2, False, False)
+    #         if matches(down, dleft):
+    #             if down == dleft:
+    #                 entry = (y, x-1, (left, right, up, down), 3, True, False)
+    #             else:
+    #                 entry = (y, x-1, (right, left, up, down), 3, False, False)
+    #         if matches(down, dright):
+    #             if down == dright:
+    #                 entry = (y, x+1, (left, right, down, up), 1, False, False)
+    #             else:
+    #                 entry = (y, x+1, (right, left, down, up), 1, True, False)
+
+    #         if matches(left, dup):
+    #             if left == dup:
+    #                 entry = (y-1, x, (right, left, down, up), 3, False, False)
+    #             else:
+    #                 entry = (y-1, x, (right, left, up, down), 3, False, True)
+    #         if matches(left, ddown):
+    #             if left == ddown:
+    #                 entry = (y+1, x, (left, right, down, up), 1, False, True)
+    #             else:
+    #                 entry = (y+1, x, (left, right, up, down), 1, False, False)
+    #         if matches(left, dleft):
+    #             if left == dleft:
+    #                 entry = (y, x-1, (up, down, right, left), 2, True, False)
+    #             else:
+    #                 entry = (y, x-1, (down, up, right, left), 2, False, False)
+    #         if matches(left, dright):
+    #             if left == dright:                   
+    #                 entry = (y, x+1, (up, down, left, right), 0, False, False)
+    #             else:
+    #                 entry = (y, x+1, (down, up, left, right), 0, True, False)
+
+    #         if matches(right, dup):
+    #             if right == dup:
+    #                 entry = (y-1, x, (left, right, up, down), 1, False, True)
+    #             else:
+    #                 entry = (y-1, x, (left, right, down, up), 1, False, False)
+    #         if matches(right, ddown):
+    #             if right == ddown:
+    #                 entry = (y+1, x, (right, left, up, down), 3, False, False)
+    #             else:
+    #                 entry = (y+1, x, (right, left, down, up), 3, False, True)
+    #         if matches(right, dleft):
+    #             if right == dleft:
+    #                 entry = (y, x-1, (up, down, left, right), 0, False, False)
+    #             else:
+    #                 entry = (y, x-1, (down, up, left, right), 0, True, False)
+    #         if matches(right, dright):
+    #             if right == dright:
+    #                 entry = (y, x+1, (up, down, right, left), 2, True, False)
+    #             else:
+    #                 entry = (y, x+1, (down, up, right, left), 2, False, False)
+
+    #     image[id] = entry
+
+    #     frontier += graph[id]
+
+    # partheight = len(tiles[corners[0]])-2
+    # partwidth = len(tiles[corners[0]][0])-2
+    # assembled = assemble(image, partheight, partwidth, tiles)
+    # # stripped = strip(assembled)
+    # ys = Counter(i[0] for i in image.values())
+    # xes = Counter(i[1] for i in image.values())
+
+    # print(ys)
+    # print(xes)
+
+    # return count_monsters(assembled)
 
     # image = [['|' for _ in range(180)] for _ in range(180)]
 

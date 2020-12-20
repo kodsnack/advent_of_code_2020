@@ -125,55 +125,39 @@ def solve(tiles):
             # rot = -1
 
             if matches(up, dup):
-                if entry: print('DISAFUCKINGSTASTER')
                 entry = (y-1, x, (down, up, right, left))
             if matches(up, ddown):
-                if entry: print('DISAFUCKINGSTASTER')
                 entry = (y+1, x, (up, down, left, right))
             if matches(up, dleft):
-                if entry: print('DISAFUCKINGSTASTER')
                 entry = (y, x-1, (left, right, down, up))
             if matches(up, dright):
-                if entry: print('DISAFUCKINGSTASTER')
                 entry = (y, x+1, (right, left, up, down))
 
             if matches(down, dup):
-                if entry: print('DISAFUCKINGSTASTER')
                 entry = (y-1, x, (up, down, left, right))
             if matches(down, ddown):
-                if entry: print('DISAFUCKINGSTASTER')
                 entry = (y+1, x, (down, up, right, left))
             if matches(down, dleft):
-                if entry: print('DISAFUCKINGSTASTER')
                 entry = (y, x-1, (right, left, up, down))
             if matches(down, dright):
-                if entry: print('DISAFUCKINGSTASTER')
                 entry = (y, x+1, (left, right, down, up))
 
             if matches(left, dup):
-                if entry: print('DISAFUCKINGSTASTER')
                 entry = (y-1, x, (right, left, up, down))
             if matches(left, ddown):
-                if entry: print('DISAFUCKINGSTASTER')
                 entry = (y+1, x, (left, right, down, up))
             if matches(left, dleft):
-                if entry: print('DISAFUCKINGSTASTER')
                 entry = (y, x-1, (down, up, right, left))
             if matches(left, dright):
-                if entry: print('DISAFUCKINGSTASTER')
                 entry = (y, x+1, (up, down, left, right))
 
             if matches(right, dup):
-                if entry: print('DISAFUCKINGSTASTER')
                 entry = (y-1, x, (left, right, down, up))
             if matches(right, ddown):
-                if entry: print('DISAFUCKINGSTASTER')
                 entry = (y+1, x, (right, left, up, down))
             if matches(right, dleft):
-                if entry: print('DISAFUCKINGSTASTER')
                 entry = (y, x-1, (up, down, left, right))
             if matches(right, dright):
-                if entry: print('DISAFUCKINGSTASTER')
                 entry = (y, x+1, (down, up, right, left))
 
         image[id] = entry

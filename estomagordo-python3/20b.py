@@ -125,40 +125,88 @@ def solve(tiles):
             # rot = -1
 
             if matches(up, dup):
-                entry = (y-1, x, (down, up, right, left))
+                if up == dup:
+                    entry = (y-1, x, (down, up, left, right))
+                else:
+                    entry = (y-1, x, (down, up, right, left))
             if matches(up, ddown):
-                entry = (y+1, x, (up, down, left, right))
+                if up == ddown:
+                    entry = (y+1, x, (up, down, left, right))
+                else:
+                    entry = (y+1, x, (up, down, right, left))
             if matches(up, dleft):
-                entry = (y, x-1, (left, right, down, up))
+                if up == dleft:
+                    entry = (y, x-1, (left, right, down, up))
+                else:
+                    entry = (y, x-1, (right, left, down, up))
             if matches(up, dright):
-                entry = (y, x+1, (right, left, up, down))
+                if up == dright:
+                    entry = (y, x+1, (right, left, up, down))
+                else:
+                    entry = (y, x+1, (left, right, up, down))
 
             if matches(down, dup):
-                entry = (y-1, x, (up, down, left, right))
+                if down == dup:
+                    entry = (y-1, x, (up, down, left, right))
+                else:
+                    entry = (y-1, x, (up, down, right, left))
             if matches(down, ddown):
-                entry = (y+1, x, (down, up, right, left))
+                if down == ddown:
+                    entry = (y+1, x, (down, up, left, right))
+                else:
+                    entry = (y+1, x, (down, up, right, left))
             if matches(down, dleft):
-                entry = (y, x-1, (right, left, up, down))
+                if down == dleft:
+                    entry = (y, x-1, (left, right, up, down))
+                else:
+                    entry = (y, x-1, (right, left, up, down))
             if matches(down, dright):
-                entry = (y, x+1, (left, right, down, up))
+                if down == dright:
+                    entry = (y, x+1, (left, right, down, up))
+                else:
+                    entry = (y, x+1, (right, left, down, up))
 
             if matches(left, dup):
-                entry = (y-1, x, (right, left, up, down))
+                if left == dup:
+                    entry = (y-1, x, (right, left, down, up))
+                else:
+                    entry = (y-1, x, (right, left, up, down))
             if matches(left, ddown):
-                entry = (y+1, x, (left, right, down, up))
+                if left == ddown:
+                    entry = (y+1, x, (left, right, down, up))
+                else:
+                    entry = (y+1, x, (left, right, up, down))
             if matches(left, dleft):
-                entry = (y, x-1, (down, up, right, left))
+                if left == dleft:
+                    entry = (y, x-1, (up, down, right, left))
+                else:
+                    entry = (y, x-1, (down, up, right, left))
             if matches(left, dright):
-                entry = (y, x+1, (up, down, left, right))
+                if left == dright:                   
+                    entry = (y, x+1, (up, down, left, right))
+                else:
+                    entry = (y, x+1, (down, up, left, right))
 
             if matches(right, dup):
-                entry = (y-1, x, (left, right, down, up))
+                if right == dup:
+                    entry = (y-1, x, (left, right, up, down))
+                else:
+                    entry = (y-1, x, (left, right, down, up))
             if matches(right, ddown):
-                entry = (y+1, x, (right, left, up, down))
+                if right == ddown:
+                    entry = (y+1, x, (right, left, up, down))
+                else:
+                    entry = (y+1, x, (right, left, down, up))
             if matches(right, dleft):
-                entry = (y, x-1, (up, down, left, right))
+                if right == dleft:
+                    entry = (y, x-1, (up, down, left, right))
+                else:
+                    entry = (y, x-1, (down, up, left, right))
             if matches(right, dright):
-                entry = (y, x+1, (down, up, right, left))
+                if right == dright:
+                    entry = (y, x+1, (up, down, right, left))
+                else:
+                    entry = (y, x+1, (down, up, right, left))
 
         image[id] = entry
 

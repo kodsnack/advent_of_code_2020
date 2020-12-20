@@ -63,6 +63,72 @@ def matches(a, b):
     return a == b or a == ''.join(reversed(b))
 
 
+def count_monsters(image):
+    monster = [
+        '                  # ',
+        '#    ##    ##    ###',
+        ' #  #  #  #  #  #   '
+    ]
+
+    monsters = flipturns(monster)
+
+    squares = {(y, x) for y in range(len(image)) for x in range(len(image[0])) if image[y][x] == '#'}
+    monstered = set()
+
+    height = len(image)
+    width = len(image[0])
+
+    for m in monsters:
+        mheight = len(m)
+        mwidth = len(m[0])
+
+        for y in range(height-mheight+1):
+            for x in range(width-mwidth+1):
+                match = True
+                hit = set()
+
+                for dy in range(mheight):
+                    for dx in range(mwidth):
+                        if m[dy][dx] != '#':
+                            continue
+                        if image[y+dy][x+dx] != '#':
+                            match = False
+                        else:
+                            hit.add((y+dy, x+dx))
+
+                if match:
+                    monstered |= hit
+
+    return len(squares - monstered)
+
+
+def assemble(image_map, partheight, partwidth, tiles):
+    miny = min(part[0] for part in image_map.values())
+    maxy = max(part[0] for part in image_map.values())
+    minx = min(part[1] for part in image_map.values())
+    maxx = max(part[1] for part in image_map.values())
+
+    height = maxy-miny+1
+    width = maxx-minx+1
+
+    assembled = [['.' for _ in range(width*partwidth)] for _ in range(height*partheight)]
+
+    for id, image in image_map.items():
+        y = image[0]
+        x = image[1]
+
+        tile = tiles[id]
+
+        starty = (y-miny) * partheight
+        startx = (x-minx) * partwidth
+
+        for dy in range(partheight):
+            for dx in range(partwidth):
+                assembled[starty+dy][startx+dx] = tile[dy+1][dx+1]
+
+    return assembled
+
+
 def solve(tiles):
     sides = {}
 
@@ -212,11 +278,18 @@ def solve(tiles):
 
         frontier += graph[id]
 
-    ys = Counter(i[0] for i in image.values())
-    xes = Counter(i[1] for i in image.values())
+    partheight = len(tiles[corners[0]])-2
+    partwidth = len(tiles[corners[0]][0])-2
+    assembled = assemble(image, partheight, partwidth, tiles)
+    # stripped = strip(assembled)
 
-    print(ys)
-    print(xes)
+    return count_monsters(assembled)
+
+    # ys = Counter(i[0] for i in image.values())
+    # xes = Counter(i[1] for i in image.values())
+
+    # print(ys)
+    # print(xes)
 
     # image = [['|' for _ in range(180)] for _ in range(180)]
 

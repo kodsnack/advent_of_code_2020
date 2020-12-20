@@ -64,6 +64,7 @@ def matches(a, b):
 
 
 def count_monsters(image):
+    # print('\n'.join(''.join(row) for row in image))
     monster = [
         '                  # ',
         '#    ##    ##    ###',
@@ -114,10 +115,18 @@ def assemble(image_map, partheight, partwidth, tiles):
     assembled = [['.' for _ in range(width*partwidth)] for _ in range(height*partheight)]
 
     for id, image in image_map.items():
-        y = image[0]
-        x = image[1]
+        y, x, _, turns, yflip, xflip = image
 
         tile = tiles[id]
+
+        for _ in range(turns):
+            tile = rot(tile)
+
+        if yflip:
+            tile = flipy(tile)
+
+        if xflip:
+            tile = flipx(tile)
 
         starty = (y-miny) * partheight
         startx = (x-minx) * partwidth
@@ -167,7 +176,7 @@ def solve(tiles):
         if len(graph[idlist[i]]) == 2:
             corners.append(idlist[i])
 
-    image = {corners[0] : (0, 0, edges(tiles[corners[0]]))}
+    image = {corners[0] : (0, 0, edges(tiles[corners[0]]), 0, False, False)} #should work to not turn or flip this?
     directions = [[1, 0], [-1, 0], [0, -1], [0, 1]]
 
     frontier = list(graph[corners[0]])
@@ -185,94 +194,94 @@ def solve(tiles):
             if tileid not in graph[id]:
                 continue
 
-            y, x, dedges = tile
+            y, x, dedges, _, _, _ = tile
             dup, ddown, dleft, dright = dedges
 
             # rot = -1
 
             if matches(up, dup):
                 if up == dup:
-                    entry = (y-1, x, (down, up, left, right))
+                    entry = (y-1, x, (down, up, left, right), 2, False, True)
                 else:
-                    entry = (y-1, x, (down, up, right, left))
+                    entry = (y-1, x, (down, up, right, left), 2, False, False)
             if matches(up, ddown):
                 if up == ddown:
-                    entry = (y+1, x, (up, down, left, right))
+                    entry = (y+1, x, (up, down, left, right), 0, False, False)
                 else:
-                    entry = (y+1, x, (up, down, right, left))
+                    entry = (y+1, x, (up, down, right, left), 0, False, True)
             if matches(up, dleft):
                 if up == dleft:
-                    entry = (y, x-1, (left, right, down, up))
+                    entry = (y, x-1, (left, right, down, up), 1, False, False)
                 else:
-                    entry = (y, x-1, (right, left, down, up))
+                    entry = (y, x-1, (right, left, down, up), 1, True, False)
             if matches(up, dright):
                 if up == dright:
-                    entry = (y, x+1, (right, left, up, down))
+                    entry = (y, x+1, (right, left, up, down), 3, True, False)
                 else:
-                    entry = (y, x+1, (left, right, up, down))
+                    entry = (y, x+1, (left, right, up, down), 3, False, False)
 
             if matches(down, dup):
                 if down == dup:
-                    entry = (y-1, x, (up, down, left, right))
+                    entry = (y-1, x, (up, down, left, right), 0, False, False)
                 else:
-                    entry = (y-1, x, (up, down, right, left))
+                    entry = (y-1, x, (up, down, right, left), 0, True, False)
             if matches(down, ddown):
                 if down == ddown:
-                    entry = (y+1, x, (down, up, left, right))
+                    entry = (y+1, x, (down, up, left, right), 2, True, False)
                 else:
-                    entry = (y+1, x, (down, up, right, left))
+                    entry = (y+1, x, (down, up, right, left), 2, False, False)
             if matches(down, dleft):
                 if down == dleft:
-                    entry = (y, x-1, (left, right, up, down))
+                    entry = (y, x-1, (left, right, up, down), 3, True, False)
                 else:
-                    entry = (y, x-1, (right, left, up, down))
+                    entry = (y, x-1, (right, left, up, down), 3, False, False)
             if matches(down, dright):
                 if down == dright:
-                    entry = (y, x+1, (left, right, down, up))
+                    entry = (y, x+1, (left, right, down, up), 1, False, False)
                 else:
-                    entry = (y, x+1, (right, left, down, up))
+                    entry = (y, x+1, (right, left, down, up), 1, True, False)
 
             if matches(left, dup):
                 if left == dup:
-                    entry = (y-1, x, (right, left, down, up))
+                    entry = (y-1, x, (right, left, down, up), 3, False, False)
                 else:
-                    entry = (y-1, x, (right, left, up, down))
+                    entry = (y-1, x, (right, left, up, down), 3, False, True)
             if matches(left, ddown):
                 if left == ddown:
-                    entry = (y+1, x, (left, right, down, up))
+                    entry = (y+1, x, (left, right, down, up), 1, False, True)
                 else:
-                    entry = (y+1, x, (left, right, up, down))
+                    entry = (y+1, x, (left, right, up, down), 1, False, False)
             if matches(left, dleft):
                 if left == dleft:
-                    entry = (y, x-1, (up, down, right, left))
+                    entry = (y, x-1, (up, down, right, left), 2, True, False)
                 else:
-                    entry = (y, x-1, (down, up, right, left))
+                    entry = (y, x-1, (down, up, right, left), 2, False, False)
             if matches(left, dright):
                 if left == dright:                   
-                    entry = (y, x+1, (up, down, left, right))
+                    entry = (y, x+1, (up, down, left, right), 0, False, False)
                 else:
-                    entry = (y, x+1, (down, up, left, right))
+                    entry = (y, x+1, (down, up, left, right), 0, True, False)
 
             if matches(right, dup):
                 if right == dup:
-                    entry = (y-1, x, (left, right, up, down))
+                    entry = (y-1, x, (left, right, up, down), 1, False, True)
                 else:
-                    entry = (y-1, x, (left, right, down, up))
+                    entry = (y-1, x, (left, right, down, up), 1, False, False)
             if matches(right, ddown):
                 if right == ddown:
-                    entry = (y+1, x, (right, left, up, down))
+                    entry = (y+1, x, (right, left, up, down), 3, False, False)
                 else:
-                    entry = (y+1, x, (right, left, down, up))
+                    entry = (y+1, x, (right, left, down, up), 3, False, True)
             if matches(right, dleft):
                 if right == dleft:
-                    entry = (y, x-1, (up, down, left, right))
+                    entry = (y, x-1, (up, down, left, right), 0, False, False)
                 else:
-                    entry = (y, x-1, (down, up, left, right))
+                    entry = (y, x-1, (down, up, left, right), 0, True, False)
             if matches(right, dright):
                 if right == dright:
-                    entry = (y, x+1, (up, down, right, left))
+                    entry = (y, x+1, (up, down, right, left), 2, True, False)
                 else:
-                    entry = (y, x+1, (down, up, right, left))
+                    entry = (y, x+1, (down, up, right, left), 2, False, False)
 
         image[id] = entry
 

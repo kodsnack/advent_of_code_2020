@@ -98,7 +98,8 @@ def count_monsters(image):
 .#.###..##..##..####.##.
 ...###...##...#...#..###
 """
-
+    image3 = rot(image)
+    a = image == rot(rot(rot(rot(image))))
     image2 = [list(line.rstrip()) for line in s.split('\n') if line.strip()]
 
     for var1 in flipturns(image):
@@ -148,13 +149,13 @@ def assemble(image_map, partheight, partwidth, tiles):
 
     if miny < 0:
         if maxy < 0:
-            rots = 1
+            rots = 2
         else:
-            rots = 0
-    elif maxy < 0:
-        rots = 2
+            rots = 3
+    elif minx < 0:
+        rots = 1
     else:
-        rots = 3
+        rots = 0
 
     for k in image_map.keys():
         image_map[k] = tuple(list(image_map[k][:3]) + [(image_map[k][3] + rots) % 4] + list(image_map[k][4:]))
@@ -178,7 +179,9 @@ def assemble(image_map, partheight, partwidth, tiles):
         if xflip:
             tile = flipx(tile)
 
-        starty = (y-miny) * partheight
+        starty = y * partheight
+        if miny < 0:
+            starty = (y-miny) * partheight
         startx = (x-minx) * partwidth
 
         for dy in range(partheight):
@@ -341,11 +344,11 @@ def solve(tiles):
     partwidth = len(tiles[corners[0]][0])-2
     assembled = assemble(image, partheight, partwidth, tiles)
     # stripped = strip(assembled)
-    # ys = Counter(i[0] for i in image.values())
-    # xes = Counter(i[1] for i in image.values())
+    ys = Counter(i[0] for i in image.values())
+    xes = Counter(i[1] for i in image.values())
 
-    # print(ys)
-    # print(xes)
+    print(ys)
+    print(xes)
 
     return count_monsters(assembled)
 

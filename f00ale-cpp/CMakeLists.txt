@@ -28,4 +28,5 @@ add_executable(aoc20 src/main.cpp
         src/p17.cpp
         src/p18.cpp
         src/p19.cpp
+        src/p20.cpp
         )

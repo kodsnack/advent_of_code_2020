@@ -316,12 +316,17 @@ def solve(tiles):
                 if not any(matches(up, edge) for edge in uedges):
                     tile = flipy(tile)
 
+            goodup = y == 0 or any(matches(edges(tile)[0], edge) for edge in edges(tiles[coord_to_id[(y-1,x)]]))
+            gooddown = y == height-1 or any(matches(edges(tile)[1], edge) for edge in edges(tiles[coord_to_id[(y+1,x)]]))
+            goodleft = x == 0 or any(matches(edges(tile)[2], edge) for edge in edges(tiles[coord_to_id[(y,x-1)]]))
+            goodright = x == width-1 or any(matches(edges(tile)[3], edge) for edge in edges(tiles[coord_to_id[(y,x+1)]]))
+            
             starty = y * (tileheight - 2)
             startx = x * (tilewidth - 2)
 
             for dy in range(tileheight-2):
                 for dx in range(tilewidth-2):
-                    canvas[starty+dy][startx+dx] = tile[dy][dx]
+                    canvas[starty+dy][startx+dx] = tile[dy+1][dx+1]
 
     return count_monsters(canvas)
             

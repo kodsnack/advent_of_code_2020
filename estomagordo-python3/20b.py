@@ -233,7 +233,7 @@ def solve(tiles):
     node = corners[0]
     y = 0
     x = 1
-    corners = 1
+    cornercount = 1
 
     while any(n not in image and len(graph[n]) < 4 for n in graph[node]):
         for neighbour in graph[node]:
@@ -242,15 +242,15 @@ def solve(tiles):
                 node = neighbour
 
                 if len(graph[node]) == 2:
-                    corners += 1
+                    cornercount += 1
 
-                if corners == 1:
+                if cornercount == 1:
                     x += 1
-                elif corners == 2:
+                elif cornercount == 2:
                     y += 1
-                elif corners == 3:
+                elif cornercount == 3:
                     x -= 1
-                elif corners == 4:
+                elif cornercount == 4:
                     y -= 1
 
                 break    
@@ -267,7 +267,57 @@ def solve(tiles):
 
             image[intersection] = (y, x)
 
-    return height, width, len(image), image
+    # should have thought about this earlier, ah well
+    coord_to_id = { v: k for k, v in image.items() }
+
+    # naming, anyone?
+    # picture = {}
+    tileheight = len(tiles[corners[0]])
+    tilewidth = len(tiles[corners[0]][0])
+
+    canvas = [[' ' for _ in range((tilewidth-2) * width)] for _ in range((tileheight-2) * height)]
+    
+    for y in range(height):
+        for x in range(width):
+            id = coord_to_id[(y, x)]
+            tile = tiles[id]
+
+            up, down, left, right = edges(tile)
+
+            if x < width-1:
+                rid = coord_to_id[(y, x+1)]
+                rtile = tiles[rid]
+                redges = edges(rtile)
+
+                while not any(matches(right, edge) for edge in redges):
+                    tile = rot(tile)
+                    up, down, left, right = edges(tile)
+            else:
+                lid = coord_to_id[(y, x-1)]
+                ltile = tiles[lid]
+                ledges = edges(ltile)
+
+                while not any(matches(left, edge) for edge in ledges):
+                    tile = rot(tile)
+                    up, down, left, right = edges(tile)
+
+            if y < height-1:
+                did = coord_to_id[(y+1, x)]
+                dtile = tiles[did]
+                dedges = edges(dtile)
+
+                if not any(matches(down, edge) for edge in dedges):
+                    tile = flipy(tile)
+
+            starty = y * (tileheight - 2)
+            startx = x * (tilewidth - 2)
+
+            for dy in range(tileheight-2):
+                for dx in range(tilewidth-2):
+                    canvas[starty+dy][startx+dx] = tile[dy][dx]
+
+    return count_monsters(canvas)
+            
 
     # image = {corners[0] : (0, 0, edges(tiles[corners[0]]), 0, False, False)} #should work to not turn or flip this?
     # directions = [[1, 0], [-1, 0], [0, -1], [0, 1]]

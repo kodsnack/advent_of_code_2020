@@ -56,8 +56,6 @@ def solve(rulelist, messages):
 
             rules[n] = variants
 
-    eight = {v: 1 for v in rules[42]}
-
     startsforlen = [set() for _ in range(longest+1)]
     endsforlen = [set() for _ in range(longest+1)]
 
@@ -66,69 +64,46 @@ def solve(rulelist, messages):
             startsforlen[x].add(m[:x])
             endsforlen[x].add(m[-x:])
 
-    while True:
-        neweight = {}
-        done = True
-
-        for s, i in eight.items():
-            for t, j in eight.items():
-                st = s + t
-                l = len(st)
-                if l <= longest and st in startsforlen[l]:
-                    neweight[st] = i+j
-
-        for s, i in neweight.items():
-            if s not in eight:
-                done = False
-                eight[s] = i
-
-        if done:
-            break
-
-    rules[8] = [e for e in eight.keys()]
-
-    rules[0] = set()
-
-    ses = {r: 1 for r in rules[42]}
+    zeroleft = {r: 1 for r in rules[42]}
 
     while True:
-        newses = {}
+        newzeroleft = {}
 
-        for s1, count in ses.items():
+        for s1, count in zeroleft.items():
             for s2 in rules[42]:
                 u = s1+s2
 
-                if u not in ses and len(u) < longest and u in startsforlen[len(u)]:
-                    newses[u] = count+1
+                if u not in zeroleft and len(u) < longest and u in startsforlen[len(u)]:
+                    newzeroleft[u] = count+1
 
-        if not newses:
+        if not newzeroleft:
             break
 
-        for k, v in newses.items():
-            ses[k] = v
+        for k, v in newzeroleft.items():
+            zeroleft[k] = v
 
-    ts = {r: 1 for r in rules[31]}
+    zeroright = {r: 1 for r in rules[31]}
 
     while True:
-        newts = {}
+        newzeroright = {}
 
-        for s1, count in ts.items():
+        for s1, count in zeroright.items():
             for s2 in rules[31]:
                 u = s2+s1
 
-                if u not in ts and len(u) < longest and u in endsforlen[len(u)]:
-                    newts[u] = count+1
+                if u not in zeroright and len(u) < longest and u in endsforlen[len(u)]:
+                    newzeroright[u] = count+1
 
-        if not newts:
+        if not newzeroright:
             break
 
-        for k, v in newts.items():
-            ts[k] = v
+        for k, v in newzeroright.items():
+            zeroright[k] = v
 
     rules[0] = []
 
-    for s, scount in ses.items():
-        for t, tcount in ts.items():
+    for s, scount in zeroleft.items():
+        for t, tcount in zeroright.items():
             if scount > tcount:
                 rules[0].append(s+t)
 

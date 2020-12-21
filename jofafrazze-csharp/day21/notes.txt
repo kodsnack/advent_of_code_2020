@@ -1,0 +1,19 @@
+mxmxvkd kfcds sqjhc nhms (contains dairy, fish)
+trh fvjkl sbzzf mxmxvkd (contains dairy)
+sqjhc fvjkl (contains soy)
+sqjhc mxmxvkd sbzzf (contains fish)
+
+none of the ingredients kfcds, nhms, sbzzf, or trh can contain an allergen.
+
+
+mxmxvkd (2): dairy, fish,
+kfcds (2): dairy, fish,
+sqjhc (3): dairy, fish, soy,
+nhms (2): dairy, fish,
+trh (1): dairy,
+fvjkl (2): dairy, soy,
+sbzzf (2): dairy, fish,
+
+dairy (7): mxmxvkd, kfcds, sqjhc, nhms, trh, fvjkl, sbzzf,
+fish (5): mxmxvkd, kfcds, sqjhc, nhms, sbzzf,
+soy (2): sqjhc, fvjkl,

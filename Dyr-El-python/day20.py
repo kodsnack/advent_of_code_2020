@@ -21,206 +21,213 @@ def fileParse(inp, lineparser=lineParse,
 
 ## End of header boilerplate ###################################################
 
-def generateVariants(tile):
-   l = [[] for i in range(8)]
-   for c in range(10):
-      for r in range(10):
-         l[0].append(tile[c][r])
-         l[1].append(tile[9-c][r])
-         l[2].append(tile[9-r][c])
-         l[3].append(tile[r][c])
-         l[4].append(tile[9-c][9-r])
-         l[5].append(tile[c][9-r])
-         l[6].append(tile[r][9-c])
-         l[7].append(tile[9-r][9-c])
-   return l
+from collections import deque
 
-def parseTiles(pinp):
-   d = dict()
-   for line in pinp:
-      if len(line) == 0:
-         continue
-      if isinstance(line, tuple):
-         tileNo = int(line[1][:-1])
-         currentTile = list()
-         d[tileNo] = currentTile
-         row = 0
-         continue
-      currentTile.append(list(line))
-   d2 = dict()
-   for key in d:
-      d2[key] = generateVariants(d[key])
-   return d2
-
-def pieces(tiles, commonSides):
-   keys = dict()
-   for key, ts in tiles.items():
-      for v in ts:
-         k = tuple(v[:10])
-         if k not in keys:
-            keys[k] = set()
-         keys[k].add(key)
-   l = list()
-   for key, ts in tiles.items():
-      sm = 0
-      for v in ts:
-         k = tuple(v[:10])
-         if len(keys[k]) == 1:
-            sm +=1
-      if sm == (4-commonSides)*2:
-         l.append(key)
-   return l
-
-def printTile(tile):
-   return "\n".join(''.join(tile[x:x+10]) for x in range(0, 100, 10))
-
-def printTiles(tiles):
-   return "\n\n".join(printTile(t) for t in tiles)
-
-def printLayot(lt):
-   line, column = 0, 0
-   if (column, line) not in lt:
-      return
-   while True:
-      print(lt[(column, line)], end="")
-      column += 1
-      if (column, line) not in lt:
-         print()
-         column = 0
-         line += 1
-         if (column, line) not in lt:
-            return
-
-def layPuzzle(tiles, lt, c=0, r=0):
-   print("lay puzzle", c, r)
-   printLayot(lt)
-   if r == 12:
-      return lt
-   if c in (0, 11) and r in (0, 11):
-      ps = pieces(tiles, 2)
-   elif (c in (0, 11)) != (r in (0, 11)):
-      ps = pieces(tiles, 3)
-   else:
-      ps = pieces(tiles, 4)
-   x0 = c * 9
-   y0 = r * 9
-   for p in ps:
-      print(p)
-      for rotation in tiles[p]:
-         # print("Trying at:", c, r)
-         # print(printTile(rotation))
-         fit = True
-         newLayout = dict(lt)
-         for dx in range(10):
-            for dy in range(10):
-               x, y = x0+dx, y0+dy
-               cc = rotation[dy*10+dx]
-               if (x, y) in newLayout:
-                  if cc != newLayout[(x, y)]:
-                     fit = False
-                     # print("Failed at", dx, dy)
-                     break
-               else:
-                  newLayout[(x,y)] = cc
-            if fit == False:
-               break
-         if fit == True:
-            # print("Found match ", p, r, c)
-            c1 = c + 1
-            if c1 > 11:
-               c1 = 0
-               r1 = r + 1
+class Layout:
+   @staticmethod
+   def calcAllKeys(allTiles):
+      keys = dict()
+      for tv in allTiles:
+         for direction in "NSEW":
+            if tv._keys[direction] not in keys:
+               keys[tv._keys[direction]] = list()
+            keys[tv._keys[direction]].append(tv)
+      return keys
+   def mapTiles(self, startTile, keys):
+      self._startTile = startTile
+      remaining = deque([self._startTile])
+      while remaining:
+         current = remaining.popleft()
+         if len(current._neighbours) > 0:
+            continue
+         for direction, key in current._keys.items():
+            for candidate in keys[key]:
+               if candidate._tileId == current._tileId:
+                  continue
+               oppositeDir = {"N":"S", "E":"W", "S":"N", "W":"E"}[direction]
+               if candidate._keys[oppositeDir] != key:
+                  continue
+               current._neighbours[direction] = candidate
+               remaining.append(candidate)
+      self._upperLeft = self._startTile
+      while "N" in self._upperLeft._neighbours:
+         self._upperLeft = self._upperLeft._neighbours["N"]
+      while "W" in self._upperLeft._neighbours:
+         self._upperLeft = self._upperLeft._neighbours["W"]
+      startOfLine = self._upperLeft
+      y = 0
+      maxX, maxY = 0, 0
+      self._layout = dict()
+      while True:
+         x = 0
+         current = startOfLine
+         while True:
+            self._layout[x, y] = current
+            if "E" in current._neighbours:
+               current = current._neighbours["E"]
+               x += 1
+               maxX = max(x, maxX)
             else:
-               r1 = r
-            otherTiles = dict(tiles)
-            del otherTiles[p]
-            # print(len(tiles), len(otherTiles))
-            theLayout = layPuzzle(otherTiles, newLayout, c1, r1)
-            if theLayout != None:
-               return theLayout
-   return None
+               break
+         if "S" in startOfLine._neighbours:
+            startOfLine = startOfLine._neighbours["S"]
+            y += 1
+            maxY = max(y, maxY)
+         else:
+            break
+      self._maxX, self._maxY = maxX, maxY
 
-def getSeaMonsterDelta():
-   d = set()
-   s = """                  # 
+   def __init__(self, startTile, allTiles):
+      keys = Layout.calcAllKeys(allTiles)
+      self.mapTiles(startTile, keys)
+   
+   def pixel(self, x, y):
+      tilex, tiley = x//8, y//8
+      subx, suby = x%8, y%8
+      if (tilex, tiley) not in self._layout:
+         return False
+      return self._layout[tilex, tiley]._tile[subx, suby] != "."
+   
+   def setPixel(self, x, y):
+      tilex, tiley = x//8, y//8
+      subx, suby = x%8, y%8
+      tile = self._layout[tilex, tiley]
+      tile._tile[subx, suby] = "O"
+
+   def __str__(self):
+      l = list()
+      for tileY in range(self._maxY+1):
+         for dy in range(8):
+            line = list()
+            for tileX in range(self._maxX+1):
+               for dx in range(8):
+                  line.append(self._layout[(tileX, tileY)]._tile[dx, dy])
+            l.append(''.join(line))
+      return '\n'.join(l)
+
+   def find(self, pattern):
+      numberFound = 0
+      for x in range(8*self._maxX):
+         for y in range(8*self._maxY):
+            found = True
+            for (dx, dy) in pattern:
+               if not self.pixel(x+dx, y+dy):
+                  found = False
+                  break
+            if found:
+               numberFound += 1
+               for (dx, dy) in pattern:
+                  self.setPixel(x+dx, y+dy)
+      return numberFound
+               
+
+class TileVariant:
+
+   @staticmethod
+   def parseTiles(pinp):
+      tileStr = list()
+      for line in pinp:
+         if line == "":
+            for flip in (False, True):
+               for rotationSteps in range(4):
+                  tv = TileVariant(tileStr, rotationSteps, flip)
+                  yield tv
+            tileStr = list()
+         else:
+            tileStr.append(line)
+      if len(tileStr) > 0:
+         for flip in (False, True):
+            for rotationSteps in range(4):
+               tv = TileVariant(tileStr, rotationSteps, flip)
+               yield tv
+
+   def parse(self, s):
+      d = dict()
+      y = 0
+      for line in s:
+         if line.startswith("Tile"):
+            self._tileId = int(line[5:-1])
+            continue
+         for x, c in enumerate(line):
+            d[(x, y)] = c
+         y += 1
+      self._tile = {(x-1, y-1):d[x, y] for x in range(1, 9) for y in range(1, 9)}
+      self._border = [[d[x, 0] for x in range(10)], [d[9, y] for y in range(10)],
+                      [d[9-x, 9] for x in range(10)], [d[0, 9-y] for y in range(10)]]
+
+   def flip(self):
+      self._tile = {(7-x, y):c for (x, y), c in self._tile.items()}
+      for i in range(4):
+         self._border[i].reverse()
+      self._border = [self._border[0], self._border[3], self._border[2], self._border[1]]
+
+   def rotate(self, steps):
+      for i in range(steps):
+         self._tile = {(y, 7-x):c for (x, y), c in self._tile.items()}
+         self._border = self._border[1:] + self._border[:1]
+
+   def calcKeys(self):
+      self._keys = {"N":"".join(self._border[0]),
+         "S":"".join(reversed(self._border[2])),
+         "E":"".join(self._border[1]),
+         "W":"".join(reversed(self._border[3]))}
+
+   def __init__(self, s, rotation, flip):
+      self.parse(s)
+      if flip:
+         self.flip()
+      self.rotate(rotation)
+      self.calcKeys()
+      self._neighbours = dict()
+   
+   def __str__(self):
+      l = [f"Tile {self._tileId}", " Borders:"]
+      for border in self._border:
+         l.append(f"  [{border}]")
+      l.append(" Layout:")
+      for y in range(8):
+         line = ["  '"]
+         for x in range(8):
+            line.append(self._tile[x, y])
+         l.append(''.join(line) + "'")
+      l.append(" ".join(d+":"+k for d, k in self._keys.items()))
+      return '\n'.join(l)
+
+def seaMonster():
+   st = """                  # 
 #    ##    ##    ###
  #  #  #  #  #  #   """
-   for lidx, line in enumerate(s.splitlines()):
-      for cidx, c in enumerate(line):
+   s = set()
+   for y, line in enumerate(st.splitlines()):
+      for x, c in enumerate(line):
          if c == "#":
-            d.add((cidx, lidx))
-   return d
+            s.add((x, y))
+   return s
 
-def flipSeaMonster(s):
-   mxx = 0
-   for x, y in s:
-      mxx = max(x,mxx)
-   s2 = set()
-   for x, y in s:
-      s2.add((mxx-x, y))
-   return s2
-
-def rotateSeaMonster(s, steps):
-   if steps == 0:
-      return s
-   mxy = 0
-   for x, y in s:
-      mxy = max(y, mxy)
-   s2 = set()
-   for x, y in s:
-      s2.add((mxy-y, x))
-   return rotateSeaMonster(s2, steps-1)
+from functools import reduce
+from operator import mul
 
 @measure
 def part1(pinp):
-   tiles = parseTiles(pinp)
-   p = 1
-   for tile in pieces(tiles, 2):
-      p = p * tile
-   return p
+   tileVariants = list(TileVariant.parseTiles(pinp))
+   layouts = [Layout(tv, tileVariants) for tv in tileVariants[:1]]
+   corners = list()
+   for i in range(1):
+      mxX, mxY = layouts[i]._maxX, layouts[i]._maxY
+      for x in (0, mxX):
+         for y in (0, mxY):
+            corners.append(layouts[i]._layout[x,y]._tileId)
+   return reduce(mul, corners)
 
 @measure
 def part2(pinp):
-   tiles = parseTiles(pinp)
-   # print(printTiles(tiles[3527]))
-   layout = layPuzzle(tiles, dict())
-   layout2 = dict()
-   for x in range(12*10-11):
-      if x % 9 == 0:
-         continue
-      for y in range(12*10-11):
-         if y % 9 == 0:
-            continue
-         layout2[(x-(x//9+1), y-(y//9+1))] = layout[(x, y)]
-   print(len(layout2))
-   for y in range(12*8):
-      for x in range(12*8):
-         print(layout2[(x, y)], end="")
-      print()
-
-   seaMonsters = list()
-   for rotation in range(4):
-      sm = getSeaMonsterDelta()
-      seaMonsters.append(rotateSeaMonster(sm, rotation))
-      seaMonsters.append(flipSeaMonster(seaMonsters[-1]))
-   for sm in seaMonsters:
-      print(sm)
-      mxFound = 0
-      for x in range(12*8):
-         for y in range(12*8):
-            found = True
-            f = 0
-            for dx, dy in sm:
-               if layout2.get((x+dx, y+dy), " ") != "#":
-                  found = False
-                  if f > mxFound:
-                     print('Matched', f, x, y)
-                     mxFound = f
-                  break
-               f += 1
-            if found:
-               print("Found for sm ", sm)
-   return "<solution2>"
+   tileVariants = list(TileVariant.parseTiles(pinp))
+   layouts = [Layout(tv, tileVariants) for tv in tileVariants[:8]]
+   for layout in layouts:
+      number = layout.find(seaMonster())
+      if number > 0:
+         return str(layout).count("#")
+   return "Not found"
 
 ## Start of footer boilerplate #################################################
 
@@ -229,7 +236,7 @@ if __name__ == "__main__":
    # inp = """"""
     
    ## Update for input specifics ##############################################
-   parseInp = fileParse(inp, tokenPattern=wsTokenPattern)
+   parseInp = fileParse(inp, tokenPattern=oneLinePattern)
 
    print("Input is '" + str(parseInp[:10])[:160] + 
          ('...' if len(parseInp)>10 or len(str(parseInp[:10]))>160 else '') + "'")

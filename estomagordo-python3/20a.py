@@ -4,43 +4,35 @@ from functools import reduce
 from heapq import heappop, heappush
 from itertools import combinations, permutations, product
 
-from helpers import distance, distance_sq, eight_neighs, eight_neighs_bounded, grouped_lines, ints, manhattan, n_neighs, neighs, neighs_bounded
+from helpers import distance, distance_sq, eight_neighs, eight_neighs_bounded, grouped_lines, ints, manhattan, multall, n_neighs, neighs, neighs_bounded
+
+
+def edges(tile):
+    return (''.join((tile[0])), ''.join((tile[-1])), ''.join([tile[row][0] for row in range(len(tile))]), ''.join([tile[row][-1] for row in range(len(tile))]))
+
+
+def matches(a, b):
+    return a == b or a == ''.join(reversed(b))
 
 
 def solve(tiles):
     sides = {}
 
     for id, tile in tiles.items():
-        up = {''.join((tile[0])), ''.join(reversed(tile[0]))}
-        down = {''.join((tile[-1])), ''.join(reversed(tile[-1]))}
-        left = {''.join([tile[row][0] for row in range(len(tile))]), ''.join(reversed([tile[row][0] for row in range(len(tile))]))}
-        right = {''.join([tile[row][-1] for row in range(len(tile))]), ''.join(reversed([tile[row][-1] for row in range(len(tile))]))}
+        sides[id] = edges(tile)
 
-        sides[id] = (up, down, left, right)
+    matchcount = defaultdict(int)
 
-    corners = []
-
-    idlist = list(tiles.keys())
-
-    for i in range(len(idlist)):
-        a = sides[idlist[i]]
-        matches = [False] * 4
-
-        for j in range(len(idlist)):
-            if i == j:
-                continue
-
-            b = sides[idlist[j]]
-
-            for x in range(4):
-                for y in range(4):
-                    if a[x] & b[y]:
-                        matches[x] = True
-
-        if sum(matches) == 2:
-            corners.append(idlist[i])
-
-    return reduce(lambda a,b: a*b, corners)
+    for a, b in product(sides.keys(), repeat=2):
+        if a == b:
+            continue
+        
+        for aside, bside in product(sides[a], sides[b]):
+            if matches(aside, bside):
+                matchcount[a] += 1
+                
+    return multall(k for k,v in matchcount.items() if v == 2)
+   
 
 if __name__ == '__main__':
     tiles = {}

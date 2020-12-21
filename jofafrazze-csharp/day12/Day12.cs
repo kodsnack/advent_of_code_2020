@@ -10,7 +10,7 @@ namespace day12
         readonly static string nsname = typeof(Day12).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
-        readonly static string cardinals = "NESW";
+        static string cardinals = "NESW";
 
         static Object PartA()
         {

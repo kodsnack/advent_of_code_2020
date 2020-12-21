@@ -8,33 +8,25 @@ from helpers import distance, distance_sq, eight_neighs, eight_neighs_bounded, g
 
 
 def solve(lines):
-    ingredients = set()
-    allergens = {}
+    ingredients = reduce(lambda a,b: a|b, [line[0] for line in lines])
+    allergens = {allergen: set(ingredients) for allergen in reduce(lambda a,b: a|b, [line[1] for line in lines])}
 
-    for i, a in lines:
-        for ing in i:
-            ingredients.add(ing)
-
-    for i, a in lines:
-        for all in a:
-            allergens[all] = set(ingredients)
-
-    for i, a in lines:
-        for all in a:
-            allergens[all] &= i
+    for ing, all in lines:
+        for allergen in all:
+            allergens[allergen] &= ing
 
     definite = set()
 
-    for setty in allergens.values():
-        if len(setty) == 1:
-            definite |= setty
+    for ingredientset in allergens.values():
+        if len(ingredientset) == 1:
+            definite |= ingredientset
 
     while True:
         reductdict = {}
         
-        for key, setty in allergens.items():
-            if len(setty - definite) == 1:
-                reductdict[key] = setty - definite
+        for key, ingredientset in allergens.items():
+            if len(ingredientset - definite) == 1:
+                reductdict[key] = ingredientset - definite
 
         if not reductdict:
             break
@@ -43,16 +35,16 @@ def solve(lines):
             allergens[k] = v
             definite |= v
 
-    targets = set()
+    used = set()
 
     for v in allergens.values():
-        targets |= v
+        used |= v
 
     count = 0
 
-    for i, _ in lines:
-        for ing in i:
-            if ing not in targets:
+    for ing, _ in lines:
+        for ingredient in ing:
+            if ingredient not in used:
                 count += 1
 
     return count
@@ -64,14 +56,14 @@ if __name__ == '__main__':
         for line in f.readlines():
             words = line.split()
             ingredients = set()
-            allergens = []
+            allergens = set()
             ingredone = False
 
             for word in words:
                 if word[0] == '(':
                     ingredone = True
                 elif ingredone:
-                    allergens.append(word[:-1])
+                    allergens.add(word[:-1])
                 else:
                     ingredients.add(word)
 

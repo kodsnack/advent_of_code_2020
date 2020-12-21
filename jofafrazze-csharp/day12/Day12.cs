@@ -10,6 +10,8 @@ namespace day12
         readonly static string nsname = typeof(Day12).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
+        // Day 12: Rain Risk - Move absolute/relatively in 2D, rotate to another quadrant
+
         static string cardinals = "NESW";
 
         static Object PartA()

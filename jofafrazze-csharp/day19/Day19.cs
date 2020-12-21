@@ -11,6 +11,8 @@ namespace day19
         readonly static string nsname = typeof(Day19).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
+        // Day 19: Monster Messages - Recursive rules and matching. First without loops, then a special case
+
         static Dictionary<int, (List<int> r1, List<int> r2)> rules = new Dictionary<int, (List<int>, List<int>)>();
 
         static List<string> ReadInput(string path)

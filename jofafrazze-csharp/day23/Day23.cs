@@ -16,6 +16,8 @@ namespace day23
         readonly static string nsname = typeof(Day23).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
+        // Day 23: 
+
         static Object PartA()
         {
             var input = ReadIndata.Ints(inputPath);

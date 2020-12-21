@@ -10,6 +10,8 @@ namespace day17
         readonly static string nsname = typeof(Day17).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
+        // Day 17: Conway Cubes - Game of life in infinite space, first in 3D then in 4D
+
         static HashSet<(int, int, int)> GetNeighbours((int x, int y, int z) p)
         {
             var m = new HashSet<(int, int, int)>();

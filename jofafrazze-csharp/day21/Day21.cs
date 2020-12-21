@@ -11,7 +11,7 @@ namespace day21
         readonly static string nsname = typeof(Day21).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
-        // Day 21: Allergen Assessment - Map allergenes/ingredients to/from foods, logic & set theory
+        // Day 21: Allergen Assessment - Map allergenes/ingredients to/from foods, then use logic & set theory
 
         static HashSet<string> ingredients = new HashSet<string>();
         static HashSet<string> allergenes = new HashSet<string>();

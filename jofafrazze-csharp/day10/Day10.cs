@@ -10,6 +10,8 @@ namespace day10
         readonly static string nsname = typeof(Day10).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
+        // Day 10: Adapter Array - Order numbers, deltas, find possible configurations (Tribonacci)
+
         static Object PartA()
         {
             var input = ReadIndata.Ints(inputPath);

@@ -66,7 +66,7 @@ def matches(a, b):
 def count_monsters(image):
     # image = rot(image)
     # image = rot(image)
-    # print('\n'.join(''.join(row) for row in image))
+    print('\n'.join(''.join(row) for row in image))
     monster = [
         '                  # ',
         '#    ##    ##    ###',
@@ -307,6 +307,13 @@ def solve(tiles):
                 dedges = edges(dtile)
 
                 if not any(matches(down, edge) for edge in dedges):
+                    tile = flipy(tile)
+            else:
+                uid = coord_to_id[(y-1, x)]
+                utile = tiles[uid]
+                uedges = edges(utile)
+
+                if not any(matches(up, edge) for edge in uedges):
                     tile = flipy(tile)
 
             starty = y * (tileheight - 2)

@@ -45,8 +45,13 @@ def player1_wins_round(gameseen, player1, player2):
     return player1_wins_round(gameseen, player1, player2)
 
 
-def game(player1, player2):
+def game(gameseen, player1, player2):
     while player1 and player2:
+        if tuple(player1 + player2) in gameseen:
+            return True
+
+        gameseen.add(tuple(player1 + player2))
+        
         a = player1[0]
         b = player2[0]
         player1 = player1[1:]
@@ -59,18 +64,19 @@ def game(player1, player2):
                 player2 += [b,a]
             continue            
 
-        # awins = player1_wins_round(set(), list(player1[:a]), list(player2[:b]))
+        awins = player1_wins_round(set(), list(player1[:a]), list(player2[:b]))
 
         if awins:
             player1 += [a,b]
         else:
             player2 += [b,a]
         
-    return player1 if player1 else player2
-
+    return (player1, player2)
 
 def solve(player1, player2):
-    winner = game(player1, player2)
+    player1, player2 = game(set(), player1, player2)
+
+    winner = player1 if player1 else player2
 
     score = 0
     val = 1

@@ -73,20 +73,16 @@ namespace day22
         static void PrintStatus(List<int> p1, List<int> p2, int round, int game, bool subGame)
         {
             if (round == 1)
-            {
-                Console.WriteLine("=== Game {0} ===", game);
-                Console.WriteLine();
-            }
+                Console.WriteLine("=== Game {0} ===\r\n", game);
             Console.WriteLine("-- Round {0} (Game {1}) --", round, game);
             Console.WriteLine("Player 1's deck: {0}", string.Join(", ", p1));
             Console.WriteLine("Player 2's deck: {0}", string.Join(", ", p2));
             Console.WriteLine("Player 1 plays: {0}", p1.First());
             Console.WriteLine("Player 2 plays: {0}", p2.First());
             if (subGame)
-                Console.WriteLine("Playing a sub-game to determine the winner...");
+                Console.WriteLine("Playing a sub-game to determine the winner...\r\n");
             else
-                Console.WriteLine("Player {0} wins round {1} of game {2}!", p1.First() > p2.First() ? 1 : 2, round, game);
-            Console.WriteLine();
+                Console.WriteLine("Player {0} wins round {1} of game {2}!\r\n", p1[0] > p2[0] ? 1 : 2, round, game);
         }
 
         static int nextGame = 1;
@@ -106,10 +102,10 @@ namespace day22
                 }
                 int av = a[0];
                 int bv = b[0];
+                bool subGame = a.Count > av && b.Count > bv;
+                //PrintStatus(a, b, round, game, subGame);
                 a.RemoveAt(0);
                 b.RemoveAt(0);
-                bool subGame = a.Count >= av && b.Count >= bv;
-                //PrintStatus(a, b, round, game, subGame);
                 (awon, _) = subGame ? PlayGame(a.Take(av).ToList(), b.Take(bv).ToList(), ++nextGame) : (av > bv, null);
                 var w = awon ? a : b;
                 w.Add(awon ? av : bv);

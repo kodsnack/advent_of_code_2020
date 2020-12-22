@@ -28,5 +28,8 @@
                  (:file "day17")
                  (:file "day18")
                  (:file "day19")
+                 (:file "day20")
+                 (:file "day21")
+                 (:file "day22")
                  (:file "tests"))))
   :depends-on (#:alexandria #:fiasco #:cl-ppcre #:fare-memoization #:str))

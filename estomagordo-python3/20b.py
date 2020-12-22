@@ -205,6 +205,37 @@ def solve(tiles):
 
 
 if __name__ == '__main__':
+    monster = [
+        '                  # ',
+        '#    ##    ##    ###',
+        ' #  #  #  #  #  #   '
+    ]
+
+    c = Counter()
+    import random
+
+    for i in range(100000):
+        if i % 1000 == 0:
+            print(i, len(c), c)
+        image = []
+
+        for y in range(96):
+            row = []
+            for x in range(96):
+                row.append('#' if random.randint(0, 1) else '.')
+            image.append(row)
+
+        mheight = len(monster)
+        mwidth = len(monster[0])
+        count = 0
+
+        for y in range(96-mheight+1):
+            for x in range(96-mwidth+1):
+                if image[y][x:x+mwidth] == monster[0] and image[y+1][x:x+mwidth] == monster[1] and image[y+2][x:x+mwidth] == monster[2]:
+                    count += 1
+
+        c[count] += 1
+    print(c)
     tiles = {}
     tile = []
     id = -1

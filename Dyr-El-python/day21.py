@@ -40,91 +40,53 @@ def foodParser(pinp):
       i = set()
       a = set()
 
+from functools import reduce
+
+def possiblyAllergenicIngredients(pinp):
+   pAllergicI = dict()
+   for ingredients, allergens in foodParser(pinp):
+      for allergen in allergens:
+         if allergen not in pAllergicI:
+            pAllergicI[allergen] = ingredients
+         else:
+            pAllergicI[allergen] = pAllergicI[allergen] & ingredients
+   return pAllergicI
+   
 @measure
 def part1(pinp):
-   foods = list()
-   pAllergicI = dict()
-   allI = set()
-   for i, a in foodParser(pinp):
-      foods.append((i, a))
-      allI |= i
-      for allergen in a:
-         if allergen not in pAllergicI:
-            pAllergicI[allergen] = i
-         else:
-            pAllergicI[allergen] = pAllergicI[allergen] & i
-   canBeInOne = set()
-   for key in pAllergicI:
-      canBeInOne |= pAllergicI[key]
-      print(key, len(pAllergicI[key]))
-   print(canBeInOne)
-   canBeInNone = allI - canBeInOne
-   print(canBeInNone)
-   # change = True
-   # while change:
-   #    change = False
-   #    for key in pAllergicI:
-   #       if len(pAllergicI[key])==1:
-   #          for allergen in pAllergicI[key]:
-   #             for k2 in pAllergicI:
-   #                if k2 == key:
-   #                   continue
-   #                if allergen in pAllergicI[k2]:
-   #                   pAllergicI[k2].remove(allergen)
-   #                   change = True
-   # safe = set()
-   # for key, v in pAllergicI.items():
-   #    safe |= v
-   # print(pAllergicI)
-   # print(safe)
-   sm = 0
-   for i, a in foods:
-      for ingredient in i:
-         if ingredient in canBeInNone:
-            sm += 1
-   return sm
+   foods = [(i, a) for i, a in foodParser(pinp)]
+   allIngredients = reduce(lambda x, y: x|y, (i for (i, a) in foodParser(pinp)))
+   possAllergiecIngredients = possiblyAllergenicIngredients(pinp)
+   canBeInOne = reduce(lambda x,y: x|y, possAllergiecIngredients.values())
+   canBeInNone = allIngredients - canBeInOne
+   return len([i for ingredients, allergens in foods for i in ingredients
+              if i in canBeInNone])
 
 @measure
 def part2(pinp):
-   foods = list()
-   pAllergicI = dict()
-   allI = set()
-   for i, a in foodParser(pinp):
-      foods.append((i, a))
-      allI |= i
-      for allergen in a:
-         if allergen not in pAllergicI:
-            pAllergicI[allergen] = i
-         else:
-            pAllergicI[allergen] = pAllergicI[allergen] & i
+   foods = [(i, a) for i, a in foodParser(pinp)]
+   possAllergiecIngredients =  possiblyAllergenicIngredients(pinp)
    canBeInOne = set()
-   for key in pAllergicI:
-      canBeInOne |= pAllergicI[key]
+   canBeInOne = reduce(lambda x,y: x|y, possAllergiecIngredients.values())
    change = True
    while change:
       change = False
-      for key in pAllergicI:
-         if len(pAllergicI[key])==1:
-            for allergen in pAllergicI[key]:
-               for k2 in pAllergicI:
+      for key in possAllergiecIngredients:
+         if len(possAllergiecIngredients[key])==1:
+            for allergen in possAllergiecIngredients[key]:
+               for k2 in possAllergiecIngredients:
                   if k2 == key:
                      continue
-                  if allergen in pAllergicI[k2]:
-                     pAllergicI[k2].remove(allergen)
+                  if allergen in possAllergiecIngredients[k2]:
+                     possAllergiecIngredients[k2].remove(allergen)
                      change = True
-   l = list()
-   for k, s in pAllergicI.items():
-      l.append((k, list(s)[0]))
+   l = [(k, list(s)[0]) for k, s in possAllergiecIngredients.items()]
    return ",".join(x[1] for x in sorted(l))
 
 ## Start of footer boilerplate #################################################
 
 if __name__ == "__main__":
    inp = readInput()
-#    inp = """mxmxvkd kfcds sqjhc nhms (contains dairy, fish)
-# trh fvjkl sbzzf mxmxvkd (contains dairy)
-# sqjhc fvjkl (contains soy)
-# sqjhc mxmxvkd sbzzf (contains fish)"""
     
    ## Update for input specifics ##############################################
    parseInp = fileParse(inp, tokenPattern=wsTokenPattern)

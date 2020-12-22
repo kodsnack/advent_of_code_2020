@@ -36,8 +36,11 @@ namespace day23
         static void Main(string[] args)
         {
             Console.WriteLine("AoC 2020 - " + nsname + ":");
+            var w = System.Diagnostics.Stopwatch.StartNew();
             PartA();
             PartB();
+            w.Stop();
+            Console.WriteLine("[Execution took {0} ms]", w.ElapsedMilliseconds);
         }
 
         public static bool MainTest()

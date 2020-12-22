@@ -4,54 +4,19 @@ from functools import reduce
 from heapq import heappop, heappush
 from itertools import combinations, permutations, product
 import re
-from sys import setrecursionlimit
 
 from helpers import distance, distance_sq, eight_neighs, eight_neighs_bounded, grouped_lines, ints, manhattan, multall, n_neighs, neighs, neighs_bounded
-
-setrecursionlimit(8000)
-
-def player1_wins_round(gameseen, player1, player2):
-    if not player1:
-        return False
-    if not player2:
-        return True
-    
-    if tuple(player1 + player2) in gameseen:
-        return True
-
-    gameseen.add(tuple(player1 + player2))
-
-    a = player1[0]
-    b = player2[0]
-
-    player1 = player1[1:]
-    player2 = player2[1:]
-
-    if a > len(player1) or b > len(player2):
-        if a > b:
-            player1 += [a,b]
-        else:
-            player2 += [b,a]
-
-        return player1_wins_round(gameseen, player1, player2)
-
-    awins = player1_wins_round(set(), player1[:a], player2[:b])
-
-    if awins:
-        player1 += [a,b]
-    else:
-        player2 += [b,a]
-
-    return player1_wins_round(gameseen, player1, player2)
 
 
 def game(gameseen, player1, player2):
     while player1 and player2:
-        if tuple(player1 + player2) in gameseen:
-            return True
+        t = (tuple(player1), tuple(player2))
 
-        gameseen.add(tuple(player1 + player2))
-        
+        if t in gameseen:
+            return (player1, player2)
+
+        gameseen.add(t)
+
         a = player1[0]
         b = player2[0]
         player1 = player1[1:]
@@ -64,18 +29,18 @@ def game(gameseen, player1, player2):
                 player2 += [b,a]
             continue            
 
-        awins = player1_wins_round(set(), list(player1[:a]), list(player2[:b]))
+        recplay1, _ = game(set(), player1[:a], player2[:b])
 
-        if awins:
+        if recplay1:
             player1 += [a,b]
         else:
             player2 += [b,a]
         
     return (player1, player2)
 
+
 def solve(player1, player2):
     player1, player2 = game(set(), player1, player2)
-
     winner = player1 if player1 else player2
 
     score = 0

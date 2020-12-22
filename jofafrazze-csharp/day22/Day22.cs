@@ -2,12 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
 using AdventOfCode;
-//using Position = AdventOfCode.GenericPosition2D<int>;
 
 namespace day22
 {
@@ -55,33 +50,15 @@ namespace day22
             return (p1won, p1won ? r1 : r2);
         }
 
-        static List<int> PlayGame(List<int> p1, List<int> p2)
-        {
-            List<int> a = new List<int>(p1);
-            List<int> b = new List<int>(p2);
-            bool awon = true;
-            while (a.Count > 0 && b.Count > 0)
-            {
-                awon = a.First() > b.First();
-                var w = awon ? a : b;
-                var l = awon ? b : a;
-                w.Add(w.First());
-                w.RemoveAt(0);
-                w.Add(l.First());
-                l.RemoveAt(0);
-            }
-            return awon ? a : b;
-        }
-
         static int Score(ICollection<int> c) { return c.Reverse().Select((x, i) => (i + 1) * x).Sum(); }
 
         static Object PartA()
         {
             var input = ReadInput(inputPath);
             int cards = input.Count;
-            int n = cards / 2;
             int[] p1 = new int[cards];
             int[] p2 = new int[cards];
+            int n = cards / 2;
             input.Take(n).ToArray().CopyTo(p1, 0);
             input.Skip(n).Take(n).ToArray().CopyTo(p2, 0);
             (bool p1win, int rIdx) = PlayGameFast(ref p1, ref p2, cards);
@@ -89,11 +66,6 @@ namespace day22
             deck.AddRange(deck);
             deck = deck.Skip(rIdx).Take(cards).ToList();
             int ans = Score(deck);
-
-            //var deck = PlayGame(input.Take(n).ToList(), input.Skip(n).Take(n).ToList());
-            //deck.Reverse();
-            //int ans = deck.Select((x, i) => (i + 1) * x).Sum();
-
             Console.WriteLine("Part A: Result is {0}", ans);
             return ans;
         }
@@ -119,27 +91,26 @@ namespace day22
 
         static int nextGame = 1;
 
-        static (bool, List<int>) PlayGameB(List<int> p1, List<int> p2, int game)
+        static (bool, List<int>) PlayGame(IEnumerable<int> p1, IEnumerable<int> p2, int game)
         {
-            HashSet<(string, string)> visited = new HashSet<(string, string)>();
-            List<int> a = new List<int>(p1);
-            List<int> b = new List<int>(p2);
+            var visited = new HashSet<string>();
+            var a = new List<int>(p1);
+            var b = new List<int>(p2);
             bool awon = true;
             bool done = false;
             int round = 1;
             while (a.Count > 0 && b.Count > 0 && !done)
             {
-                var id = (string.Join(",", a), string.Join(",", b));
+                var id = string.Join(",", a) + "x" + string.Join(",", b);
                 done = !visited.Add(id);
                 if (!done)
                 {
                     int ca = a.First();
                     int cb = b.First();
-                    bool subGame = (ca < a.Count && cb < b.Count);
                     //PrintStatus(a, b, round, game, subGame);
                     awon = ca > cb;
-                    if (subGame)
-                        (awon, _) = PlayGameB(a.Skip(1).Take(ca).ToList(), b.Skip(1).Take(cb).ToList(), ++nextGame);
+                    if (a.Count > ca && b.Count > cb)
+                        (awon, _) = PlayGame(a.Skip(1).Take(ca), b.Skip(1).Take(cb), ++nextGame);
                     var w = awon ? a : b;
                     var l = awon ? b : a;
                     w.Add(w.First());
@@ -157,7 +128,7 @@ namespace day22
         {
             var input = ReadInput(inputPath);
             int n = input.Count / 2;
-            var (_, deck) = PlayGameB(input.Take(n).ToList(), input.Skip(n).Take(n).ToList(), 1);
+            var (_, deck) = PlayGame(input.Take(n), input.Skip(n).Take(n), 1);
             int ans = Score(deck);
             Console.WriteLine("Part B: Result is {0}", ans);
             return ans;

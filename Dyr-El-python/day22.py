@@ -62,7 +62,15 @@ def crabs(p1, p2):
       elif len(p2)==0:
          return 1
 
+def calcKey(p1, p2):
+   d = {c:i for i, c in enumerate(sorted(p1+p2))}
+   return (tuple(d[x] for x in p1), tuple(d[x] for x in p2))
+
+gameCache = dict()
 def recCrabs(p1, p2, lvl=0):
+   gameKey = calcKey(p1, p2)
+   if gameKey in gameCache:
+      return gameCache[gameKey]
    cache = set()
    while True:
       key = (tuple(p1), tuple(p2))
@@ -85,8 +93,10 @@ def recCrabs(p1, p2, lvl=0):
          p2.append(c2)
          p2.append(c1)
       if len(p1)==0:
+         gameCache[gameKey] = 2
          return 2
       if len(p2)==0:
+         gameCache[gameKey] = 1
          return 1
 
 @measure

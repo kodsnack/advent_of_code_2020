@@ -77,3 +77,7 @@
 (deftest day19 ()
   (is (= 134 (aoc2020.day19::part1 (input-for 2020 19))))
   (is (= 377 (aoc2020.day19::part2 (input-for 2020 19)))))
+
+(deftest day20 ()
+  (is (= 5966506063747 (aoc2020.day20::part1 (input-for 2020 20))))
+  (is (= 1714 (aoc2020.day20::part2 (input-for 2020 20)))))

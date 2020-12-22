@@ -104,19 +104,16 @@ namespace day22
                     awon = true;
                     break;
                 }
-                int ca = a.First();
-                int cb = b.First();
-                bool subGame = a.Count > ca && b.Count > cb;
+                int av = a[0];
+                int bv = b[0];
+                a.RemoveAt(0);
+                b.RemoveAt(0);
+                bool subGame = a.Count >= av && b.Count >= bv;
                 //PrintStatus(a, b, round, game, subGame);
-                (awon, _) = subGame 
-                    ? PlayGame(a.Skip(1).Take(ca).ToList(), b.Skip(1).Take(cb).ToList(), ++nextGame) 
-                    : (ca > cb, null);
+                (awon, _) = subGame ? PlayGame(a.Take(av).ToList(), b.Take(bv).ToList(), ++nextGame) : (av > bv, null);
                 var w = awon ? a : b;
-                var l = awon ? b : a;
-                w.Add(w.First());
-                w.RemoveAt(0);
-                w.Add(l.First());
-                l.RemoveAt(0);
+                w.Add(awon ? av : bv);
+                w.Add(awon ? bv : av);
                 round++;
             }
             return (awon, awon ? a : b);

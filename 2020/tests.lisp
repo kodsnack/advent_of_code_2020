@@ -85,3 +85,7 @@
 (deftest day21 ()
   (is (= 2493 (aoc2020.day21::part1 (input-for 2020 21))))
   (is (string= "kqv,jxx,zzt,dklgl,pmvfzk,tsnkknk,qdlpbt,tlgrhdh" (aoc2020.day21::part2 (input-for 2020 21)))))
+
+(deftest day22 ()
+  (is (= 32629 (aoc2020.day22::part1 (input-for 2020 22))))
+  (is (= 32519 (aoc2020.day22::part2 (input-for 2020 22)))))

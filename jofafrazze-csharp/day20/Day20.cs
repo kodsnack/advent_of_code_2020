@@ -197,14 +197,14 @@ namespace day20
 
         static List<string> image = new List<string>();
         static List<List<string>> images = new List<List<string>>();
-        static readonly List<string> seaMonster = new List<string>()
+        static List<string> seaMonster = new List<string>()
         {
             "                  # ",
             "#    ##    ##    ###",
             " #  #  #  #  #  #   "
         };
-        static readonly List<(int pr, int pc)> seaMonsterOffs = new List<(int, int)>();
-        static readonly HashSet<(int pr, int pc)> imageOffs = new HashSet<(int, int)>();
+        static List<(int pr, int pc)> seaMonsterOffs = new List<(int, int)>();
+        static HashSet<(int pr, int pc)> imageOffs = new HashSet<(int, int)>();
 
         static void CreateImages()
         {

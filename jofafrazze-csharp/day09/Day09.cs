@@ -10,6 +10,8 @@ namespace day09
         readonly static string nsname = typeof(Day09).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
+        // Day 09: Encoding Error - Check if numbers follow the rules in long list of longs
+
         static Object PartA()
         {
             var input = ReadIndata.Longs(inputPath);

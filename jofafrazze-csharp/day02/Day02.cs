@@ -11,6 +11,8 @@ namespace day02
         readonly static string nsname = typeof(Day02).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
+        // Day 02: Password Philosophy - Parse input, validate passwords in two different ways
+
         struct DbEntry
         {
             public int n1;

@@ -11,6 +11,8 @@ namespace day07
         readonly static string nsname = typeof(Day07).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
+        // Day 07: Handy Haversacks - Parse tree of bags containing bags
+
         public class Bag
         {
             public string name;

@@ -11,6 +11,8 @@ namespace day14
         readonly static string nsname = typeof(Day14).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
+        // Day 14: Docking Data - Writing memory using bitmask/logic applied to data then address
+
         const int bits = 36;
 
         static Object PartA()

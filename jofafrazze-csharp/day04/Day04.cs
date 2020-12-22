@@ -10,6 +10,8 @@ namespace day04
         readonly static string nsname = typeof(Day04).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
+        // Day 04: Passport Processing - Parse a lot, check a lot of rules
+
         static List<Dictionary<string, string>> ReadInput(string path)
         {
             StreamReader reader = File.OpenText(path);

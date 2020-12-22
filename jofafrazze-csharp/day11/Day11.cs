@@ -12,6 +12,8 @@ namespace day11
         readonly static string nsname = typeof(Day11).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
+        // Day 11: Seating System - Game of life with two different iteration rules 
+
         static Map StepMap(Map m)
         {
             int w = m.width;

@@ -10,7 +10,10 @@ namespace day18
         readonly static string nsname = typeof(Day18).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
-        // Initial version
+        // Day 18: Operation Order - Parse expressions with +, * and (), evaluate them using different rules
+
+        // Solution 1: Initial version, evaluate from beginning to end, recurse for parentheses
+
         static int ClosingParenthesisIdx(string s, int idx)
         {
             int d = 0;
@@ -75,7 +78,8 @@ namespace day18
             return acc;
         }
 
-        // Alternate regex version
+        // Solution 2: Use regex to recursivly replace expressions by their results within the string
+
         static string EvaluateA(string s)
         {
             var re = new Regex(@"(\d+) (\+|\*) (\d+)");

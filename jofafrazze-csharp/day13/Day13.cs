@@ -11,6 +11,8 @@ namespace day13
         readonly static string nsname = typeof(Day13).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
+        // Day 13: Shuttle Search - Modular arithmetic & The Chinese Remainder Theorem (CRT)
+
         static Object PartA()
         {
             var input = ReadIndata.Strings(inputPath);

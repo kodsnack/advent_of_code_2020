@@ -43,14 +43,7 @@ def solve(player1, player2):
     player1, player2 = game(set(), player1, player2)
     winner = player1 if player1 else player2
 
-    score = 0
-    val = 1
-
-    for num in winner[::-1]:
-        score += num * val
-        val += 1
-
-    return score
+    return sum(winner[x] * (len(winner)-x) for x in range(len(winner)))
 
 if __name__ == '__main__':
     player1 = []

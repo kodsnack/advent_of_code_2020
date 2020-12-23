@@ -17,6 +17,10 @@ mod day16;
 mod day17;
 mod day18;
 mod day19;
+mod day20;
+mod day21;
+mod day22;
+mod day23;
 pub mod error;
 pub mod parser;
 pub mod readinput;
@@ -50,6 +54,10 @@ pub fn solveday(
         17 => day17::parse(input).map(day17::solve),
         18 => day18::parse(input).map(day18::solve),
         19 => day19::parse(input).map(day19::solve),
+        20 => day20::parse(input).map(day20::solve),
+        21 => day21::parse(input).map(day21::solve),
+        22 => day22::parse(input).map(day22::solve),
+        23 => day23::parse(input).map(day23::solve),
         _ => Ok((Some("No solution for this day yet.".into()), None)),
     }
 }

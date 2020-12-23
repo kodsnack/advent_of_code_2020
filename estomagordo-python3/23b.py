@@ -21,67 +21,30 @@ def solve(labeling, moves):
 
     successor[10**6] = int(labeling[0])
 
+    n = len(successor)
+
     current = int(labeling[0])
 
     for _ in range(moves):
-        if _ % 100000 == 0:
-            print(_)
         a = successor[current]
         b = successor[a]
         c = successor[b]
         d = successor[c]
 
+        moving = [a,b,c]
+
         successor[current] = d
 
-        destination = current-1
-        if destination == 0:
-            destination = len(successor)
-
-        if destination > 3:
-            while destination in (a, b, c):
-                destination -= 1
-        elif destination == 3:
-            if 3 in (a, b, c):
-                if 2 in (a, b, c):
-                    if 1 in (a, b, c):
-                        destination = len(successor)
-                    else:
-                        destination = 1
-                else:
-                    destination = 2
-            else:
-                destination = 3
-        elif destination == 2:
-            if 2 in (a, b, c):
-                if 1 in (a, b, c):
-                    if len(successor) in (a, b, c):
-                        destination = len(successor)-1
-                    else:
-                        destination = len(successor)
-                else:
-                    destination = 1
-            else:
-                destination = 2
-        elif destination == 1:
-            if 1 in (a, b, c):
-                if len(successor) in (a, b, c):
-                    if len(successor)-1 in (a, b, c):
-                        destination = len(successor)-2
-                    else:
-                        destination = len(successor)-1
-                else:
-                    destination = len(successor)
-            else:
-                destination = 1
-
+        destination = ((current-2) % n) +1
+        
+        while destination in moving:
+            destination = ((destination-2) % n) +1
+            
         successor[c] = successor[destination]
         successor[destination] = a
         current = successor[current]
-
-    print(successor[1], successor[successor[1]])
+        
     return successor[1] * successor[successor[1]]
 
 if __name__ == '__main__':
     print(solve('389547612', 10**7))
-
-# 149245887792 too high

@@ -22,10 +22,12 @@ def fileParse(inp, lineparser=lineParse,
 ## End of header boilerplate ###################################################
 
 class LL:
+   d = dict()
    def __init__(self, v):
       self.next = None
       self.prev = None
       self.v = v
+      LL.d[v] = self
    def remove(self):
       nxt, prv = self.next, self.prev
       nxt.prev, prv.next = prv, nxt
@@ -56,12 +58,15 @@ class LL:
    def remove(self, no):
       before = self.prev
       current = self
+      l = [current.v]
       for i in range(no-1):
          current = current.next
+         l.append(current.v)
       before.next = current.next
       current.next.prev = before
       self.prev = current
       current.next = self
+      return l
    def addSeq(self, sq):
       first, last = sq, sq.prev
       first.prev = self
@@ -69,18 +74,7 @@ class LL:
       self.next.prev = last
       self.next = first
    def find(self, v):
-      if self.v == v:
-         return self
-      fwd, bwd = self, self
-      while True:
-         fwd = fwd.next
-         bwd = bwd.next
-         if fwd == self:
-            return None
-         if fwd.v == v:
-            return fwd
-         if bwd.v == v:
-            return bwd
+      return LL.d[v]
    def print(self, steps=10):
       current = self
       l = list()
@@ -91,40 +85,28 @@ class LL:
             break
       return ",".join(l)
 
-def doMove2(l, steps=1, mxV=None):
+def doMove(l, steps=1, mxV=None):
    root = LL.createCircle(l, mxV)
-   current = root.next
-   d = dict()
-   d[root.v] = root
-   while current != root:
-      d[current.v] = current
-      current = current.next
    current = root
    for i in range(steps):
-      if i%100000 == 99999:
-         print((i+1)//100000)
       pickOut = current.next
-      pickOut.remove(3)
-      lv = [pickOut.v, pickOut.next.v, pickOut.next.next.v]
+      lv = pickOut.remove(3)
       v = current.v - 1
       if v == 0:
-         v = len(l)
+         v = mxV
       while v in lv:
          v -= 1
          if v == 0:
-            v = len(l)
-      dest = d[v]
+            v = mxV
+      dest = current.find(v)
       dest.addSeq(pickOut)
       current = current.next
-      # print(current.print())
-      # if 1000000 in d:
-      #    print(d[1000000].print())
    return root
 
 @measure
 def part1(pinp):
    inp = list(map(int, pinp[0]))
-   n = doMove2(inp, 100, 9)
+   n = doMove(inp, 100, 9)
    c = n.find(1).next
    result = []
    while c.v != 1:
@@ -135,17 +117,16 @@ def part1(pinp):
 @measure
 def part2(pinp):
    inp = list(map(int, pinp[0]))
-   n = doMove2(inp, 10000000, 1000000)
+   n = doMove(inp, 10000000, 1000000)
    c1 = n.find(1).next
    c2 = c1.next
-   print(c1.v, c2.v)
    return c1.v*c2.v
 
 ## Start of footer boilerplate #################################################
 
 if __name__ == "__main__":
    inp = readInput()
-   inp = """389125467"""
+   # inp = """389125467"""
     
    ## Update for input specifics ##############################################
    parseInp = fileParse(inp, tokenPattern=wsTokenPattern)

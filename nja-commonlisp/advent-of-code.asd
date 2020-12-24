@@ -32,5 +32,6 @@
                  (:file "day21")
                  (:file "day22")
                  (:file "day23")
+                 (:file "day24")
                  (:file "tests"))))
   :depends-on (#:alexandria #:fiasco #:cl-ppcre #:fare-memoization #:str))

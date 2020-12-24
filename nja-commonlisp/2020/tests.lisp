@@ -93,3 +93,7 @@
 (deftest day23 ()
   (is (string= "46978532" (aoc2020.day23::part1 (input-for 2020 23))))
   (is (= 163035127721 (aoc2020.day23::part2 (input-for 2020 23)))))
+
+(deftest day24 ()
+  (is (= 277 (aoc2020.day24::part1 (input-for 2020 24))))
+  (is (= 3531 (aoc2020.day24::part2 (input-for 2020 24)))))

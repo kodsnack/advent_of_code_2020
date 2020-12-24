@@ -11,6 +11,8 @@ namespace day16
         readonly static string nsname = typeof(Day16).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
+        // Day 16: Ticket Translation - Parse rules & values, find invalid values then match rules to fields
+
         static List<((int lo, int hi) r1, (int lo, int hi) r2)> rules = new List<((int, int), (int, int))>();
         static List<int> myTicket = new List<int>();
         static List<List<int>> validTickets = new List<List<int>>();

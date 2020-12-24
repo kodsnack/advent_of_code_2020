@@ -11,7 +11,9 @@ namespace day19
         readonly static string nsname = typeof(Day19).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
-        static Dictionary<int, ((int a, int b) r1, (int a, int b) r2)> rules = new Dictionary<int, ((int, int), (int, int))>();
+        // Day 19: Monster Messages - Recursive rules and matching. First without loops, then a special case
+
+        static Dictionary<int, (List<int> r1, List<int> r2)> rules = new Dictionary<int, (List<int>, List<int>)>();
 
         static List<string> ReadInput(string path)
         {
@@ -25,22 +27,12 @@ namespace day19
                 else if (phase == 0)
                 {
                     var v = line.Split(':');
-                    var m = v[1].Split("|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                    var m = v[1].Split("|".ToCharArray());
                     var m1 = m[0].Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                    int n1 = m1.Count();
-                    if (m1[0][0] == '"')
-                        rules[int.Parse(v[0])] = ((-m1[0][1], -1), (-1, -1));
-                    else
-                    {
-                        bool second = m.Count() > 1;
-                        var m2 = second ? m[1].Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries) : null;
-                        int n2 = second ? m2.Count() : 0;
-                        int a = int.Parse(m1[0]);
-                        int b = n1 > 1 ? int.Parse(m1[1]) : -1;
-                        int c = n2 > 0 ? int.Parse(m2[0]) : -1;
-                        int d = n2 > 1 ? int.Parse(m2[1]) : -1;
-                        rules[int.Parse(v[0])] = ((a, b), (c, d));
-                    }
+                    var m2 = m.Count() > 1 ? m[1].Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries) : new string[] { };
+                    rules[int.Parse(v[0])] = (m1[0][0] == '"') 
+                        ? (new List<int> { -m1[0][1] }, new List<int>())
+                        : (m1.Select(int.Parse).ToList(), m2.Select(int.Parse).ToList());
                 }
                 else if (phase == 1)
                     list.Add(line);
@@ -48,66 +40,53 @@ namespace day19
             return list;
         }
 
-        static (bool ok, int x) Comb((bool ok, int x) a, (bool ok, int x) b)
+        struct Pos { public bool ok; public int n; public Pos(bool b, int i) { ok = b; n = i; } }
+
+        static Pos Comb(List<Pos> m)
         {
-            return (a.ok && b.ok, b.x);
+            return (m.Aggregate((a, b) => new Pos(a.ok && b.ok, b.n)));
         }
-        static (bool ok, int x) Select((bool ok, int x) a, (bool ok, int x) b)
+        static Pos Select(Pos a, Pos b)
         {
             return a.ok ? a : b;
         }
-        static (bool ok, int x) Match(string s, int r, int x)
+        static Pos Match(string s, int r, int n)
         {
-            if (r < 0 || x >= s.Length)
-                return (false, x);
-            int a1 = rules[r].r1.a;
-            int a2 = rules[r].r1.b;
-            int b1 = rules[r].r2.a;
-            int b2 = rules[r].r2.b;
-            var m1 = Match(s, a1, x);
-            var m2 = Match(s, a2, m1.x);
-            var n1 = Match(s, b1, x);
-            var n2 = Match(s, b2, n1.x);
-            if (b1 < 0)
+            List<Pos> DoMatch(List<int> rs)
             {
-                if (a1 < 0 && a2 < 0)
-                    return (s[x] == -a1, s[x] == -a1 ? x + 1 : x);
-                else if (a2 < 0)
-                    return m1;
-                else
-                    return Comb(m1, m2);
+                Pos p = new Pos(false, n);
+                return rs.Select(a => p = Match(s, a, p.n)).ToList();
             }
+            if (r < 0 || n >= s.Length)
+                return new Pos(false, n);
+            var (r1, r2) = rules[r];
+            var m1 = DoMatch(r1);
+            var m2 = DoMatch(r2);
+            bool ok = s[n] == -r1[0];
+            if (r2.Count == 0)
+                return (r1[0] < 0) ? new Pos(ok, ok ? n + 1 : n) : Comb(m1);
             else
-            {
-                if (a2 < 0 && b2 < 0)
-                    return Select(m1, n1);
-                else if (b2 < 0)
-                    return Select(n1, Comb(m1, m2));
-                else if (a2 < 0)
-                    return Select(m1, Comb(n1, n2));
-                else
-                    return Select(Comb(m1, m2), Comb(n1, n2));
-            }
+                return Select(Comb(m1), Comb(m2));
         }
 
         static Object PartA()
         {
             var input = ReadInput(inputPath);
             int ans = input.Select(s => (s, m: Match(s, 0, 0)))
-                .Where(b => b.m.ok && b.m.x == b.s.Length).Count();
+                .Where(z => z.m.ok && z.m.n == z.s.Length).Count();
             Console.WriteLine("Part A: Result is {0}", ans);
             return ans;
         }
 
-        static List<int> CountMatches(string s, int rule, int x)
+        static List<int> CountMatches(string s, int rule, int n)
         {
             var pos = new List<int>();
-            (bool ok, int x) p = (true, x);
-            while (p.ok && p.x < s.Length)
+            Pos p = new Pos(true, n);
+            while (p.ok && p.n < s.Length)
             {
-                p = Match(s, rule, p.x);
+                p = Match(s, rule, p.n);
                 if (p.ok)
-                    pos.Add(p.x);
+                    pos.Add(p.n);
             }
             return pos;
         }

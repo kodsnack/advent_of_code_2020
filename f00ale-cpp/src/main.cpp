@@ -9,7 +9,7 @@
 int main(int argc, char **argv) {
     std::vector<std::function<std::tuple<std::string,std::string>(const std::string&)>> problems
             { p01, p02, p03, p04, p05, p06, p07, p08, p09, p10, p11, p12, p13,
-              p14, p15, p16, p17, p18, p19 };
+              p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24 };
 
     std::chrono::microseconds total_time{0};
     long idx = 0;
@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
             auto timeus = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
             total_time += timeus;
             std::cout << std::right << std::setw(2) << num << ": " << std::setw(15) << std::get<0>(ret) <<
-                    " " << std::setw(15) << std::get<1>(ret)
+                    " " << std::setw(55) << std::get<1>(ret)
                     << " " << std::setw(10) << timeus.count() << "us " << check << std::endl;
 
         } else {
@@ -62,6 +62,6 @@ int main(int argc, char **argv) {
         }
     }
 
-    std::cout << std::left << std::setw(36) << "Total: " << std::right << std::setw(10) << total_time.count() << "us" << std::endl;
+    std::cout << std::left << std::setw(76) << "Total: " << std::right << std::setw(10) << total_time.count() << "us" << std::endl;
 
 }

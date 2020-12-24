@@ -12,6 +12,8 @@ namespace day03
         readonly static string nsname = typeof(Day03).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
+        // Day 03: Toboggan Trajectory - Check occurrences in 2D character map
+
         static Object PartA()
         {
             List<string> input = ReadIndata.Strings(inputPath);
@@ -27,7 +29,7 @@ namespace day03
             return ans;
         }
 
-        static int calcTrees(List<string> input, int radd, int cadd)
+        static int CalcTrees(List<string> input, int radd, int cadd)
         {
             int a = 0;
             int c = 0;
@@ -43,12 +45,11 @@ namespace day03
         static Object PartB()
         {
             List<string> input = ReadIndata.Strings(inputPath);
-            int a = 0;
-            long ans = calcTrees(input, 1, 1);
-            ans *= calcTrees(input, 1, 3);
-            ans *= calcTrees(input, 1, 5);
-            ans *= calcTrees(input, 1, 7);
-            ans *= calcTrees(input, 2, 1);
+            long ans = CalcTrees(input, 1, 1);
+            ans *= CalcTrees(input, 1, 3);
+            ans *= CalcTrees(input, 1, 5);
+            ans *= CalcTrees(input, 1, 7);
+            ans *= CalcTrees(input, 2, 1);
             Console.WriteLine("Part B: Result is {0}", ans);
             return ans;
         }

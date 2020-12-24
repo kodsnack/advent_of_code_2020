@@ -73,3 +73,23 @@
 (deftest day18 ()
   (is (= 75592527415659 (aoc2020.day18::part1 (input-for 2020 18))))
   (is (= 360029542265462 (aoc2020.day18::part2 (input-for 2020 18)))))
+
+(deftest day19 ()
+  (is (= 134 (aoc2020.day19::part1 (input-for 2020 19))))
+  (is (= 377 (aoc2020.day19::part2 (input-for 2020 19)))))
+
+(deftest day20 ()
+  (is (= 5966506063747 (aoc2020.day20::part1 (input-for 2020 20))))
+  (is (= 1714 (aoc2020.day20::part2 (input-for 2020 20)))))
+
+(deftest day21 ()
+  (is (= 2493 (aoc2020.day21::part1 (input-for 2020 21))))
+  (is (string= "kqv,jxx,zzt,dklgl,pmvfzk,tsnkknk,qdlpbt,tlgrhdh" (aoc2020.day21::part2 (input-for 2020 21)))))
+
+(deftest day22 ()
+  (is (= 32629 (aoc2020.day22::part1 (input-for 2020 22))))
+  (is (= 32519 (aoc2020.day22::part2 (input-for 2020 22)))))
+
+(deftest day23 ()
+  (is (string= "46978532" (aoc2020.day23::part1 (input-for 2020 23))))
+  (is (= 163035127721 (aoc2020.day23::part2 (input-for 2020 23)))))

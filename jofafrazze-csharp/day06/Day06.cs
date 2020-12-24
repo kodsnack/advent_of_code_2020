@@ -12,6 +12,8 @@ namespace day06
         readonly static string nsname = typeof(Day06).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
+        // Day 06: Custom Customs - Parse groups and questions, perform some and/or logic
+
         static Object PartA()
         {
             List<string> input = ReadIndata.Strings(inputPath);
@@ -25,9 +27,7 @@ namespace day06
                     set = new HashSet<char>();
                 }
                 else
-                {
                     set.UnionWith(s.ToHashSet());
-                }
             }
             ans += set.Count;
             Console.WriteLine("Part A: Result is {0}", ans);

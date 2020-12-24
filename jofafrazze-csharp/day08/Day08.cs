@@ -12,6 +12,8 @@ namespace day08
         readonly static string nsname = typeof(Day08).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
+        // Day 08: Handheld Halting - Create Game Console computer, run then alter program
+
         public class Computer
         {
             public struct OpCode

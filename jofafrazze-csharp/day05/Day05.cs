@@ -11,6 +11,8 @@ namespace day05
         readonly static string nsname = typeof(Day05).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
+        // Day 05: Binary Boarding - Reinterpret chars FBLR as binary digits
+
         static HashSet<int> GetIds(List<string> list)
         {
             HashSet<int> ids = new HashSet<int>();

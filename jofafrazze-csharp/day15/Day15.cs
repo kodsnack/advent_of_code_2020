@@ -10,6 +10,8 @@ namespace day15
         readonly static string nsname = typeof(Day15).Namespace;
         readonly static string inputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\" + nsname + "\\input.txt");
 
+        // Day 15: Rambunctious Recitation - Memory game run first some then many cycles
+
         static int MemoryGame(List<int> input, int iters)
         {
             int spoken = 0;

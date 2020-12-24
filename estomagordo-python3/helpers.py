@@ -103,3 +103,14 @@ def n_neighs(point):
 
 def multall(nums):
     return reduce(lambda a,b: a*b, nums)
+
+
+def hexneighs(r, c):
+    neighs = { (r, c+1), (r, c-1) }
+
+    if r % 2:
+        neighs |= { (r+1, c-1), (r+1, c), (r-1, c-1), (r-1, c) }
+    else:
+        neighs |= { (r+1, c), (r+1, c+1), (r-1, c+1), (r-1, c) }
+
+    return neighs

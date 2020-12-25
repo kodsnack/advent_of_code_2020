@@ -1,4 +1,4 @@
-module Day5.Solver exposing (solve1, solve2)
+module Day5.Solver exposing (..)
 
 import Day5.Input
 import Html exposing (Html, div, text)
@@ -6,44 +6,26 @@ import Html.Attributes exposing (style)
 import List.Extra
 
 
-type alias Seat =
-    { fromRow : Int, toRow : Int, fromCol : Int, toCol : Int }
+seatStringToInt : String -> Int
+seatStringToInt =
+    String.reverse
+        >> String.split ""
+        >> List.indexedMap
+            (\index s ->
+                if s == "F" || s == "L" then
+                    0
 
-
-diff : Int -> Int -> Int
-diff from to =
-    ceiling (toFloat (to - from) / 2)
-
-
-narrowDownSeat : String -> Seat -> Seat
-narrowDownSeat s seat =
-    if s == "F" then
-        { seat | toRow = seat.toRow - diff seat.fromRow seat.toRow }
-
-    else if s == "B" then
-        { seat | fromRow = seat.fromRow + diff seat.fromRow seat.toRow }
-
-    else if s == "L" then
-        { seat | toCol = seat.toCol - diff seat.fromCol seat.toCol }
-
-    else if s == "R" then
-        { seat | fromCol = seat.fromCol + diff seat.fromCol seat.toCol }
-
-    else
-        seat
-
-
-toSeatId : Seat -> Int
-toSeatId seat =
-    (seat.toRow * 8) + seat.toCol
+                else
+                    2 ^ index
+            )
+        >> List.sum
 
 
 solve1 : String
 solve1 =
     Day5.Input.input
         |> String.split "\n"
-        |> List.map (String.split "" >> List.foldl narrowDownSeat (Seat 0 127 0 7))
-        |> List.map toSeatId
+        |> List.map seatStringToInt
         |> List.maximum
         |> Maybe.withDefault 0
         |> String.fromInt
@@ -55,8 +37,7 @@ solve2 =
         seatIds =
             Day5.Input.input
                 |> String.split "\n"
-                |> List.map (String.split "" >> List.foldl narrowDownSeat (Seat 0 127 0 7))
-                |> List.map toSeatId
+                |> List.map seatStringToInt
                 |> List.sort
 
         offset =

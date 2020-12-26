@@ -26,12 +26,13 @@ fn solve1(v: &Data) -> Option<String> {
       break;
     }
   }
+  println!("{}", aloop);
   p = 1;
   for _ in 0..aloop {
     p = update(p, b);
   }
 
-  Some(format!("{:?}", p))
+  Some(format!("{}", p))
 }
 
 fn solve2(_: &Data) -> Option<String> {
@@ -55,12 +56,5 @@ mod tests {
     let parsed = parse(&input_from_str(EXAMPLE)).unwrap();
     let result = solve1(&parsed);
     assert_eq!(result, Some("14897079".into()))
-  }
-
-  #[test]
-  fn test_example2() {
-    let parsed = parse(&input_from_str(EXAMPLE)).unwrap();
-    let result = solve2(&parsed);
-    assert_eq!(result, None)
   }
 }

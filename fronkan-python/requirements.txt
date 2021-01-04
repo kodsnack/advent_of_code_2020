@@ -1,1 +1,3 @@
 -e libs/aoc_lib
+numpy==1.19.3
+regex==2020.11.13

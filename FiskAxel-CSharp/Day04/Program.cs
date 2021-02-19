@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Day04
 {
@@ -11,227 +12,120 @@ namespace Day04
             string[] puzzleInput = File.ReadAllLines("../../../puzzleInput4.txt");
 
             List<string> passports = new List<string>();
-            List<string> lines = new List<string>();
-
+            passports.Add("");
             for (int i = 0; i < puzzleInput.Length; i++)
             {
-                string line = puzzleInput[i];
-                if (line == "")
+                if (puzzleInput[i] == "")
                 {
-                    AddToPassport(passports, lines);
-                }
-                else
-                {
-                    lines.Add(line);
-                }
-            } AddToPassport(passports, lines); //Last passport
+                    passports.Add("");
+                    continue;
+                }  
+                passports[passports.Count - 1] += puzzleInput[i];
+                passports[passports.Count - 1].Trim();
+                passports[passports.Count - 1] += ' ';
+            }
 
-            ////
-            //// PART 1
-            ////
-         
-            int validPassports = 0;
-            foreach (string passport in passports)
+            int result = 0;
+            List<string> validPassports1 = new List<string>();
+            for (int i = 0; i < passports.Count; i++)
             {
-                if (isValid(passport))
+                if (passports[i].Contains("byr:") &&
+                    passports[i].Contains("iyr:") &&
+                    passports[i].Contains("eyr:") &&
+                    passports[i].Contains("hgt:") &&
+                    passports[i].Contains("hcl:") &&
+                    passports[i].Contains("ecl:") &&
+                    passports[i].Contains("pid:"))
                 {
-                    validPassports++;
+                    result++;
+                    validPassports1.Add(passports[i]);
                 }
             }
-            Console.WriteLine($"Part 1 - Valid passports: {validPassports}");
-            
-            ////
-            //// PART 2
-            ////
 
-            validPassports = 0;
-            foreach (string passport in passports)
+            Console.WriteLine("Part 1: ");
+            Console.WriteLine(result);
+
+            result = 0;
+            for (int i = 0; i < validPassports1.Count; i++)
             {
-                if (isValid2(passport))
+                if (valid2(validPassports1[i]))
                 {
-                    validPassports++;
+                    result++;
                 }
             }
-            Console.WriteLine($"Part 2 - Valid passports: {validPassports}");
-        }
-        
-        static void AddToPassport(List<string> passports, List<string> lines) 
-        { 
-            passports.Add(lines[0]);
-            for (int j = 1; j < lines.Count; j++)
-            {
-                passports[passports.Count - 1] += " ";
-                passports[passports.Count - 1] += lines[j];
-            }
-            passports[passports.Count - 1] += " ";
-            lines.Clear();
+
+            Console.WriteLine("Part 2: ");
+            Console.WriteLine(result);
         }
 
-        static bool isValid(string passport)
+        static bool valid2(string pass) 
         {
-            if(passport.Contains("byr:") &&
-               passport.Contains("iyr:") &&
-               passport.Contains("eyr:") &&
-               passport.Contains("hgt:") &&
-               passport.Contains("hcl:") &&
-               passport.Contains("ecl:") &&
-               passport.Contains("pid:"))
-            {
-                return true;
-            }
-            else { return false; }
-        }
-        
-        static bool isValid2(string passport)
-        {
-            if (!isValid(passport))
+            string byr = getString(pass, pass.IndexOf("byr:"));
+            if (byr.Length != 4 || int.Parse(byr) < 1920 || 2002 < int.Parse(byr))
             {
                 return false;
             }
-            if(byrValid(passport) &&
-               iyrValid(passport) &&
-               eyrValid(passport) &&
-               hgtValid(passport) &&
-               hclValid(passport) &&
-               eclValid(passport) &&
-               pidValid(passport))
-            {
-                return true;
-            }
-            else { return false; }
-        }
-        static bool byrValid(string passport)
-        {
-            int start = passport.IndexOf("byr:") + 4;
-            string byrStr = passport.Substring(start, 5);
-            if (byrStr[4] == ' ')
-            {
-                int byr = int.Parse(byrStr.Substring(0, 4));
-                if(1920 <= byr && byr <= 2002)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        static bool iyrValid(string passport)
-        {
-            int start = passport.IndexOf("iyr:") + 4;
-            string iyrStr = passport.Substring(start, 5);
-            if (iyrStr[4] == ' ')
-            {
-                int iyr = int.Parse(iyrStr.Substring(0, 4));
-                if (2010 <= iyr && iyr <= 2020)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        static bool eyrValid(string passport)
-        {
-            int start = passport.IndexOf("eyr:") + 4;
-            string eyrStr = passport.Substring(start, 5);
-            if (eyrStr[4] == ' ')
-            {
-                 int eyr = int.Parse(eyrStr.Substring(0, 4));
-                if (2020 <= eyr && eyr <= 2030)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        static bool hgtValid(string passport)
-        {
-            int start = passport.IndexOf("hgt:") + 4;
-            string hgt = passport.Substring(start, 5);
-            if(hgt.Contains("cm") && hgt[3] == 'c')
-            {
-                int height = int.Parse(hgt.Substring(0, 3));
-                if (150 <= height && height <= 193)
-                {
-                    return true;
-                }
-            }
-            else if(hgt.Contains("in") && hgt[2] == 'i')
-            {
-                int height = int.Parse(hgt.Substring(0, 2));
-                if (59 <= height && height <= 76)
-                {
-                    return true;
-                }
-            }
-            return true;
-        }
-        static bool hclValid(string passport)
-        {
-            int start = passport.IndexOf("hcl:") + 4;
-            string hclStr1 = passport.Substring(start, passport.Length - start);
-            int end = passport.IndexOf(" ");
-            string hclStr2 = hclStr1.Substring(0, 8);
-            if (hclStr2[7] == ' ' && hclStr2[0] == '#')
-            {
-                string hcl = hclStr2.Substring(1, 6);
-                if (isHexadecimal(hcl))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        static bool eclValid(string passport)
-        {
-            int start = passport.IndexOf("ecl:") + 4;
-            string eclStr = passport.Substring(start, 4);
-            if (eclStr[3] == ' ')
-            {
-                string ecl = eclStr.Substring(0, 3);
-                if (String.Equals(ecl, "amb") ||
-                    String.Equals(ecl, "blu") ||
-                    String.Equals(ecl, "brn") ||
-                    String.Equals(ecl, "gry") ||
-                    String.Equals(ecl, "grn") ||
-                    String.Equals(ecl, "hzl") ||
-                    String.Equals(ecl, "oth"))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        static bool pidValid(string passport)
-        {
-            int start = passport.IndexOf("pid:") + 4;
-            if (passport.Substring(start).Length < 10) 
+
+            string iyr = getString(pass, pass.IndexOf("iyr:"));
+            if (iyr.Length != 4 || int.Parse(iyr) < 2010 || 2020 < int.Parse(iyr))
             {
                 return false;
             }
-            string pidStr = passport.Substring(start, 10);
-            if (pidStr[9] == ' ')
+
+            string eyr = getString(pass, pass.IndexOf("eyr:"));
+            if (eyr.Length != 4 || int.Parse(eyr) < 2020 || 2030 < int.Parse(eyr))
             {
-                string pid = pidStr.Substring(0, 9);
-                if (int.TryParse(pidStr, out int a))
+                return false;
+            }
+
+            string hgt = getString(pass, pass.IndexOf("hgt:"));
+            if (hgt.Contains("cm"))
+            {
+                int heigth = int.Parse(hgt.Substring(0, hgt.IndexOf('c')));
+                if (heigth < 150 || 193 < heigth)
                 {
-                    return true;
+                    return false;
+                }   
+            }
+            else if (hgt.Contains("in"))
+            {
+                int heigth = int.Parse(hgt.Substring(0, 2));
+                if (heigth < 59 || 76 < heigth)
+                {
+                    return false;
                 }
             }
-            return false;
+            else { return false; }
+
+            string hcl = getString(pass, pass.IndexOf("hcl:"));
+            Regex reg = new Regex("[0-9a-f]");
+            if (hcl[0] != '#' || hcl.Length != 7 || reg.IsMatch(hcl.Substring(1)) == false)
+            {
+                return false;
+            }
+
+            string ecl = getString(pass, pass.IndexOf("ecl:"));
+            if (ecl != "amb" && ecl != "blu" && ecl != "brn" && 
+                ecl != "gry" && ecl != "grn" && ecl != "hzl" && ecl != "oth")
+            {
+                return false;
+            }
+
+            int apa = 0;
+            string pid = getString(pass, pass.IndexOf("pid:"));
+            if (pid.Length != 9 || int.TryParse(pid, out apa) == false)
+            {
+                return false;
+            }
+
+            return true;
         }
 
-        static bool isHexadecimal(string num)
+        static string getString(string input, int start)
         {
-            for (int i = 0; i < num.Length; i++)
-            {
-                if ('0' <= num[i] && num[i] <= '9' ||
-                    'a' <= num[i] && num[i] <= 'f') 
-                {}
-                else 
-                { 
-                    return false; 
-                }
-            }
-            return true;
+            string output = input.Substring(start + 4);
+            output = output.Substring(0, output.IndexOf(" "));
+            return output;
         }
     }
 }

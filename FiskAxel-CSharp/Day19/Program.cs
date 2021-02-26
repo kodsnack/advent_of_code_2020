@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Day19
 {
@@ -7,47 +9,44 @@ namespace Day19
     {
         static void Main(string[] args)
         {
+            //// INPUT PARSING
+
             string[] puzzleInput = File.ReadAllLines("../../../puzzleInput19.txt");
 
-            int length = Array.IndexOf(puzzleInput, "");
-            string[] rules = new string[length];
-            for (int i = 0; i < length; i++)
+            int len = Array.IndexOf(puzzleInput, "");
+            string[] rules = new string[len];
+            for (int i = 0; i < len; i++)
             {
                 string[] parse = puzzleInput[i].Split(": ");
                 int index = int.Parse(parse[0]);
                 rules[index] = parse[1];
             }
 
-            int length2 = puzzleInput.Length - (length + 1);
-            string[] messages = new string[length2];
-            for (int i = 0; i < length2; i++)
+            int len2 = puzzleInput.Length - (len + 1);
+            string[] messages = new string[len2];
+            for (int i = 0; i < len2; i++)
             {
-                messages[i] = puzzleInput[length + 1 + i];
+                messages[i] = puzzleInput[len + 1 + i];
             }
 
             ////
             //// PART 1
-            //// 
+            ////
 
             int result = 0;
-            foreach (string message in messages)
+            Regex pattern1 = new Regex("^" + CreatePattern(rules, rules[0], 0, 0) + "$");
+            foreach (var message in messages)
             {
-                string[] messageAndCurrentIndex = new string[3];
-                messageAndCurrentIndex[0] = message;
-                messageAndCurrentIndex[1] = "0";
-                messageAndCurrentIndex[2] = "first";
-                
-                if (validMessage(messageAndCurrentIndex, rules[0], rules) != "-1")
+                if (pattern1.IsMatch(message))
                 {
                     result++;
                 }
             }
 
-            Console.Write("Part 1: ");
+            Console.WriteLine("Part 1: ");
             Console.WriteLine(result);
-
-
-            //// 
+            
+            ////
             //// PART 2
             ////
 
@@ -55,95 +54,58 @@ namespace Day19
             rules[11] = "42 31 | 42 11 31";
 
             result = 0;
-            foreach (string message in messages)
+            Regex pattern2 = new Regex("^" + CreatePattern(rules, rules[0], 0, 0) + "$");
+            foreach (var message in messages)
             {
-                string[] messageAndCurrentIndex = new string[3];
-                messageAndCurrentIndex[0] = message;
-                messageAndCurrentIndex[1] = "0";
-                messageAndCurrentIndex[2] = "first";
-
-                if (validMessage(messageAndCurrentIndex, rules[0], rules) != "-1")
+                if (pattern2.IsMatch(message))
                 {
                     result++;
                 }
             }
 
-            Console.Write("Part 2: ");
+            Console.WriteLine("Part 2: ");
             Console.WriteLine(result);
         }
 
-        static string validMessage(string[] message, string rule, string[] rules)
+        static string CreatePattern(string[] rules, string rule, int len8, int len11)
         {
-            bool firstRekLvl = false;
-            if (message[2] == "first")
+            if (rule == rules[8])
             {
-                firstRekLvl = true;
-                message[2] = "notFirst";
+                len8++;
+                if (len8 > 10)
+                {
+                    rule = "42";
+                } 
+            }
+            else if (rule == rules[11])
+            {
+                len11++;
+                if (len11 > 10)
+                {
+                    rule = "42 31";
+                }  
+            }
+            else if (rule[0] == '\"')
+            {
+                return rule.Substring(1,1);
             }
 
-            string[] parsedRule = rule.Split(' ');
-            for (int i = 0; i < parsedRule.Length; i++)
+            string regPattern = "(";
+            string[] parsed = rule.Split(" ");
+            foreach (var item in parsed)
             {
-                int mi = int.Parse(message[1]);
-                if (message[1] == "-1")
+                if (item == "|")
                 {
-                    return message[1];
-                }
-                
-                int index = int.Parse(parsedRule[i]);
-                if (mi >= message[0].Length)
-                {
-                    return "-1";
-                }
-
-                string[] copy = new string[3];
-                copy[0] = message[0];
-                copy[1] = message[1];
-                copy[2] = message[2];
-                if (rules[index].Contains("\""))
-                {
-                    if ($"\"{message[0][mi]}\"" != rules[index])
-                    {
-                        return "-1";
-                    }
-                    mi++;
-                    message[1] = mi.ToString();
-                }
-                else if (rules[index].Contains("|"))
-                {                    
-                    string[] newRule = rules[index].Split(" | ");
-                    string left = validMessage(copy, newRule[0], rules);
-                    copy[1] = message[1];
-                    string right = validMessage(copy, newRule[1], rules);
-                    if (left != "-1" && right != "-1" && left != right)
-                    {
-                           
-                    }
-                    if (left != "-1")
-                    {
-                        message[1] = left;
-                    }
-                    else if (right != "-1")
-                    {
-                        message[1] = right;                        
-                    }
-                    else
-                    {
-                        return "-1";
-                    }
+                    regPattern += '|';
                 }
                 else
                 {
-                    message[1] = validMessage(copy, rules[index], rules);
+                    regPattern += CreatePattern(rules, rules[int.Parse(item)], len8, len11);
                 }
             }
+            regPattern += ')';
 
-            if ((firstRekLvl && int.Parse(message[1]) != message[0].Length) || int.Parse(message[1]) > message[0].Length)
-            {
-                return "-1";
-            }
-
-            return message[1];
+            return regPattern;
         }
-    }
+    } 
 }

@@ -7,7 +7,7 @@ namespace Day10
     {
         static void Main(string[] args)
         {
-            string[] puzzleInput = File.ReadAllLines("../../../test2.txt");
+            string[] puzzleInput = File.ReadAllLines("../../../puzzleInput10.txt");
             int[] numbers = new int[puzzleInput.Length];
             for (int i = 0; i < puzzleInput.Length; i++)
             {
@@ -19,8 +19,8 @@ namespace Day10
             //// PART 1
             ////
 
-            int ones = 1;
-            int threes = 1;
+            int ones = 1; // From power outlet.
+            int threes = 1; // To device.
             for (int i = 0; i < numbers.Length - 1; i++)
             {
                 int dif = 0;
@@ -42,89 +42,32 @@ namespace Day10
             //// PART 2
             ////
 
-            int[] numbers2 = new int[numbers.Length + 2];
-            numbers2[0] = 0;
+            int[] numbers2 = new int[numbers.Length + 1];
+            numbers2[0] = 0; // Outlet.
             for (int i = 0; i < numbers.Length; i++)
             {
                 numbers2[i + 1] = numbers[i];
             }
-            numbers2[numbers2.Length - 1] = numbers[numbers.Length - 1] + 3;
+            long[] ways = new long[numbers2.Length];
+            ways[ways.Length - 1] = 1;
+            for (int i = ways.Length - 2; i >= 0; i--)
+            {
+                if (numbers2[i] + 3 >= numbers2[i + 1])
+                {
+                    ways[i] += ways[i + 1];
+                }
+                if (i + 2 < numbers2.Length && numbers2[i] + 3 >= numbers2[i + 2])
+                {
+                    ways[i] += ways[i + 2];
+                }
+                if (i + 3 < numbers2.Length && numbers2[i] + 3 >= numbers2[i + 3])
+                {
+                    ways[i] += ways[i + 3];
+                }
+            }
 
-            double power = numbers2.Length - shortestSequenceLength(numbers2, 0);
-            double total = Math.Pow(2, power);
             Console.WriteLine("Part 2");
-            Console.WriteLine(total);
-        }
-
-        static int shortestSequenceLength(int[] numbers, int i)
-        {
-            int shortest = 0;
-
-            if (i == numbers.Length - 1)
-            {
-                return 1;
-            }
-            
-            if (i < numbers.Length - 3 && numbers[i] + 3 == numbers[i + 3])
-            {
-                shortest += shortestSequenceLength(numbers, i + 3);
-                shortest++;
-            }
-
-            else if (i < numbers.Length - 2 && numbers[i] + 2 == numbers[i + 2] ||
-                     i < numbers.Length - 2 && numbers[i] + 3 == numbers[i + 2])
-            {
-                shortest += shortestSequenceLength(numbers, i + 2);
-                shortest++;
-            }
-
-            else if (numbers[i] + 1 == numbers[i + 1] ||
-                     numbers[i] + 2 == numbers[i + 1] ||
-                     numbers[i] + 3 == numbers[i + 1])
-            {
-                shortest += shortestSequenceLength(numbers, i + 1);
-                shortest++;
-            }
-
-            return shortest;
-        }
-
-
-
-            //Working but too inefficient
-            static int numberOfValidOrders(int[] numbers, int i)
-        {
-            int sum = 0;
-
-            if (i == numbers.Length - 1)
-            {
-                return 1;
-            }
- 
-            if (numbers[i] + 1 == numbers[i + 1] || 
-                numbers[i] + 2 == numbers[i + 1] || 
-                numbers[i] + 3 == numbers[i + 1])
-            {
-                sum += numberOfValidOrders(numbers, i + 1);
-            }
-
-            if (i < numbers.Length - 2)
-            {
-                if (numbers[i] + 2 == numbers[i + 2] ||
-                    numbers[i] + 3 == numbers[i + 2])
-                {
-                    sum += numberOfValidOrders(numbers, i + 2);
-                }
-            }
-            if (i < numbers.Length - 3)
-            {         
-                if (numbers[i] + 3 == numbers[i + 3])
-                {
-                    sum += numberOfValidOrders(numbers, i + 3);
-                }
-            }
-
-            return sum;
+            Console.WriteLine(ways[0]);
         }
     }
 }

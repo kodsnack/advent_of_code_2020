@@ -87,7 +87,7 @@ namespace day22
 
         static int nextGame = 1;
 
-        static (bool, List<int>) PlayGame(Deque<int> a, Deque<int> b, int game)
+        static (bool, List<int>) PlayGame(List<int> a, List<int> b, int game)
         {
             var visited = new HashSet<string>();
             bool awon = true;
@@ -104,35 +104,22 @@ namespace day22
                 int bv = b[0];
                 bool subGame = a.Count > av && b.Count > bv;
                 //PrintStatus(a, b, round, game, subGame);
-                a.RemoveFront();
-                b.RemoveFront();
-                if (subGame)
-                {
-                    var asub = new Deque<int>();
-                    var bsub = new Deque<int>();
-                    asub.InsertRange(0, a);
-                    bsub.InsertRange(0, b);
-                    asub.RemoveRange(av, asub.Count - av);
-                    bsub.RemoveRange(bv, bsub.Count - bv);
-                    (awon, _) = PlayGame(asub, bsub, ++nextGame);
-                }
-                else
-                    awon = av > bv;
+                a.RemoveAt(0);
+                b.RemoveAt(0);
+                (awon, _) = subGame ? PlayGame(a.Take(av).ToList(), b.Take(bv).ToList(), ++nextGame) : (av > bv, null);
                 var w = awon ? a : b;
                 w.Add(awon ? av : bv);
                 w.Add(awon ? bv : av);
                 round++;
             }
-            return (awon, (awon ? a : b).ToList());
+            return (awon, awon ? a : b);
         }
 
         static Object PartB()
         {
             var input = ReadInput(inputPath);
             int n = input.Count / 2;
-            var a = new Deque<int>(input.Take(n));
-            var b = new Deque<int>(input.Skip(n).Take(n));
-            var (_, deck) = PlayGame(a, b, 1);
+            var (_, deck) = PlayGame(input.Take(n).ToList(), input.Skip(n).Take(n).ToList(), 1);
             int ans = Score(deck);
             Console.WriteLine("Part B: Result is {0}", ans);
             return ans;

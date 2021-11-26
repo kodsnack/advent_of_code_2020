@@ -9,8 +9,4 @@
     <Compile Include="..\AdventOfCode.cs" Link="AdventOfCode.cs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Deque" Version="1.0.1" />
-  </ItemGroup>
-
 </Project>

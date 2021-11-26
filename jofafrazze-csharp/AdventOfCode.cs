@@ -407,6 +407,43 @@ namespace AdventOfCode
         };
     }
 
+    public static class CoordsHex
+    {
+        // Numbering system for the hexagonal tiles:
+        //
+        //  0,0     2,0     4,0     6,0
+        //      1,1     3,1     5,1
+        //  0,2     2,2     4,2     6,2
+        //      1,3     3,3     5,3
+        //  0,4     2,4     4,4     6,4
+        //      1,5     3,5     5,5
+        //
+        // - Vertical neighbors have same x and y +- 2
+        // - Horizontal neighbors have same x +- 2 and same y
+        // - Diagonal neighbors have x +- 1 and y +- 1
+        // 
+        public static readonly Dictionary<string, GenericPosition2D<int>> directionsHigh = new Dictionary<string, GenericPosition2D<int>>()
+        {
+            { "n", new GenericPosition2D<int>(0, -2) },
+            { "ne", new GenericPosition2D<int>(1, -1) },
+            { "se", new GenericPosition2D<int>(1, 1) },
+            { "s", new GenericPosition2D<int>(0, 2) },
+            { "sw", new GenericPosition2D<int>(-1, 1) },
+            { "nw", new GenericPosition2D<int>(-1, -1) },
+        };
+
+        public static readonly Dictionary<string, GenericPosition2D<int>> directionsWide = new Dictionary<string, GenericPosition2D<int>>()
+        {
+            { "ne", new GenericPosition2D<int>(1, -1) },
+            { "e", new GenericPosition2D<int>(2, 0) },
+            { "se", new GenericPosition2D<int>(1, 1) },
+            { "sw", new GenericPosition2D<int>(-1, 1) },
+            { "w", new GenericPosition2D<int>(-2, 0) },
+            { "nw", new GenericPosition2D<int>(-1, -1) },
+        };
+
+    }
+
     public static class Utils
     {
         // Modulo i.e. mod (instead of the % operator)

@@ -73,54 +73,45 @@ namespace day22
         static void PrintStatus(List<int> p1, List<int> p2, int round, int game, bool subGame)
         {
             if (round == 1)
-            {
-                Console.WriteLine("=== Game {0} ===", game);
-                Console.WriteLine();
-            }
+                Console.WriteLine("=== Game {0} ===\r\n", game);
             Console.WriteLine("-- Round {0} (Game {1}) --", round, game);
             Console.WriteLine("Player 1's deck: {0}", string.Join(", ", p1));
             Console.WriteLine("Player 2's deck: {0}", string.Join(", ", p2));
             Console.WriteLine("Player 1 plays: {0}", p1.First());
             Console.WriteLine("Player 2 plays: {0}", p2.First());
             if (subGame)
-                Console.WriteLine("Playing a sub-game to determine the winner...");
+                Console.WriteLine("Playing a sub-game to determine the winner...\r\n");
             else
-                Console.WriteLine("Player {0} wins round {1} of game {2}!", p1.First() > p2.First() ? 1 : 2, round, game);
-            Console.WriteLine();
+                Console.WriteLine("Player {0} wins round {1} of game {2}!\r\n", p1[0] > p2[0] ? 1 : 2, round, game);
         }
 
         static int nextGame = 1;
 
-        static (bool, List<int>) PlayGame(IEnumerable<int> p1, IEnumerable<int> p2, int game)
+        static (bool, List<int>) PlayGame(List<int> a, List<int> b, int game)
         {
             var visited = new HashSet<string>();
-            var a = new List<int>(p1);
-            var b = new List<int>(p2);
             bool awon = true;
-            bool done = false;
             int round = 1;
-            while (a.Count > 0 && b.Count > 0 && !done)
+            while (a.Count > 0 && b.Count > 0)
             {
                 var id = string.Join(",", a) + "x" + string.Join(",", b);
-                done = !visited.Add(id);
-                if (!done)
+                if (!visited.Add(id))
                 {
-                    int ca = a.First();
-                    int cb = b.First();
-                    //PrintStatus(a, b, round, game, subGame);
-                    awon = ca > cb;
-                    if (a.Count > ca && b.Count > cb)
-                        (awon, _) = PlayGame(a.Skip(1).Take(ca), b.Skip(1).Take(cb), ++nextGame);
-                    var w = awon ? a : b;
-                    var l = awon ? b : a;
-                    w.Add(w.First());
-                    w.RemoveAt(0);
-                    w.Add(l.First());
-                    l.RemoveAt(0);
-                    round++;
+                    awon = true;
+                    break;
                 }
+                int av = a[0];
+                int bv = b[0];
+                bool subGame = a.Count > av && b.Count > bv;
+                //PrintStatus(a, b, round, game, subGame);
+                a.RemoveAt(0);
+                b.RemoveAt(0);
+                (awon, _) = subGame ? PlayGame(a.Take(av).ToList(), b.Take(bv).ToList(), ++nextGame) : (av > bv, null);
+                var w = awon ? a : b;
+                w.Add(awon ? av : bv);
+                w.Add(awon ? bv : av);
+                round++;
             }
-            awon |= done;
             return (awon, awon ? a : b);
         }
 
@@ -128,7 +119,7 @@ namespace day22
         {
             var input = ReadInput(inputPath);
             int n = input.Count / 2;
-            var (_, deck) = PlayGame(input.Take(n), input.Skip(n).Take(n), 1);
+            var (_, deck) = PlayGame(input.Take(n).ToList(), input.Skip(n).Take(n).ToList(), 1);
             int ans = Score(deck);
             Console.WriteLine("Part B: Result is {0}", ans);
             return ans;
@@ -137,8 +128,11 @@ namespace day22
         static void Main(string[] args)
         {
             Console.WriteLine("AoC 2020 - " + nsname + ":");
+            var w = System.Diagnostics.Stopwatch.StartNew();
             PartA();
             PartB();
+            w.Stop();
+            Console.WriteLine("[Execution took {0} ms]", w.ElapsedMilliseconds);
         }
 
         public static bool MainTest()

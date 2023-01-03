@@ -106,4 +106,8 @@ class LinePos {
   List<LinePos> getNeighbours() {
     return [moveUp(), moveLeft(), moveDown(), moveRight()];
   }
+
+  List<LinePos> getDiagonalNeighbours() {
+    return [moveNW(), moveNE(), moveSW(), moveSE()];
+  }
 }
